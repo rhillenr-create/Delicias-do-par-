@@ -1,30 +1,38 @@
 
-# 🍧 Açaí Delícias do Pará - Gestão de Caixa
+# 🍧 Açaí Delícias do Pará - Sistema de Gestão de Caixa
 
-Este é o seu sistema de frente de caixa (PDV) moderno e inteligente. Ele foi projetado para ser acessado de qualquer lugar, garantindo que seus dados financeiros estejam sempre seguros na nuvem.
+Este é o seu sistema de frente de caixa (PDV) completo, moderno e inteligente. Ele foi projetado para funcionar tanto em computadores quanto em dispositivos móveis.
 
-## 📱 Como Acessar Remotamente (Uso Diário)
+## 🚀 Como usar agora (Acesso Rápido)
 
-Para usar o sistema no seu celular ou no balcão da açaíteria:
+1. **Link Permanente:** Acesse o sistema através do link oficial: [https://nextn-f5a13.web.app](https://nextn-f5a13.web.app)
+2. **No Celular:** 
+   - Abra o link no Chrome.
+   - Clique nos três pontinhos (menu) e selecione **"Adicionar à tela inicial"**.
+   - O sistema aparecerá como um aplicativo no seu celular!
 
-1.  **Link Oficial:** Acesse [https://nextn-f5a13.web.app](https://nextn-f5a13.web.app).
-2.  **Dica de Ouro:** No Chrome do seu celular, clique nos três pontinhos e selecione **"Adicionar à tela inicial"**. O sistema funcionará como um aplicativo!
-3.  **Segurança:** Todas as vendas e despesas que você lançar no balcão serão salvas instantaneamente no banco de dados Firebase.
+## 🛠️ Configurações Necessárias (Importante)
 
-## 🚀 Configuração Inicial (Obrigatório)
+Para que o sistema salve seus dados na nuvem para sempre, certifique-se de que no seu [Console do Firebase](https://console.firebase.google.com/project/nextn-f5a13):
 
-Para que o sistema funcione 100% na nuvem, certifique-se de que no [Console do Firebase](https://console.firebase.google.com/project/nextn-f5a13):
+1. **Firestore Database:** Ative o banco de dados em "Modo Produção".
+2. **Authentication:** Em "Sign-in method", ative o provedor **Anônimo**.
+3. **Identidade:** Vá em "Ajustes" dentro do sistema para subir o logo da sua açaíteria e definir o nome da empresa.
 
-*   **Firestore Database:** Esteja ativado (em modo de produção ou teste).
-*   **Authentication:** O provedor "Anônimo" esteja ativado (em Build > Authentication > Sign-in method).
-*   **Hosting:** O site tenha sido publicado pelo menos uma vez.
+## ✨ Funcionalidades Principais
 
-## ✨ O que este sistema faz?
+- **Registro de Vendas:** Lançamentos rápidos de PIX, Cartão (Crédito/Débito), Dinheiro e Delivery.
+- **Controle de Saídas:** Registro de Sangrias (retiradas) e Despesas (pagamentos).
+- **Inteligência Artificial:** O sistema categoriza seus gastos e sugere economias automaticamente.
+- **Relatórios:** Dashboard visual com gráficos e função de impressão para fechamento de caixa.
+- **Histórico Eterno:** Seus dados ficam salvos na nuvem e você pode consultar meses anteriores a qualquer momento.
 
-*   **Registro Rápido:** Lançamentos de PIX, Cartão, Dinheiro e Delivery em segundos.
-*   **Sangrias e Despesas:** Controle total das saídas do caixa.
-*   **Inteligência Artificial:** A IA categoriza seus gastos e sugere onde você pode economizar no seu negócio de açaí.
-*   **Relatórios Profissionais:** Dashboard com gráficos e função de impressão para fechamento de caixa.
+## 📦 Como exportar o código
+
+Se você deseja ter uma cópia deste código no seu computador:
+1. Use a ferramenta de exportação do Firebase Studio.
+2. Instale as dependências com `npm install`.
+3. Rode localmente com `npm run dev`.
 
 ---
-*Desenvolvido com carinho para a Açaí Delícias do Pará.*
+*Desenvolvido com tecnologia de ponta para o sucesso da Açaí Delícias do Pará.*
