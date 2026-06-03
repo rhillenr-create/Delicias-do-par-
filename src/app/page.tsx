@@ -17,42 +17,42 @@ export default function CashierPage() {
   }, []);
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto">
-      <div className="relative bg-card/40 p-8 rounded-[2rem] border border-white/5 overflow-hidden shadow-2xl">
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-6xl mx-auto">
+      <div className="relative bg-card/40 p-10 rounded-[3rem] border border-white/5 overflow-hidden shadow-2xl">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent pointer-events-none" />
         
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
-          <div className="flex items-center gap-8">
-            <div className="relative w-48 h-48 md:w-72 md:h-60 rounded-3xl overflow-hidden bg-background border-4 border-accent shadow-[0_0_30px_rgba(104,255,54,0.3)] p-3 flex items-center justify-center">
+        <div className="flex flex-col items-center justify-center gap-10 relative z-10">
+          <div className="w-full flex justify-center">
+            <div className="relative w-full max-w-2xl h-[300px] md:h-[500px] rounded-[2rem] overflow-hidden bg-background/50 border-4 border-accent shadow-[0_0_50px_rgba(104,255,54,0.2)] p-6 flex items-center justify-center">
               {brand.logoUrl ? (
                 <Image 
                   src={brand.logoUrl} 
                   alt="Brand Logo" 
                   fill 
-                  className="object-contain"
+                  className="object-contain p-4"
                   priority
                   unoptimized
                 />
               ) : (
-                <div className="flex flex-col items-center gap-2">
-                  <ImageIcon className="w-16 h-16 text-muted-foreground opacity-20" />
-                  <span className="text-[10px] uppercase font-bold text-muted-foreground">Adicione seu logo</span>
+                <div className="flex flex-col items-center gap-4">
+                  <ImageIcon className="w-24 h-24 text-muted-foreground opacity-20" />
+                  <span className="text-xs uppercase font-bold text-muted-foreground tracking-widest">Sua Logo Aqui</span>
                 </div>
               )}
             </div>
           </div>
           
-          <div className="flex flex-col items-center gap-2">
-            <span className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground/60 font-bold">ESTADO DO CAIXA</span>
-            <div className="bg-black/40 border border-white/10 px-8 py-5 rounded-2xl flex items-center gap-4 shadow-inner">
-              <p className="text-accent font-black text-xl tracking-widest uppercase">Operacional</p>
-              <div className="w-4 h-4 rounded-full bg-accent animate-pulse shadow-[0_0_20px_#4ade80]" />
+          <div className="flex flex-col items-center gap-3">
+            <span className="text-[10px] uppercase tracking-[0.5em] text-muted-foreground/60 font-black">SISTEMA DE GESTÃO</span>
+            <div className="bg-black/60 border border-white/10 px-10 py-6 rounded-3xl flex items-center gap-6 shadow-2xl backdrop-blur-md">
+              <p className="text-accent font-black text-2xl tracking-[0.2em] uppercase">Operacional</p>
+              <div className="w-5 h-5 rounded-full bg-accent animate-pulse shadow-[0_0_25px_#4ade80]" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="pt-2">
+      <div className="pt-4">
         <ActionGrid />
       </div>
     </div>
