@@ -114,7 +114,7 @@ export default function MovementsPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-headline font-bold text-white">Extrato de Movimentação</h1>
+          <h1 className="text-3xl font-headline font-bold text-white uppercase italic">Açaí <span className="text-accent">Delícias do Pará</span></h1>
           <p className="text-muted-foreground">Gerencie todas as entradas e saídas do seu negócio.</p>
         </div>
         
@@ -256,7 +256,10 @@ export default function MovementsPage() {
       {/* Print-only section */}
       <div className="print-only p-10 space-y-8">
         <div className="flex justify-between items-center border-b-2 border-black pb-4">
-          <h1 className="text-4xl font-bold">Relatório Mensal - AçaíLume Pro</h1>
+          <div className="flex flex-col">
+            <h1 className="text-4xl font-bold uppercase italic">Açaí Delícias do Pará</h1>
+            <p className="text-gray-500 uppercase tracking-widest text-sm font-bold">Relatório de Movimentação</p>
+          </div>
           <p className="text-xl">{format(new Date(), 'MMMM yyyy', { locale: ptBR })}</p>
         </div>
         <div className="grid grid-cols-3 gap-6">
@@ -275,7 +278,7 @@ export default function MovementsPage() {
         </div>
         {reportDate && (
           <p className="text-center text-sm text-gray-500 pt-20 border-t">
-            Este documento foi gerado automaticamente pelo sistema AçaíLume Pro em {reportDate}.
+            Este documento foi gerado automaticamente pelo sistema Açaí Delícias do Pará em {reportDate}.
           </p>
         )}
       </div>

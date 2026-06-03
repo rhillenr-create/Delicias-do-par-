@@ -1,11 +1,12 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'AçaíLume Pro | Cashier Management',
-  description: 'Modern cashier system for your açaíteria',
+  title: 'Açaí Delícias do Pará | Gestão de Caixa',
+  description: 'Sistema moderno de frente de caixa para açaíteria',
 };
 
 export default function RootLayout({

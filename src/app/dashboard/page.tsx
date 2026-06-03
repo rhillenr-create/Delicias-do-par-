@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -77,7 +78,7 @@ export default function DashboardPage() {
     <div className="space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-headline font-bold text-white">Luminous Analytics</h1>
+          <h1 className="text-3xl font-headline font-bold text-white uppercase">Açaí <span className="text-accent">Delícias do Pará</span></h1>
           <p className="text-muted-foreground">Visão geral do desempenho financeiro da sua açaíteria.</p>
         </div>
       </div>

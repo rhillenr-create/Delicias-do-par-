@@ -1,12 +1,16 @@
+
 "use client";
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, ReceiptText, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export function Navbar() {
   const pathname = usePathname();
+  const logo = PlaceHolderImages.find(img => img.id === 'brand-logo');
 
   const navItems = [
     { href: '/', label: 'Caixa', icon: Zap },
@@ -17,13 +21,29 @@ export function Navbar() {
   return (
     <nav className="border-b bg-card/50 backdrop-blur-md sticky top-0 z-50 no-print">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center neon-glow group-hover:scale-110 transition-transform">
-            <Zap className="w-5 h-5 text-white fill-current" />
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="relative w-10 h-10 overflow-hidden rounded-lg bg-primary/20 flex items-center justify-center neon-glow group-hover:scale-110 transition-transform border border-primary/30">
+            {logo ? (
+              <Image 
+                src={logo.imageUrl} 
+                alt="Logo" 
+                width={40} 
+                height={40} 
+                className="object-cover"
+                data-ai-hint={logo.imageHint}
+              />
+            ) : (
+              <Zap className="w-6 h-6 text-white fill-current" />
+            )}
           </div>
-          <span className="font-headline text-xl font-bold tracking-tight text-white">
-            Açaí<span className="text-primary">Lume</span> <span className="text-accent">Pro</span>
-          </span>
+          <div className="flex flex-col leading-none">
+            <span className="font-headline text-lg font-bold tracking-tight text-white uppercase italic">
+              Açaí
+            </span>
+            <span className="text-[10px] text-accent font-bold tracking-widest uppercase">
+              Delícias do Pará
+            </span>
+          </div>
         </Link>
 
         <div className="flex items-center gap-1 md:gap-4">
