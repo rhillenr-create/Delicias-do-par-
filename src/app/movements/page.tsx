@@ -22,7 +22,8 @@ import {
   Filter,
   ArrowDownCircle,
   ArrowUpCircle,
-  Clock
+  Clock,
+  Printer
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -40,12 +41,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function MovementsPage() {
   const [movements, setMovements] = useState<Movement[]>([]);
   const [search, setSearch] = useState('');
-  const [period, setPeriod] = useState('day'); // day, week, month, all
+  const [period, setPeriod] = useState('day'); 
   const [reportDate, setReportDate] = useState<string>('');
+  const logo = PlaceHolderImages.find(img => img.id === 'brand-logo');
 
   const loadMovements = () => {
     setMovements(getMovements());
@@ -53,7 +57,6 @@ export default function MovementsPage() {
 
   useEffect(() => {
     loadMovements();
-    // Set report date on client side only to avoid hydration mismatch
     setReportDate(format(new Date(), 'dd/MM/yyyy HH:mm'));
     
     window.addEventListener('movementsUpdated', loadMovements);
@@ -112,33 +115,33 @@ export default function MovementsPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div>
-          <h1 className="text-3xl font-headline font-bold text-white uppercase italic">Açaí <span className="text-accent">Delícias do Pará</span></h1>
-          <p className="text-muted-foreground">Gerencie todas as entradas e saídas do seu negócio.</p>
+          <h1 className="text-3xl font-headline font-bold text-white uppercase italic tracking-tighter">Açaí <span className="text-accent">Delícias do Pará</span></h1>
+          <p className="text-muted-foreground uppercase text-xs font-bold tracking-widest mt-1">Gerenciamento de Fluxo de Caixa</p>
         </div>
         
-        <div className="flex items-center gap-4 bg-card border border-primary/20 p-2 rounded-xl">
-          <div className="px-4 py-2">
-            <p className="text-[10px] uppercase text-muted-foreground font-bold">Saldo do Período</p>
-            <p className="text-xl font-bold text-accent">R$ {(totals.in - totals.out).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+        <div className="flex items-center gap-4 bg-card border border-primary/20 p-3 rounded-2xl shadow-lg">
+          <div className="px-4">
+            <p className="text-[10px] uppercase text-muted-foreground font-bold tracking-widest">Saldo do Período</p>
+            <p className="text-2xl font-bold text-accent">R$ {(totals.in - totals.out).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 no-print">
         <div className="md:col-span-6 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input 
-            placeholder="Pesquisar por descrição ou tipo..." 
+            placeholder="Pesquisar movimentação..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 bg-card border-muted focus-visible:ring-primary h-12"
+            className="pl-10 bg-card border-muted focus-visible:ring-primary h-12 rounded-xl"
           />
         </div>
         <div className="md:col-span-3">
           <Select value={period} onValueChange={setPeriod}>
-            <SelectTrigger className="h-12 bg-card border-muted">
+            <SelectTrigger className="h-12 bg-card border-muted rounded-xl">
               <div className="flex items-center gap-2">
                 <Filter className="w-4 h-4 text-primary" />
                 <SelectValue placeholder="Período" />
@@ -153,29 +156,29 @@ export default function MovementsPage() {
           </Select>
         </div>
         <div className="md:col-span-3">
-           <Button className="w-full h-12 bg-accent text-accent-foreground hover:bg-accent/90 font-bold" onClick={() => window.print()}>
-             <Calendar className="w-4 h-4 mr-2" />
-             Imprimir Relatório
+           <Button className="w-full h-12 bg-accent text-accent-foreground hover:bg-accent/90 font-bold rounded-xl shadow-lg shadow-accent/10" onClick={() => window.print()}>
+             <Printer className="w-4 h-4 mr-2" />
+             Relatório
            </Button>
         </div>
       </div>
 
-      <div className="bg-card border border-muted rounded-2xl overflow-hidden shadow-2xl">
+      <div className="bg-card border border-muted rounded-2xl overflow-hidden shadow-2xl no-print">
         <Table>
-          <TableHeader className="bg-muted/50">
+          <TableHeader className="bg-muted/30">
             <TableRow className="border-muted">
-              <TableHead className="w-[180px]">Data & Hora</TableHead>
-              <TableHead>Tipo</TableHead>
-              <TableHead>Descrição</TableHead>
-              <TableHead className="text-right">Valor</TableHead>
-              <TableHead className="w-[100px] text-center">Ações</TableHead>
+              <TableHead className="w-[180px] uppercase text-[10px] font-bold tracking-widest">Data & Hora</TableHead>
+              <TableHead className="uppercase text-[10px] font-bold tracking-widest">Tipo</TableHead>
+              <TableHead className="uppercase text-[10px] font-bold tracking-widest">Descrição</TableHead>
+              <TableHead className="text-right uppercase text-[10px] font-bold tracking-widest">Valor</TableHead>
+              <TableHead className="w-[100px] text-center uppercase text-[10px] font-bold tracking-widest">Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredMovements.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="h-32 text-center text-muted-foreground">
-                  Nenhuma movimentação encontrada para o período selecionado.
+                <TableCell colSpan={5} className="h-32 text-center text-muted-foreground italic">
+                  Nenhuma movimentação registrada.
                 </TableCell>
               </TableRow>
             ) : (
@@ -184,13 +187,13 @@ export default function MovementsPage() {
                   <TableCell className="font-medium">
                     <div className="flex flex-col">
                       <span className="text-white">{format(m.timestamp, 'dd/MM/yyyy')}</span>
-                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <span className="text-[10px] text-muted-foreground flex items-center gap-1 font-bold">
                         <Clock className="w-3 h-3" /> {format(m.timestamp, 'HH:mm')}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={getBadgeVariant(m.type)} className="font-bold">
+                    <Badge variant={getBadgeVariant(m.type)} className="font-bold text-[10px] px-3 py-1">
                       {m.type}
                     </Badge>
                   </TableCell>
@@ -202,11 +205,13 @@ export default function MovementsPage() {
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
-                                <BrainCircuit className="w-4 h-4 text-primary animate-pulse" />
+                                <BrainCircuit className="w-4 h-4 text-accent animate-pulse" />
                               </TooltipTrigger>
-                              <TooltipContent className="max-w-xs bg-card border-primary p-3">
-                                <p className="font-bold text-primary mb-1">IA Insight: {m.aiCategory}</p>
-                                <ul className="text-xs space-y-1">
+                              <TooltipContent className="max-w-xs bg-card border-accent p-3 shadow-2xl">
+                                <p className="font-bold text-accent mb-1 flex items-center gap-2">
+                                  <BrainCircuit className="w-3 h-3" /> IA Insight: {m.aiCategory}
+                                </p>
+                                <ul className="text-xs space-y-1 text-muted-foreground">
                                   {m.aiSuggestions?.map((s, i) => (
                                     <li key={i} className="flex gap-2">
                                       <span className="text-accent">•</span> {s}
@@ -218,11 +223,11 @@ export default function MovementsPage() {
                           </TooltipProvider>
                         )}
                       </div>
-                      {m.observation && <span className="text-xs text-muted-foreground italic">{m.observation}</span>}
+                      {m.observation && <span className="text-[10px] text-muted-foreground italic">{m.observation}</span>}
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2 font-headline font-bold">
+                    <div className="flex items-center justify-end gap-2 font-headline font-bold text-lg">
                       {['DESPESAS', 'WITHDRAWAL'].includes(m.type) ? (
                         <>
                           <ArrowUpCircle className="w-4 h-4 text-destructive" />
@@ -240,7 +245,7 @@ export default function MovementsPage() {
                     <Button 
                       variant="ghost" 
                       size="icon" 
-                      className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                      className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
                       onClick={() => handleDelete(m.id)}
                     >
                       <Trash2 className="w-4 h-4" />
@@ -254,32 +259,85 @@ export default function MovementsPage() {
       </div>
 
       {/* Print-only section */}
-      <div className="print-only p-10 space-y-8">
-        <div className="flex justify-between items-center border-b-2 border-black pb-4">
-          <div className="flex flex-col">
-            <h1 className="text-4xl font-bold uppercase italic">Açaí Delícias do Pará</h1>
-            <p className="text-gray-500 uppercase tracking-widest text-sm font-bold">Relatório de Movimentação</p>
+      <div className="print-only p-8 space-y-10">
+        <div className="flex justify-between items-center border-b-4 border-black pb-8">
+          <div className="flex items-center gap-6">
+            <div className="relative w-24 h-24 border-2 border-black p-1">
+              {logo && (
+                <Image 
+                  src={logo.imageUrl} 
+                  alt="Logo" 
+                  width={96} 
+                  height={96} 
+                  className="object-contain"
+                />
+              )}
+            </div>
+            <div className="flex flex-col">
+              <h1 className="text-5xl font-black uppercase italic tracking-tighter">Açaí Delícias do Pará</h1>
+              <p className="text-gray-600 uppercase tracking-[0.3em] text-sm font-bold">Relatório Financeiro de Movimentação</p>
+            </div>
           </div>
-          <p className="text-xl">{format(new Date(), 'MMMM yyyy', { locale: ptBR })}</p>
+          <div className="text-right">
+            <p className="text-2xl font-bold uppercase">{format(new Date(), 'MMMM yyyy', { locale: ptBR })}</p>
+            <p className="text-gray-500 font-bold">{reportDate}</p>
+          </div>
         </div>
-        <div className="grid grid-cols-3 gap-6">
-          <div className="border p-4">
-            <p className="font-bold text-gray-600">Total Entradas</p>
-            <p className="text-2xl font-bold text-green-700">R$ {totals.in.toFixed(2)}</p>
+
+        <div className="grid grid-cols-3 gap-8">
+          <div className="border-2 border-black p-6">
+            <p className="font-bold text-gray-500 uppercase text-xs tracking-widest mb-2">Total Entradas</p>
+            <p className="text-3xl font-black text-green-700">R$ {totals.in.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
           </div>
-          <div className="border p-4">
-            <p className="font-bold text-gray-600">Total Saídas</p>
-            <p className="text-2xl font-bold text-red-700">R$ {totals.out.toFixed(2)}</p>
+          <div className="border-2 border-black p-6">
+            <p className="font-bold text-gray-500 uppercase text-xs tracking-widest mb-2">Total Saídas</p>
+            <p className="text-3xl font-black text-red-700">R$ {totals.out.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
           </div>
-          <div className="border p-4 bg-gray-50">
-            <p className="font-bold text-gray-600">Lucro Líquido</p>
-            <p className="text-2xl font-bold">R$ {(totals.in - totals.out).toFixed(2)}</p>
+          <div className="border-2 border-black bg-gray-100 p-6 shadow-inner">
+            <p className="font-bold text-gray-500 uppercase text-xs tracking-widest mb-2">Saldo Final</p>
+            <p className="text-3xl font-black">R$ {(totals.in - totals.out).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
           </div>
         </div>
+
+        <div className="border-2 border-black">
+          <table className="w-full text-left">
+            <thead className="bg-gray-100 border-b-2 border-black">
+              <tr>
+                <th className="p-3 font-bold uppercase text-xs">Data</th>
+                <th className="p-3 font-bold uppercase text-xs">Tipo</th>
+                <th className="p-3 font-bold uppercase text-xs">Descrição</th>
+                <th className="p-3 font-bold uppercase text-xs text-right">Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredMovements.map((m) => (
+                <tr key={m.id} className="border-b border-gray-300">
+                  <td className="p-3 text-sm">{format(m.timestamp, 'dd/MM/yyyy HH:mm')}</td>
+                  <td className="p-3 text-sm font-bold">{m.type}</td>
+                  <td className="p-3 text-sm">{m.description}</td>
+                  <td className={`p-3 text-sm text-right font-bold ${['DESPESAS', 'WITHDRAWAL'].includes(m.type) ? 'text-red-700' : 'text-green-700'}`}>
+                    {['DESPESAS', 'WITHDRAWAL'].includes(m.type) ? '-' : '+'} R$ {m.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
         {reportDate && (
-          <p className="text-center text-sm text-gray-500 pt-20 border-t">
-            Este documento foi gerado automaticamente pelo sistema Açaí Delícias do Pará em {reportDate}.
-          </p>
+          <div className="pt-20 border-t border-black space-y-4">
+            <div className="flex justify-around">
+              <div className="border-t border-black w-64 text-center pt-2">
+                <p className="text-xs font-bold uppercase">Assinatura Responsável</p>
+              </div>
+              <div className="border-t border-black w-64 text-center pt-2">
+                <p className="text-xs font-bold uppercase">Data de Conferência</p>
+              </div>
+            </div>
+            <p className="text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+              Documento gerado automaticamente pelo Sistema Açaí Delícias do Pará em {reportDate}.
+            </p>
+          </div>
         )}
       </div>
     </div>
