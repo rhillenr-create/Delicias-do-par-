@@ -8,8 +8,8 @@ import {
   DocumentSnapshot,
   DocumentData,
 } from 'firebase/firestore';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
+import { errorEmitter } from '../error-emitter';
+import { FirestorePermissionError } from '../errors';
 
 export function useDoc<T = DocumentData>(docRef: DocumentReference<T> | null) {
   const [data, setData] = useState<T | null>(null);
@@ -25,7 +25,7 @@ export function useDoc<T = DocumentData>(docRef: DocumentReference<T> | null) {
     const unsubscribe = onSnapshot(
       docRef,
       (snapshot: DocumentSnapshot<T>) => {
-        setData(snapshot.exists() ? { ...snapshot.data(), id: snapshot.id } : null);
+        setData(snapshot.exists() ? { ...snapshot.data(), id: snapshot.id } as T : null);
         setLoading(false);
       },
       async (serverError) => {

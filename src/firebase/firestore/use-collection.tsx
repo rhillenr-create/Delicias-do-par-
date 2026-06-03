@@ -8,8 +8,8 @@ import {
   QuerySnapshot,
   DocumentData,
 } from 'firebase/firestore';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
+import { errorEmitter } from '../error-emitter';
+import { FirestorePermissionError } from '../errors';
 
 export function useCollection<T = DocumentData>(query: Query<T> | null) {
   const [data, setData] = useState<T[]>([]);
@@ -28,13 +28,13 @@ export function useCollection<T = DocumentData>(query: Query<T> | null) {
         const items = snapshot.docs.map((doc) => ({
           ...doc.data(),
           id: doc.id,
-        }));
-        setData(items);
+        } as T & { id: string }));
+        setData(items as T[]);
         setLoading(false);
       },
       async (serverError) => {
         const permissionError = new FirestorePermissionError({
-          path: (query as any).path || 'unknown-collection',
+          path: (query as any).path || 'collection',
           operation: 'list',
         });
         errorEmitter.emit('permission-error', permissionError);
