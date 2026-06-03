@@ -79,7 +79,7 @@ export default function MovementsPage() {
 
   const totals = useMemo(() => {
     return filteredMovements.reduce((acc, curr) => {
-      if (['EXPENSE', 'WITHDRAWAL'].includes(curr.type)) {
+      if (['DESPESAS', 'WITHDRAWAL'].includes(curr.type)) {
         acc.out += curr.value;
       } else {
         acc.in += curr.value;
@@ -97,9 +97,9 @@ export default function MovementsPage() {
   const getBadgeVariant = (type: MovementType) => {
     switch (type) {
       case 'PIX': return 'default';
-      case 'CASH': return 'secondary';
+      case 'DINHEIRO': return 'secondary';
       case 'DELIVERY': return 'outline';
-      case 'EXPENSE':
+      case 'DESPESAS':
       case 'WITHDRAWAL': return 'destructive';
       default: return 'outline';
     }
@@ -218,7 +218,7 @@ export default function MovementsPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2 font-headline font-bold">
-                      {['EXPENSE', 'WITHDRAWAL'].includes(m.type) ? (
+                      {['DESPESAS', 'WITHDRAWAL'].includes(m.type) ? (
                         <>
                           <ArrowUpCircle className="w-4 h-4 text-destructive" />
                           <span className="text-destructive">- R$ {m.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>

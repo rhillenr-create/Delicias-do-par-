@@ -40,11 +40,11 @@ export default function DashboardPage() {
   const stats = useMemo(() => {
     const s = {
       PIX: 0,
-      CREDIT: 0,
-      DEBIT: 0,
+      CREDITO: 0,
+      DEBITO: 0,
       DELIVERY: 0,
-      CASH: 0,
-      EXPENSE: 0,
+      DINHEIRO: 0,
+      DESPESAS: 0,
       WITHDRAWAL: 0,
     };
     
@@ -54,18 +54,18 @@ export default function DashboardPage() {
       }
     });
 
-    const totalIn = s.PIX + s.CREDIT + s.DEBIT + s.DELIVERY + s.CASH;
-    const totalOut = s.EXPENSE + s.WITHDRAWAL;
+    const totalIn = s.PIX + s.CREDITO + s.DEBITO + s.DELIVERY + s.DINHEIRO;
+    const totalOut = s.DESPESAS + s.WITHDRAWAL;
 
     return { ...s, totalIn, totalOut, net: totalIn - totalOut };
   }, [movements]);
 
   const barData = [
     { name: 'PIX', value: stats.PIX, color: 'hsl(var(--primary))' },
-    { name: 'Crédito', value: stats.CREDIT, color: '#4f46e5' },
-    { name: 'Débito', value: stats.DEBIT, color: '#3730a3' },
+    { name: 'Crédito', value: stats.CREDITO, color: '#4f46e5' },
+    { name: 'Débito', value: stats.DEBITO, color: '#3730a3' },
     { name: 'Delivery', value: stats.DELIVERY, color: 'hsl(var(--primary))' },
-    { name: 'Dinheiro', value: stats.CASH, color: 'hsl(var(--accent))' },
+    { name: 'Dinheiro', value: stats.DINHEIRO, color: 'hsl(var(--accent))' },
   ];
 
   const pieData = [
@@ -84,9 +84,9 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard title="Total PIX" value={stats.PIX} icon={Smartphone} color="text-primary" />
-        <StatCard title="Total Cartões" value={stats.CREDIT + stats.DEBIT} icon={CreditCard} color="text-indigo-400" />
+        <StatCard title="Total Cartões" value={stats.CREDITO + stats.DEBITO} icon={CreditCard} color="text-indigo-400" />
         <StatCard title="Total Delivery" value={stats.DELIVERY} icon={Truck} color="text-primary" />
-        <StatCard title="Total Dinheiro" value={stats.CASH} icon={Banknote} color="text-accent" />
+        <StatCard title="Total Dinheiro" value={stats.DINHEIRO} icon={Banknote} color="text-accent" />
         <StatCard title="Total Entradas" value={stats.totalIn} icon={TrendingUp} color="text-accent" highlight />
         <StatCard title="Total Saídas" value={stats.totalOut} icon={TrendingDown} color="text-destructive" />
         <StatCard title="Lucro Final" value={stats.net} icon={Wallet} color="text-accent" large />

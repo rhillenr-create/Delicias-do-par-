@@ -15,12 +15,12 @@ import { useState } from 'react';
 
 const ACTIONS: { type: MovementType; label: string; icon: any; color: string }[] = [
   { type: 'PIX', label: 'PIX', icon: Smartphone, color: 'bg-primary' },
-  { type: 'CREDIT', label: 'Cartão Crédito', icon: CreditCard, color: 'bg-indigo-600' },
-  { type: 'DEBIT', label: 'Cartão Débito', icon: CreditCard, color: 'bg-indigo-800' },
+  { type: 'CREDITO', label: 'Cartão Crédito', icon: CreditCard, color: 'bg-indigo-600' },
+  { type: 'DEBITO', label: 'Cartão Débito', icon: CreditCard, color: 'bg-indigo-800' },
   { type: 'DELIVERY', label: 'Delivery', icon: Truck, color: 'bg-primary' },
-  { type: 'CASH', label: 'Dinheiro', icon: Banknote, color: 'bg-accent' },
+  { type: 'DINHEIRO', label: 'Dinheiro', icon: Banknote, color: 'bg-accent' },
   { type: 'WITHDRAWAL', label: 'Sangria', icon: ArrowUpCircle, color: 'bg-destructive' },
-  { type: 'EXPENSE', label: 'Despesas', icon: ArrowDownCircle, color: 'bg-orange-600' },
+  { type: 'DESPESAS', label: 'Despesas', icon: ArrowDownCircle, color: 'bg-orange-600' },
 ];
 
 export function ActionGrid() {

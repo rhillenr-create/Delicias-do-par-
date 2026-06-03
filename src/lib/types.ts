@@ -1,4 +1,4 @@
-export type MovementType = 'PIX' | 'CREDIT' | 'DEBIT' | 'DELIVERY' | 'CASH' | 'WITHDRAWAL' | 'EXPENSE';
+export type MovementType = 'PIX' | 'CREDITO' | 'DEBITO' | 'DELIVERY' | 'DINHEIRO' | 'WITHDRAWAL' | 'DESPESAS';
 
 export interface Movement {
   id: string;
@@ -13,10 +13,10 @@ export interface Movement {
 
 export interface DailyStats {
   totalPix: number;
-  totalCredit: number;
-  totalDebit: number;
+  totalCredito: number;
+  totalDebito: number;
   totalDelivery: number;
-  totalCash: number;
-  totalExpenses: number;
+  totalDinheiro: number;
+  totalDespesas: number;
   netProfit: number;
 }

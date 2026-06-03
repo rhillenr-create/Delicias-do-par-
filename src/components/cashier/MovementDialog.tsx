@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -44,7 +43,6 @@ export function MovementDialog({ type, onClose }: Props) {
 
     setIsSubmitting(true);
     
-    // Suporte a vírgula decimal brasileira
     const normalizedValue = value.replace(',', '.');
     const numericValue = parseFloat(normalizedValue);
 
@@ -61,9 +59,7 @@ export function MovementDialog({ type, onClose }: Props) {
     try {
       let aiData = null;
       
-      // AI Processing for expenses or specific descriptions
-      // Envolvido em try/catch próprio para não impedir o registro se a IA falhar
-      if (type === 'EXPENSE' || type === 'WITHDRAWAL') {
+      if (type === 'DESPESAS' || type === 'WITHDRAWAL') {
         try {
           aiData = await categorizeTransactionAndSuggestSavings({ description });
         } catch (aiError) {
@@ -102,7 +98,7 @@ export function MovementDialog({ type, onClose }: Props) {
       <DialogContent className="sm:max-w-[425px] bg-card border-primary/20">
         <DialogHeader>
           <DialogTitle className="font-headline text-2xl text-white">
-            Registrar {type === 'EXPENSE' ? 'Despesa' : type === 'WITHDRAWAL' ? 'Sangria' : type}
+            Registrar {type === 'DESPESAS' ? 'Despesa' : type === 'WITHDRAWAL' ? 'Sangria' : type}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6 py-4">
