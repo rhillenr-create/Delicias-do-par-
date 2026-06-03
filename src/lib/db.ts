@@ -39,9 +39,9 @@ export const deleteMovement = (id: string): void => {
 };
 
 export const getBrandSettings = (): BrandSettings => {
-  if (typeof window === 'undefined') return { name: 'Minha Empresa', logoUrl: '' };
+  if (typeof window === 'undefined') return { name: '', logoUrl: '' };
   const stored = localStorage.getItem(BRAND_KEY);
-  return stored ? JSON.parse(stored) : { name: 'Minha Empresa', logoUrl: '' };
+  return stored ? JSON.parse(stored) : { name: '', logoUrl: '' };
 };
 
 export const saveBrandSettings = (settings: BrandSettings): void => {

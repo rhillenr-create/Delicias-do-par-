@@ -1,4 +1,3 @@
-
 "use client";
 
 import { ActionGrid } from '@/components/cashier/ActionGrid';
@@ -9,8 +8,10 @@ import { ImageIcon } from 'lucide-react';
 
 export default function CashierPage() {
   const [brand, setBrand] = useState({ name: '', logoUrl: '' });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const loadBrand = () => setBrand(getBrandSettings());
     loadBrand();
     window.addEventListener('brandUpdated', loadBrand);
@@ -25,7 +26,7 @@ export default function CashierPage() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10 w-full">
           {/* Logo container na esquerda */}
           <div className="relative w-48 h-48 md:w-60 md:h-52 rounded-3xl overflow-hidden bg-background border-4 border-accent shadow-[0_0_30px_rgba(104,255,54,0.3)] p-3 flex items-center justify-center shrink-0">
-            {brand.logoUrl ? (
+            {mounted && brand.logoUrl ? (
               <Image 
                 src={brand.logoUrl} 
                 alt="Brand Logo" 

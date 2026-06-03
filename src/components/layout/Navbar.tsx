@@ -11,8 +11,10 @@ import { getBrandSettings } from '@/lib/db';
 export function Navbar() {
   const pathname = usePathname();
   const [brand, setBrand] = useState({ name: '', logoUrl: '' });
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const loadBrand = () => setBrand(getBrandSettings());
     loadBrand();
     window.addEventListener('brandUpdated', loadBrand);
@@ -31,10 +33,10 @@ export function Navbar() {
       <div className="container mx-auto px-4 h-24 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-4 group">
           <div className="relative w-20 h-16 overflow-hidden rounded-xl bg-background p-1 border-2 border-accent shadow-[0_0_15px_rgba(104,255,54,0.2)] group-hover:scale-105 transition-all flex items-center justify-center">
-            {brand.logoUrl ? (
+            {mounted && brand.logoUrl ? (
               <Image 
                 src={brand.logoUrl} 
-                alt={brand.name} 
+                alt={brand.name || 'Logo'} 
                 fill 
                 className="object-contain"
                 unoptimized
