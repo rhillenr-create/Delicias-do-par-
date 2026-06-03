@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -26,7 +25,8 @@ import {
   TrendingUp, 
   TrendingDown, 
   Wallet,
-  Printer
+  Printer,
+  Image as ImageIcon
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -82,11 +82,14 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-500 max-w-4xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-headline font-bold text-white uppercase tracking-tight">
-            AÇAÍ <span className="text-accent italic">DELÍCIAS DO PARÁ</span>
-          </h1>
-          <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest">Resumo de Desempenho Financeiro</p>
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-lg bg-muted/20 border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
+            <ImageIcon className="w-5 h-5 text-muted-foreground/40" />
+          </div>
+          <div className="space-y-1">
+            <h1 className="text-2xl font-headline font-bold text-white uppercase tracking-tight">PAINEL FINANCEIRO</h1>
+            <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest">Resumo de Desempenho</p>
+          </div>
         </div>
         <Button 
           onClick={handlePrint}

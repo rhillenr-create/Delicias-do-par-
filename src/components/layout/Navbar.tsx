@@ -1,16 +1,12 @@
-
 "use client";
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ReceiptText, Zap } from 'lucide-react';
+import { LayoutDashboard, ReceiptText, Zap, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export function Navbar() {
   const pathname = usePathname();
-  const logo = PlaceHolderImages.find(img => img.id === 'brand-logo');
 
   const navItems = [
     { href: '/', label: 'Caixa', icon: Zap },
@@ -22,27 +18,10 @@ export function Navbar() {
     <nav className="border-b bg-card/50 backdrop-blur-md sticky top-0 z-50 no-print">
       <div className="container mx-auto px-4 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-4 group">
-          <div className="relative w-14 h-14 overflow-hidden rounded-xl bg-white p-1 neon-glow-accent group-hover:scale-105 transition-transform border-2 border-primary">
-            {logo ? (
-              <Image 
-                src={logo.imageUrl} 
-                alt="Logo Açaí Delícias do Pará" 
-                width={56} 
-                height={56} 
-                className="object-contain"
-                data-ai-hint={logo.imageHint}
-              />
-            ) : (
-              <Zap className="w-8 h-8 text-primary fill-current" />
-            )}
-          </div>
-          <div className="flex flex-col leading-tight">
-            <span className="font-headline text-2xl font-bold tracking-tighter text-white uppercase italic">
-              Açaí
-            </span>
-            <span className="text-xs text-accent font-bold tracking-[0.2em] uppercase">
-              Delícias do Pará
-            </span>
+          {/* Espaço para Logo Personalizada */}
+          <div className="relative w-14 h-14 overflow-hidden rounded-xl bg-muted/20 border-2 border-dashed border-muted-foreground/30 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <ImageIcon className="w-6 h-6 text-muted-foreground/40" />
+            <span className="absolute bottom-1 text-[8px] uppercase font-bold text-muted-foreground/40">Sua Logo</span>
           </div>
         </Link>
 

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -17,13 +16,13 @@ import { Button } from '@/components/ui/button';
 import { 
   Search, 
   Trash2, 
-  Calendar, 
   BrainCircuit, 
   Filter,
   ArrowDownCircle,
   ArrowUpCircle,
   Clock,
-  Printer
+  Printer,
+  Image as ImageIcon
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -41,15 +40,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function MovementsPage() {
   const [movements, setMovements] = useState<Movement[]>([]);
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState('day'); 
   const [reportDate, setReportDate] = useState<string>('');
-  const logo = PlaceHolderImages.find(img => img.id === 'brand-logo');
 
   const loadMovements = () => {
     setMovements(getMovements());
@@ -116,12 +112,17 @@ export default function MovementsPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
-        <div>
-          <h1 className="text-3xl font-headline font-bold text-white uppercase italic tracking-tighter">Açaí <span className="text-accent">Delícias do Pará</span></h1>
-          <p className="text-muted-foreground uppercase text-xs font-bold tracking-widest mt-1">Gerenciamento de Fluxo de Caixa</p>
+        <div className="flex items-center gap-4">
+           <div className="w-12 h-12 rounded-lg bg-muted/20 border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
+              <ImageIcon className="w-5 h-5 text-muted-foreground/40" />
+           </div>
+           <div>
+             <h1 className="text-xl font-headline font-bold text-white uppercase tracking-tight">RELATÓRIO DE CAIXA</h1>
+             <p className="text-muted-foreground uppercase text-[10px] font-bold tracking-widest">Fluxo de Movimentações</p>
+           </div>
         </div>
         
-        <div className="flex items-center gap-4 bg-card border border-primary/20 p-3 rounded-2xl shadow-lg">
+        <div className="flex items-center gap-4 bg-card border border-white/5 p-3 rounded-2xl shadow-lg">
           <div className="px-4 border-r border-white/10">
             <p className="text-[10px] uppercase text-muted-foreground font-bold tracking-widest">Saldo do Período</p>
             <p className="text-2xl font-bold text-accent">R$ {(totals.in - totals.out).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
@@ -263,20 +264,13 @@ export default function MovementsPage() {
       <div className="print-only p-8 space-y-10">
         <div className="flex justify-between items-center border-b-4 border-black pb-8">
           <div className="flex items-center gap-6">
-            <div className="relative w-24 h-24 border-2 border-black p-1 bg-white">
-              {logo && (
-                <Image 
-                  src={logo.imageUrl} 
-                  alt="Logo" 
-                  width={96} 
-                  height={96} 
-                  className="object-contain"
-                />
-              )}
+            <div className="relative w-24 h-24 border-2 border-dashed border-black p-1 bg-white flex flex-col items-center justify-center">
+              <ImageIcon className="w-8 h-8 text-black/20" />
+              <span className="text-[8px] uppercase font-bold text-black/40 mt-1">Sua Logo</span>
             </div>
             <div className="flex flex-col">
-              <h1 className="text-5xl font-black uppercase italic tracking-tighter">Açaí Delícias do Pará</h1>
-              <p className="text-gray-600 uppercase tracking-[0.3em] text-sm font-bold">Relatório Oficial de Caixa</p>
+              <h1 className="text-5xl font-black uppercase italic tracking-tighter">RELATÓRIO DE CAIXA</h1>
+              <p className="text-gray-600 uppercase tracking-[0.3em] text-sm font-bold">Documento Oficial de Conferência</p>
             </div>
           </div>
           <div className="text-right">
@@ -335,7 +329,7 @@ export default function MovementsPage() {
             </div>
           </div>
           <p className="text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-            Documento gerado automaticamente pelo Sistema Açaí Delícias do Pará em {reportDate}.
+            Documento gerado automaticamente pelo Sistema em {reportDate}.
           </p>
         </div>
       </div>
