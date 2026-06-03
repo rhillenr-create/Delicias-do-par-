@@ -43,12 +43,6 @@ export function Navbar() {
               <ImageIcon className="w-8 h-8 text-muted-foreground opacity-30" />
             )}
           </div>
-          <div className="flex flex-col -space-y-1">
-             <span className="text-accent font-black text-xl italic tracking-tighter uppercase line-clamp-1">{brand.name.split(' ')[0] || 'LOGO'}</span>
-             <span className="text-[9px] text-white font-bold uppercase tracking-widest opacity-80 line-clamp-1">
-               {brand.name.split(' ').slice(1).join(' ') || 'SISTEMA'}
-             </span>
-          </div>
         </Link>
 
         <div className="flex items-center gap-1 md:gap-3">
