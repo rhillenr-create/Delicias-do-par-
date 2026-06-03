@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -44,6 +45,7 @@ export default function MovementsPage() {
   const [movements, setMovements] = useState<Movement[]>([]);
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState('day'); // day, week, month, all
+  const [reportDate, setReportDate] = useState<string>('');
 
   const loadMovements = () => {
     setMovements(getMovements());
@@ -51,6 +53,9 @@ export default function MovementsPage() {
 
   useEffect(() => {
     loadMovements();
+    // Set report date on client side only to avoid hydration mismatch
+    setReportDate(format(new Date(), 'dd/MM/yyyy HH:mm'));
+    
     window.addEventListener('movementsUpdated', loadMovements);
     return () => window.removeEventListener('movementsUpdated', loadMovements);
   }, []);
@@ -268,7 +273,11 @@ export default function MovementsPage() {
             <p className="text-2xl font-bold">R$ {(totals.in - totals.out).toFixed(2)}</p>
           </div>
         </div>
-        <p className="text-center text-sm text-gray-500 pt-20 border-t">Este documento foi gerado automaticamente pelo sistema AçaíLume Pro em {format(new Date(), 'dd/MM/yyyy HH:mm')}.</p>
+        {reportDate && (
+          <p className="text-center text-sm text-gray-500 pt-20 border-t">
+            Este documento foi gerado automaticamente pelo sistema AçaíLume Pro em {reportDate}.
+          </p>
+        )}
       </div>
     </div>
   );
