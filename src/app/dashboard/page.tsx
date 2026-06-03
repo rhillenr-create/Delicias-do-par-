@@ -17,6 +17,7 @@ import {
   Pie
 } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { 
   CreditCard, 
   Smartphone, 
@@ -24,7 +25,8 @@ import {
   Banknote, 
   TrendingUp, 
   TrendingDown, 
-  Wallet 
+  Wallet,
+  Printer
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -73,13 +75,26 @@ export default function DashboardPage() {
     { name: 'Saídas', value: stats.totalOut, color: 'hsl(var(--destructive))' },
   ];
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500 max-w-4xl mx-auto">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-headline font-bold text-white uppercase tracking-tight">
-          AÇAÍ <span className="text-accent">DELÍCIAS DO PARÁ</span>
-        </h1>
-        <p className="text-xs text-muted-foreground">Visão geral do desempenho financeiro da sua açaíteria.</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-headline font-bold text-white uppercase tracking-tight">
+            AÇAÍ <span className="text-accent italic">DELÍCIAS DO PARÁ</span>
+          </h1>
+          <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest">Resumo de Desempenho Financeiro</p>
+        </div>
+        <Button 
+          onClick={handlePrint}
+          className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold rounded-2xl h-12 px-6 shadow-lg shadow-accent/20 transition-all active:scale-95"
+        >
+          <Printer className="w-4 h-4 mr-2" />
+          IMPRIMIR RELATÓRIO
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -89,15 +104,15 @@ export default function DashboardPage() {
         <StatCard title="Total Dinheiro" value={stats.DINHEIRO} icon={Banknote} color="text-accent" />
         <StatCard title="Total Entradas" value={stats.totalIn} icon={TrendingUp} color="text-accent" highlight />
         <StatCard title="Total Saídas" value={stats.totalOut} icon={TrendingDown} color="text-destructive" />
-        <StatCard title="Lucro Final" value={stats.net} icon={Wallet} color="text-accent" large />
+        <StatCard title="Lucro Líquido" value={stats.net} icon={Wallet} color="text-accent" large />
       </div>
 
-      <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 no-print">
         <Card className="bg-card/50 border-muted shadow-xl overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-bold uppercase tracking-wider text-white">Distribuição de Vendas</CardTitle>
           </CardHeader>
-          <CardContent className="h-[300px] pt-4">
+          <CardContent className="h-[250px] pt-4">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
@@ -131,9 +146,9 @@ export default function DashboardPage() {
 
         <Card className="bg-card/50 border-muted shadow-xl">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-bold uppercase tracking-wider text-white">Fluxo de Caixa</CardTitle>
+            <CardTitle className="text-sm font-bold uppercase tracking-wider text-white">Fluxo de Entradas vs Saídas</CardTitle>
           </CardHeader>
-          <CardContent className="h-[300px] flex flex-col items-center justify-center pt-4">
+          <CardContent className="h-[250px] flex flex-col items-center justify-center pt-4">
             <ResponsiveContainer width="100%" height="80%">
               <PieChart>
                 <Pie

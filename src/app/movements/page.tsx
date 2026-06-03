@@ -122,15 +122,22 @@ export default function MovementsPage() {
         </div>
         
         <div className="flex items-center gap-4 bg-card border border-primary/20 p-3 rounded-2xl shadow-lg">
-          <div className="px-4">
+          <div className="px-4 border-r border-white/10">
             <p className="text-[10px] uppercase text-muted-foreground font-bold tracking-widest">Saldo do Período</p>
             <p className="text-2xl font-bold text-accent">R$ {(totals.in - totals.out).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
           </div>
+          <Button 
+            className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold rounded-xl h-12 shadow-lg shadow-accent/20" 
+            onClick={() => window.print()}
+          >
+            <Printer className="w-4 h-4 mr-2" />
+            GERAR RELATÓRIO
+          </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4 no-print">
-        <div className="md:col-span-6 relative">
+        <div className="md:col-span-8 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input 
             placeholder="Pesquisar movimentação..." 
@@ -139,7 +146,7 @@ export default function MovementsPage() {
             className="pl-10 bg-card border-muted focus-visible:ring-primary h-12 rounded-xl"
           />
         </div>
-        <div className="md:col-span-3">
+        <div className="md:col-span-4">
           <Select value={period} onValueChange={setPeriod}>
             <SelectTrigger className="h-12 bg-card border-muted rounded-xl">
               <div className="flex items-center gap-2">
@@ -154,12 +161,6 @@ export default function MovementsPage() {
               <SelectItem value="all">Todo o histórico</SelectItem>
             </SelectContent>
           </Select>
-        </div>
-        <div className="md:col-span-3">
-           <Button className="w-full h-12 bg-accent text-accent-foreground hover:bg-accent/90 font-bold rounded-xl shadow-lg shadow-accent/10" onClick={() => window.print()}>
-             <Printer className="w-4 h-4 mr-2" />
-             Relatório
-           </Button>
         </div>
       </div>
 
@@ -258,11 +259,11 @@ export default function MovementsPage() {
         </Table>
       </div>
 
-      {/* Print-only section */}
+      {/* Seção Exclusiva para Impressão */}
       <div className="print-only p-8 space-y-10">
         <div className="flex justify-between items-center border-b-4 border-black pb-8">
           <div className="flex items-center gap-6">
-            <div className="relative w-24 h-24 border-2 border-black p-1">
+            <div className="relative w-24 h-24 border-2 border-black p-1 bg-white">
               {logo && (
                 <Image 
                   src={logo.imageUrl} 
@@ -275,7 +276,7 @@ export default function MovementsPage() {
             </div>
             <div className="flex flex-col">
               <h1 className="text-5xl font-black uppercase italic tracking-tighter">Açaí Delícias do Pará</h1>
-              <p className="text-gray-600 uppercase tracking-[0.3em] text-sm font-bold">Relatório Financeiro de Movimentação</p>
+              <p className="text-gray-600 uppercase tracking-[0.3em] text-sm font-bold">Relatório Oficial de Caixa</p>
             </div>
           </div>
           <div className="text-right">
@@ -303,7 +304,7 @@ export default function MovementsPage() {
           <table className="w-full text-left">
             <thead className="bg-gray-100 border-b-2 border-black">
               <tr>
-                <th className="p-3 font-bold uppercase text-xs">Data</th>
+                <th className="p-3 font-bold uppercase text-xs">Data/Hora</th>
                 <th className="p-3 font-bold uppercase text-xs">Tipo</th>
                 <th className="p-3 font-bold uppercase text-xs">Descrição</th>
                 <th className="p-3 font-bold uppercase text-xs text-right">Valor</th>
@@ -324,21 +325,19 @@ export default function MovementsPage() {
           </table>
         </div>
 
-        {reportDate && (
-          <div className="pt-20 border-t border-black space-y-4">
-            <div className="flex justify-around">
-              <div className="border-t border-black w-64 text-center pt-2">
-                <p className="text-xs font-bold uppercase">Assinatura Responsável</p>
-              </div>
-              <div className="border-t border-black w-64 text-center pt-2">
-                <p className="text-xs font-bold uppercase">Data de Conferência</p>
-              </div>
+        <div className="pt-20 border-t border-black space-y-4">
+          <div className="flex justify-around">
+            <div className="border-t border-black w-64 text-center pt-2">
+              <p className="text-xs font-bold uppercase">Assinatura Responsável</p>
             </div>
-            <p className="text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-              Documento gerado automaticamente pelo Sistema Açaí Delícias do Pará em {reportDate}.
-            </p>
+            <div className="border-t border-black w-64 text-center pt-2">
+              <p className="text-xs font-bold uppercase">Data de Conferência</p>
+            </div>
           </div>
-        )}
+          <p className="text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+            Documento gerado automaticamente pelo Sistema Açaí Delícias do Pará em {reportDate}.
+          </p>
+        </div>
       </div>
     </div>
   );
