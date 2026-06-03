@@ -23,7 +23,7 @@ export default function CashierPage() {
         
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
           <div className="flex items-center gap-8">
-            <div className="relative w-40 h-40 md:w-64 md:h-52 rounded-3xl overflow-hidden bg-background border-4 border-accent shadow-[0_0_30px_rgba(104,255,54,0.3)] p-3 flex items-center justify-center">
+            <div className="relative w-48 h-48 md:w-72 md:h-60 rounded-3xl overflow-hidden bg-background border-4 border-accent shadow-[0_0_30px_rgba(104,255,54,0.3)] p-3 flex items-center justify-center">
               {brand.logoUrl ? (
                 <Image 
                   src={brand.logoUrl} 
@@ -39,13 +39,6 @@ export default function CashierPage() {
                   <span className="text-[10px] uppercase font-bold text-muted-foreground">Adicione seu logo</span>
                 </div>
               )}
-            </div>
-            
-            <div className="text-center md:text-left">
-              <h2 className="text-4xl md:text-6xl font-black italic tracking-tighter text-white uppercase line-clamp-2">
-                {brand.name || 'SISTEMA'}
-              </h2>
-              <div className="h-2 bg-accent w-32 mt-4 rounded-full shadow-[0_0_15px_#4ade80]" />
             </div>
           </div>
           
