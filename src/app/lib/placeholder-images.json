@@ -3,9 +3,9 @@
   "placeholderImages": [
     {
       "id": "brand-logo",
-      "description": "Logotipo Oficial Açaí Delícias do Pará",
-      "imageUrl": "https://picsum.photos/seed/acai-para-logo-99/800/600",
-      "imageHint": "acai bowl logo"
+      "description": "Espaço reservado para o logotipo da empresa",
+      "imageUrl": "",
+      "imageHint": "company logo placeholder"
     }
   ]
 }

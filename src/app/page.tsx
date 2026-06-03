@@ -7,7 +7,6 @@ import { useMemo, useState, useEffect } from 'react';
 import { useDoc, useFirestore } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import { ImageIcon } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function CashierPage() {
   const db = useFirestore();
@@ -15,10 +14,6 @@ export default function CashierPage() {
   
   const brandRef = useMemo(() => (db ? doc(db, 'settings', 'brand') : null), [db]);
   const { data: brand } = useDoc<any>(brandRef);
-
-  const defaultLogo = useMemo(() => 
-    PlaceHolderImages.find(img => img.id === 'brand-logo')?.imageUrl || '', 
-  []);
 
   useEffect(() => {
     setMounted(true);
@@ -33,15 +28,21 @@ export default function CashierPage() {
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10 w-full">
           <div className="relative w-48 h-48 md:w-60 md:h-52 rounded-3xl overflow-hidden bg-background border-4 border-accent shadow-[0_0_30px_rgba(104,255,54,0.3)] p-3 flex items-center justify-center shrink-0">
-            <Image
-              src={brand?.logoUrl || defaultLogo}
-              alt="Brand Logo"
-              fill
-              className="object-contain p-2"
-              priority
-              unoptimized
-              data-ai-hint="acai bowl"
-            />
+            {brand?.logoUrl ? (
+              <Image
+                src={brand.logoUrl}
+                alt="Brand Logo"
+                fill
+                className="object-contain p-2"
+                priority
+                unoptimized
+              />
+            ) : (
+              <div className="flex flex-col items-center gap-2">
+                <ImageIcon className="w-16 h-16 text-accent opacity-20" />
+                <span className="text-[10px] font-bold text-accent/40 uppercase tracking-widest">Logo da Empresa</span>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col items-center md:items-end gap-3 text-center md:text-right">

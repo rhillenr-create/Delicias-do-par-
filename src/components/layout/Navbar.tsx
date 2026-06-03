@@ -9,7 +9,6 @@ import Image from 'next/image';
 import { useMemo, useState, useEffect } from 'react';
 import { useDoc, useFirestore } from '@/firebase';
 import { doc } from 'firebase/firestore';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export function Navbar() {
   const pathname = usePathname();
@@ -18,10 +17,6 @@ export function Navbar() {
   
   const brandRef = useMemo(() => (db ? doc(db, 'settings', 'brand') : null), [db]);
   const { data: brand } = useDoc<any>(brandRef);
-
-  const defaultLogo = useMemo(() => 
-    PlaceHolderImages.find(img => img.id === 'brand-logo')?.imageUrl || '', 
-  []);
 
   useEffect(() => {
     setMounted(true);
@@ -41,14 +36,17 @@ export function Navbar() {
       <div className="container mx-auto px-4 h-24 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-4 group">
           <div className="relative w-20 h-16 overflow-hidden rounded-xl bg-background p-1 border-2 border-accent shadow-[0_0_15px_rgba(104,255,54,0.2)] group-hover:scale-105 transition-all flex items-center justify-center">
-            <Image
-              src={brand?.logoUrl || defaultLogo}
-              alt={brand?.name || 'Logo'}
-              fill
-              className="object-contain"
-              unoptimized
-              data-ai-hint="acai logo"
-            />
+            {brand?.logoUrl ? (
+              <Image
+                src={brand.logoUrl}
+                alt={brand?.name || 'Logo'}
+                fill
+                className="object-contain"
+                unoptimized
+              />
+            ) : (
+              <ImageIcon className="w-8 h-8 text-accent opacity-50" />
+            )}
           </div>
         </Link>
 

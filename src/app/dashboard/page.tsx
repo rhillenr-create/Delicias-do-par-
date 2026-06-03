@@ -31,7 +31,6 @@ import {
   ImageIcon,
 } from 'lucide-react';
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function DashboardPage() {
   const db = useFirestore();
@@ -42,10 +41,6 @@ export default function DashboardPage() {
 
   const brandRef = useMemo(() => (db ? doc(db, 'settings', 'brand') : null), [db]);
   const { data: brand } = useDoc<any>(brandRef);
-
-  const defaultLogo = useMemo(() => 
-    PlaceHolderImages.find(img => img.id === 'brand-logo')?.imageUrl || '', 
-  []);
 
   useEffect(() => {
     setMounted(true);
@@ -83,14 +78,17 @@ export default function DashboardPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div className="flex items-center gap-4">
           <div className="relative w-24 h-20 rounded-xl bg-background p-1 border-2 border-accent shadow-xl overflow-hidden flex items-center justify-center">
-            <Image
-              src={brand?.logoUrl || defaultLogo}
-              alt="Logo"
-              fill
-              className="object-contain"
-              unoptimized
-              data-ai-hint="acai icon"
-            />
+            {brand?.logoUrl ? (
+              <Image
+                src={brand.logoUrl}
+                alt="Logo"
+                fill
+                className="object-contain"
+                unoptimized
+              />
+            ) : (
+              <ImageIcon className="w-10 h-10 text-accent opacity-30" />
+            )}
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-headline font-bold text-white uppercase tracking-tight">
