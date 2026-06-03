@@ -86,7 +86,7 @@ export default function DashboardPage() {
     <div className="space-y-8 animate-in fade-in duration-500 max-w-4xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div className="flex items-center gap-4">
-          <div className="relative w-20 h-16 rounded-lg bg-white p-1 border border-accent/20 shadow-lg overflow-hidden">
+          <div className="relative w-24 h-20 rounded-xl bg-white p-1 border-2 border-accent shadow-xl overflow-hidden">
             {logo && (
               <Image 
                 src={logo.imageUrl} 
@@ -99,14 +99,14 @@ export default function DashboardPage() {
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-headline font-bold text-white uppercase tracking-tight">PAINEL FINANCEIRO</h1>
-            <p className="text-xs text-accent uppercase font-black tracking-widest">Delícias do Pará</p>
+            <p className="text-accent uppercase font-black tracking-widest">Delícias do Pará</p>
           </div>
         </div>
         <Button 
           onClick={handlePrint}
-          className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold rounded-2xl h-12 px-6 shadow-lg shadow-accent/20 transition-all active:scale-95"
+          className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold rounded-2xl h-14 px-8 shadow-lg shadow-accent/20 transition-all active:scale-95"
         >
-          <Printer className="w-4 h-4 mr-2" />
+          <Printer className="w-5 h-5 mr-3" />
           IMPRIMIR RELATÓRIO
         </Button>
       </div>
@@ -122,7 +122,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 no-print">
-        <Card className="bg-card/50 border-muted shadow-xl overflow-hidden">
+        <Card className="bg-card/50 border-white/5 shadow-xl overflow-hidden">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-bold uppercase tracking-wider text-white">Distribuição de Vendas</CardTitle>
           </CardHeader>
@@ -145,10 +145,10 @@ export default function DashboardPage() {
                 />
                 <Tooltip 
                   cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-                  contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }}
+                  contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
                   itemStyle={{ color: 'white', fontSize: '12px' }}
                 />
-                <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={40}>
+                <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={45}>
                   {barData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
@@ -158,7 +158,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-card/50 border-muted shadow-xl">
+        <Card className="bg-card/50 border-white/5 shadow-xl">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-bold uppercase tracking-wider text-white">Fluxo de Entradas vs Saídas</CardTitle>
           </CardHeader>
@@ -169,10 +169,10 @@ export default function DashboardPage() {
                   data={pieData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={60}
-                  outerRadius={85}
+                  innerRadius={65}
+                  outerRadius={90}
                   stroke="none"
-                  paddingAngle={8}
+                  paddingAngle={10}
                   dataKey="value"
                 >
                   {pieData.map((entry, index) => (
@@ -180,19 +180,19 @@ export default function DashboardPage() {
                   ))}
                 </Pie>
                 <Tooltip 
-                   contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '8px' }}
+                   contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
                    itemStyle={{ color: 'white', fontSize: '12px' }}
                 />
               </PieChart>
             </ResponsiveContainer>
-            <div className="flex gap-6 mt-4">
+            <div className="flex gap-8 mt-4">
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-accent" />
-                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Entradas</span>
+                <div className="w-3 h-3 rounded-full bg-accent" />
+                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Entradas</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-destructive" />
-                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">Saídas</span>
+                <div className="w-3 h-3 rounded-full bg-destructive" />
+                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Saídas</span>
               </div>
             </div>
           </CardContent>
@@ -204,17 +204,17 @@ export default function DashboardPage() {
 
 function StatCard({ title, value, icon: Icon, color, highlight, large }: any) {
   return (
-    <Card className={`bg-card/40 border-muted/50 shadow-md hover:bg-card/60 transition-all ${large ? 'md:col-span-2' : ''}`}>
-      <CardContent className="p-5">
+    <Card className={`bg-card/40 border-white/5 shadow-md hover:bg-card/60 transition-all ${large ? 'md:col-span-2' : ''} rounded-2xl`}>
+      <CardContent className="p-6">
         <div className="flex justify-between items-start">
           <div className="space-y-1">
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">{title}</p>
-            <p className={`font-headline font-bold ${large ? 'text-3xl' : 'text-xl'} ${highlight ? 'text-accent' : 'text-white'}`}>
+            <p className={`font-headline font-bold ${large ? 'text-4xl' : 'text-2xl'} ${highlight ? 'text-accent' : 'text-white'}`}>
               R$ {value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </p>
           </div>
-          <div className={`p-2 rounded-lg bg-background/50 border border-white/5 ${color}`}>
-            <Icon className="w-4 h-4" />
+          <div className={`p-3 rounded-xl bg-white/5 border border-white/10 ${color}`}>
+            <Icon className="w-6 h-6" />
           </div>
         </div>
       </CardContent>
