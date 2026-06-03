@@ -18,6 +18,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import Image from 'next/image';
 
+const DEFAULT_LOGO = "https://picsum.photos/seed/acai-para-logo-77/800/600";
+
 export default function MovementsPage() {
   const db = useFirestore();
   const [search, setSearch] = useState('');
@@ -61,6 +63,8 @@ export default function MovementsPage() {
     return acc;
   }, { in: 0, out: 0 }), [filteredMovements]);
 
+  const currentLogo = brand?.logoUrl || DEFAULT_LOGO;
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
@@ -69,18 +73,14 @@ export default function MovementsPage() {
              href="/settings"
              className="group relative w-20 h-16 rounded-lg bg-background p-1 border border-accent/20 shadow-lg overflow-hidden flex items-center justify-center transition-transform hover:scale-105"
            >
-              {brand?.logoUrl ? (
-                <Image src={brand.logoUrl} alt="Logo" fill className="object-contain" unoptimized />
-              ) : (
-                <ImageIcon className="w-6 h-6 text-muted-foreground opacity-30 group-hover:opacity-100 transition-opacity" />
-              )}
+              <Image src={currentLogo} alt="Logo" fill className="object-contain" unoptimized data-ai-hint="acai brand" />
               <div className="absolute inset-0 bg-accent/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                  <span className="text-[6px] font-black text-accent-foreground">EDITAR</span>
               </div>
            </Link>
            <div>
              <h1 className="text-xl font-headline font-bold text-white uppercase tracking-tight">RELATÓRIO DE CAIXA</h1>
-             <p className="text-accent uppercase text-[10px] font-black tracking-widest line-clamp-1">{brand?.name || 'Sistema de Caixa'}</p>
+             <p className="text-accent uppercase text-[10px] font-black tracking-widest line-clamp-1">{brand?.name || 'Açaí Delícias'}</p>
            </div>
         </div>
         
@@ -167,11 +167,11 @@ export default function MovementsPage() {
         <div className="flex justify-between items-center border-b-4 border-black pb-8">
           <div className="flex items-center gap-6">
             <div className="relative w-32 h-24 border-2 border-black p-1 bg-white flex items-center justify-center">
-              {brand?.logoUrl && <Image src={brand.logoUrl} alt="Logo" fill className="object-contain" unoptimized />}
+              <Image src={currentLogo} alt="Logo" fill className="object-contain" unoptimized />
             </div>
             <div>
               <h1 className="text-4xl font-black uppercase tracking-tighter">RELATÓRIO FINANCEIRO</h1>
-              <p className="text-gray-600 uppercase tracking-widest text-xs font-bold">{brand?.name || 'Sistema de Caixa'}</p>
+              <p className="text-gray-600 uppercase tracking-widest text-xs font-bold">{brand?.name || 'Açaí Delícias'}</p>
             </div>
           </div>
           <div className="text-right">

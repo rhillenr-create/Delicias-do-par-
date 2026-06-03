@@ -10,6 +10,8 @@ import { useMemo, useState, useEffect } from 'react';
 import { useDoc, useFirestore } from '@/firebase';
 import { doc } from 'firebase/firestore';
 
+const DEFAULT_LOGO = "https://picsum.photos/seed/acai-para-logo-77/800/600";
+
 export function Navbar() {
   const pathname = usePathname();
   const db = useFirestore();
@@ -31,22 +33,21 @@ export function Navbar() {
 
   if (!mounted) return null;
 
+  const currentLogo = brand?.logoUrl || DEFAULT_LOGO;
+
   return (
     <nav className="border-b bg-card/80 backdrop-blur-xl sticky top-0 z-50 no-print border-white/5">
       <div className="container mx-auto px-4 h-24 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-4 group">
           <div className="relative w-20 h-16 overflow-hidden rounded-xl bg-background p-1 border-2 border-accent shadow-[0_0_15px_rgba(104,255,54,0.2)] group-hover:scale-105 transition-all flex items-center justify-center">
-            {brand?.logoUrl ? (
-              <Image
-                src={brand.logoUrl}
-                alt={brand?.name || 'Logo'}
-                fill
-                className="object-contain"
-                unoptimized
-              />
-            ) : (
-              <ImageIcon className="w-8 h-8 text-accent opacity-50" />
-            )}
+            <Image
+              src={currentLogo}
+              alt={brand?.name || 'Logo'}
+              fill
+              className="object-contain"
+              unoptimized
+              data-ai-hint="acai icon"
+            />
           </div>
         </Link>
 

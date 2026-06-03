@@ -33,6 +33,8 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 
+const DEFAULT_LOGO = "https://picsum.photos/seed/acai-para-logo-77/800/600";
+
 export default function DashboardPage() {
   const db = useFirestore();
   const [mounted, setMounted] = useState(false);
@@ -74,6 +76,8 @@ export default function DashboardPage() {
 
   if (!mounted) return null;
 
+  const currentLogo = brand?.logoUrl || DEFAULT_LOGO;
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500 max-w-4xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
@@ -82,17 +86,14 @@ export default function DashboardPage() {
             href="/settings"
             className="group relative w-24 h-20 rounded-xl bg-background p-1 border-2 border-accent shadow-xl overflow-hidden flex items-center justify-center transition-transform hover:scale-105"
           >
-            {brand?.logoUrl ? (
-              <Image
-                src={brand.logoUrl}
-                alt="Logo"
-                fill
-                className="object-contain"
-                unoptimized
-              />
-            ) : (
-              <ImageIcon className="w-10 h-10 text-accent opacity-30 group-hover:opacity-100 transition-opacity" />
-            )}
+            <Image
+              src={currentLogo}
+              alt="Logo"
+              fill
+              className="object-contain"
+              unoptimized
+              data-ai-hint="acai bowl"
+            />
             <div className="absolute inset-0 bg-accent/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                <span className="text-[8px] font-black text-accent-foreground">EDITAR</span>
             </div>
@@ -102,7 +103,7 @@ export default function DashboardPage() {
               PAINEL FINANCEIRO
             </h1>
             <p className="text-accent uppercase font-black tracking-widest line-clamp-1">
-              {brand?.name || 'Sistema de Caixa'}
+              {brand?.name || 'Açaí Delícias'}
             </p>
           </div>
         </div>
