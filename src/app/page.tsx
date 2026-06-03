@@ -23,7 +23,7 @@ export default function CashierPage() {
         
         <div className="flex flex-col items-center justify-center gap-10 relative z-10">
           <div className="w-full flex justify-center">
-            <div className="relative w-full max-w-2xl h-[300px] md:h-[500px] rounded-[2rem] overflow-hidden bg-background/50 border-4 border-accent shadow-[0_0_50px_rgba(104,255,54,0.2)] p-6 flex items-center justify-center">
+            <div className="relative w-full max-w-lg h-[250px] md:h-[400px] rounded-[2rem] overflow-hidden bg-background/50 border-4 border-accent shadow-[0_0_40px_rgba(104,255,54,0.15)] p-6 flex items-center justify-center">
               {brand.logoUrl ? (
                 <Image 
                   src={brand.logoUrl} 
