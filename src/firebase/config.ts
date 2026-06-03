@@ -1,6 +1,6 @@
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyB-placeholder-key",
+  apiKey: "AIzaSyB-placeholder-key", // O usuário deve substituir pela chave real do console se o erro persistir
   authDomain: "nextn-f5a13.firebaseapp.com",
   projectId: "nextn-f5a13",
   storageBucket: "nextn-f5a13.firebasestorage.app",

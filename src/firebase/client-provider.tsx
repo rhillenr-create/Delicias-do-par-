@@ -17,21 +17,27 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
   const [isAuthReady, setIsAuthReady] = useState(false);
 
   useEffect(() => {
-    const instance = initializeFirebase();
-    setFirebaseInstance(instance);
+    try {
+      const instance = initializeFirebase();
+      setFirebaseInstance(instance);
 
-    // Garante que o usuário esteja autenticado (mesmo que anonimamente) para gravar no Firestore
-    const unsubscribe = onAuthStateChanged(instance.auth, (user) => {
-      if (!user) {
-        signInAnonymously(instance.auth).catch((error) => {
-          console.error("Erro ao autenticar anonimamente:", error);
-        });
-      } else {
-        setIsAuthReady(true);
-      }
-    });
+      // Garante que o usuário esteja autenticado (mesmo que anonimamente) para gravar no Firestore
+      const unsubscribe = onAuthStateChanged(instance.auth, (user) => {
+        if (!user) {
+          signInAnonymously(instance.auth).catch((error) => {
+            console.error("Erro ao autenticar anonimamente:", error);
+            // Mesmo com erro, tentamos liberar para o modo offline se possível
+            setIsAuthReady(true);
+          });
+        } else {
+          setIsAuthReady(true);
+        }
+      });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    } catch (error) {
+      console.error("Erro ao inicializar Firebase:", error);
+    }
   }, []);
 
   if (!firebaseInstance || !isAuthReady) {
@@ -39,7 +45,7 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-4">
           <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" />
-          <p className="text-accent font-black tracking-widest uppercase text-xs">Iniciando Sistema...</p>
+          <p className="text-accent font-black tracking-widest uppercase text-xs">Conectando ao Banco de Dados...</p>
         </div>
       </div>
     );
