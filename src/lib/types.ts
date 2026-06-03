@@ -11,6 +11,11 @@ export interface Movement {
   aiSuggestions?: string[];
 }
 
+export interface BrandSettings {
+  name: string;
+  logoUrl: string;
+}
+
 export interface DailyStats {
   totalPix: number;
   totalCredito: number;

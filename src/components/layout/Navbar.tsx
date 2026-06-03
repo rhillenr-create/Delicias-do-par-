@@ -1,41 +1,53 @@
-
 "use client";
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ReceiptText, Zap } from 'lucide-react';
+import { LayoutDashboard, ReceiptText, Zap, Settings, ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useState, useEffect } from 'react';
+import { getBrandSettings } from '@/lib/db';
 
 export function Navbar() {
   const pathname = usePathname();
-  const logo = PlaceHolderImages.find(img => img.id === 'brand-logo');
+  const [brand, setBrand] = useState({ name: '', logoUrl: '' });
+
+  useEffect(() => {
+    const loadBrand = () => setBrand(getBrandSettings());
+    loadBrand();
+    window.addEventListener('brandUpdated', loadBrand);
+    return () => window.removeEventListener('brandUpdated', loadBrand);
+  }, []);
 
   const navItems = [
     { href: '/', label: 'Caixa', icon: Zap },
     { href: '/movements', label: 'Movimentação', icon: ReceiptText },
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/settings', label: 'Ajustes', icon: Settings },
   ];
 
   return (
     <nav className="border-b bg-card/80 backdrop-blur-xl sticky top-0 z-50 no-print border-white/5">
       <div className="container mx-auto px-4 h-24 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-4 group">
-          <div className="relative w-20 h-16 overflow-hidden rounded-xl bg-white p-1 border-2 border-accent shadow-[0_0_15px_rgba(104,255,54,0.2)] group-hover:scale-105 transition-all">
-            {logo && (
+          <div className="relative w-20 h-16 overflow-hidden rounded-xl bg-white p-1 border-2 border-accent shadow-[0_0_15px_rgba(104,255,54,0.2)] group-hover:scale-105 transition-all flex items-center justify-center">
+            {brand.logoUrl ? (
               <Image 
-                src={logo.imageUrl} 
-                alt={logo.description} 
+                src={brand.logoUrl} 
+                alt={brand.name} 
                 fill 
                 className="object-contain"
-                data-ai-hint={logo.imageHint}
+                unoptimized
               />
+            ) : (
+              <ImageIcon className="w-8 h-8 text-muted-foreground opacity-30" />
             )}
           </div>
           <div className="flex flex-col -space-y-1">
-             <span className="text-accent font-black text-2xl italic tracking-tighter">AÇAÍ</span>
-             <span className="text-[10px] text-white font-bold uppercase tracking-widest opacity-80">DELÍCIAS DO PARÁ</span>
+             <span className="text-accent font-black text-xl italic tracking-tighter uppercase line-clamp-1">{brand.name.split(' ')[0] || 'LOGO'}</span>
+             <span className="text-[9px] text-white font-bold uppercase tracking-widest opacity-80 line-clamp-1">
+               {brand.name.split(' ').slice(1).join(' ') || 'SISTEMA'}
+             </span>
           </div>
         </Link>
 
@@ -48,7 +60,7 @@ export function Navbar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all",
+                  "flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold transition-all",
                   isActive 
                     ? "text-accent bg-accent/10 border border-accent/40 shadow-[0_0_15px_rgba(104,255,54,0.1)]" 
                     : "text-muted-foreground hover:text-white hover:bg-white/5"

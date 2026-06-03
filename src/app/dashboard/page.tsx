@@ -1,8 +1,7 @@
-
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
-import { getMovements } from '@/lib/db';
+import { getMovements, getBrandSettings } from '@/lib/db';
 import { Movement } from '@/lib/types';
 import { 
   BarChart, 
@@ -26,42 +25,34 @@ import {
   TrendingUp, 
   TrendingDown, 
   Wallet,
-  Printer
+  Printer,
+  ImageIcon
 } from 'lucide-react';
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function DashboardPage() {
   const [movements, setMovements] = useState<Movement[]>([]);
-  const logo = PlaceHolderImages.find(img => img.id === 'brand-logo');
+  const [brand, setBrand] = useState({ name: '', logoUrl: '' });
 
   useEffect(() => {
-    const load = () => setMovements(getMovements());
+    const load = () => {
+      setMovements(getMovements());
+      setBrand(getBrandSettings());
+    };
     load();
     window.addEventListener('movementsUpdated', load);
-    return () => window.removeEventListener('movementsUpdated', load);
+    window.addEventListener('brandUpdated', load);
+    return () => {
+      window.removeEventListener('movementsUpdated', load);
+      window.removeEventListener('brandUpdated', load);
+    };
   }, []);
 
   const stats = useMemo(() => {
-    const s = {
-      PIX: 0,
-      CREDITO: 0,
-      DEBITO: 0,
-      DELIVERY: 0,
-      DINHEIRO: 0,
-      DESPESAS: 0,
-      WITHDRAWAL: 0,
-    };
-    
-    movements.forEach(m => {
-      if (s.hasOwnProperty(m.type)) {
-        s[m.type as keyof typeof s] += m.value;
-      }
-    });
-
+    const s = { PIX: 0, CREDITO: 0, DEBITO: 0, DELIVERY: 0, DINHEIRO: 0, DESPESAS: 0, WITHDRAWAL: 0 };
+    movements.forEach(m => { if (s.hasOwnProperty(m.type)) s[m.type as keyof typeof s] += m.value; });
     const totalIn = s.PIX + s.CREDITO + s.DEBITO + s.DELIVERY + s.DINHEIRO;
     const totalOut = s.DESPESAS + s.WITHDRAWAL;
-
     return { ...s, totalIn, totalOut, net: totalIn - totalOut };
   }, [movements]);
 
@@ -78,34 +69,23 @@ export default function DashboardPage() {
     { name: 'Saídas', value: stats.totalOut, color: 'hsl(var(--destructive))' },
   ];
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   return (
     <div className="space-y-8 animate-in fade-in duration-500 max-w-4xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div className="flex items-center gap-4">
-          <div className="relative w-24 h-20 rounded-xl bg-white p-1 border-2 border-accent shadow-xl overflow-hidden">
-            {logo && (
-              <Image 
-                src={logo.imageUrl} 
-                alt={logo.description} 
-                fill 
-                className="object-contain"
-                data-ai-hint={logo.imageHint}
-              />
+          <div className="relative w-24 h-20 rounded-xl bg-white p-1 border-2 border-accent shadow-xl overflow-hidden flex items-center justify-center">
+            {brand.logoUrl ? (
+              <Image src={brand.logoUrl} alt="Logo" fill className="object-contain" unoptimized />
+            ) : (
+              <ImageIcon className="w-8 h-8 text-muted-foreground opacity-30" />
             )}
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-headline font-bold text-white uppercase tracking-tight">PAINEL FINANCEIRO</h1>
-            <p className="text-accent uppercase font-black tracking-widest">Delícias do Pará</p>
+            <p className="text-accent uppercase font-black tracking-widest line-clamp-1">{brand.name}</p>
           </div>
         </div>
-        <Button 
-          onClick={handlePrint}
-          className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold rounded-2xl h-14 px-8 shadow-lg shadow-accent/20 transition-all active:scale-95"
-        >
+        <Button onClick={() => window.print()} className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold rounded-2xl h-14 px-8 shadow-lg shadow-accent/20">
           <Printer className="w-5 h-5 mr-3" />
           IMPRIMIR RELATÓRIO
         </Button>
@@ -122,81 +102,34 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 no-print">
-        <Card className="bg-card/50 border-white/5 shadow-xl overflow-hidden">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-bold uppercase tracking-wider text-white">Distribuição de Vendas</CardTitle>
-          </CardHeader>
-          <CardContent className="h-[250px] pt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
-                <XAxis 
-                  dataKey="name" 
-                  stroke="rgba(255,255,255,0.3)" 
-                  fontSize={10}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis 
-                  stroke="rgba(255,255,255,0.3)" 
-                  fontSize={10}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <Tooltip 
-                  cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-                  contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                  itemStyle={{ color: 'white', fontSize: '12px' }}
-                />
-                <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={45}>
-                  {barData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        <ChartCard title="Distribuição de Vendas">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+              <XAxis dataKey="name" stroke="rgba(255,255,255,0.3)" fontSize={10} tickLine={false} axisLine={false} />
+              <YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} tickLine={false} axisLine={false} />
+              <Tooltip cursor={{ fill: 'rgba(255,255,255,0.05)' }} contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }} />
+              <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={45}>
+                {barData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartCard>
 
-        <Card className="bg-card/50 border-white/5 shadow-xl">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-bold uppercase tracking-wider text-white">Fluxo de Entradas vs Saídas</CardTitle>
-          </CardHeader>
-          <CardContent className="h-[250px] flex flex-col items-center justify-center pt-4">
-            <ResponsiveContainer width="100%" height="80%">
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={65}
-                  outerRadius={90}
-                  stroke="none"
-                  paddingAngle={10}
-                  dataKey="value"
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                   contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                   itemStyle={{ color: 'white', fontSize: '12px' }}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="flex gap-8 mt-4">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-accent" />
-                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Entradas</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-destructive" />
-                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Saídas</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <ChartCard title="Fluxo de Entradas vs Saídas">
+          <ResponsiveContainer width="100%" height="80%">
+            <PieChart>
+              <Pie data={pieData} cx="50%" cy="50%" innerRadius={65} outerRadius={90} stroke="none" paddingAngle={10} dataKey="value">
+                {pieData.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+              </Pie>
+              <Tooltip contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }} />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="flex gap-8 mt-4">
+            <LegendItem color="bg-accent" label="Entradas" />
+            <LegendItem color="bg-destructive" label="Saídas" />
+          </div>
+        </ChartCard>
       </div>
     </div>
   );
@@ -219,5 +152,25 @@ function StatCard({ title, value, icon: Icon, color, highlight, large }: any) {
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+function ChartCard({ title, children }: any) {
+  return (
+    <Card className="bg-card/50 border-white/5 shadow-xl overflow-hidden flex flex-col items-center pt-4">
+      <CardHeader className="pb-2 w-full">
+        <CardTitle className="text-sm font-bold uppercase tracking-wider text-white">{title}</CardTitle>
+      </CardHeader>
+      <CardContent className="h-[250px] w-full pt-4">{children}</CardContent>
+    </Card>
+  );
+}
+
+function LegendItem({ color, label }: any) {
+  return (
+    <div className="flex items-center gap-2">
+      <div className={`w-3 h-3 rounded-full ${color}`} />
+      <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">{label}</span>
+    </div>
   );
 }
