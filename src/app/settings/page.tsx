@@ -1,18 +1,19 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getBrandSettings, saveBrandSettings } from '@/lib/db';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Image as ImageIcon, Save, Building2, Trash2 } from 'lucide-react';
+import { Image as ImageIcon, Save, Building2, Trash2, Upload } from 'lucide-react';
 import Image from 'next/image';
 
 export default function SettingsPage() {
   const [name, setName] = useState('');
   const [logoUrl, setLogoUrl] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -32,6 +33,30 @@ export default function SettingsPage() {
 
   const clearLogo = () => {
     setLogoUrl('');
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) { // Limite de 2MB para evitar estouro do LocalStorage
+        toast({
+          variant: "destructive",
+          title: "Arquivo muito grande",
+          description: "Por favor, escolha uma imagem de até 2MB.",
+        });
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoUrl(reader.result as string);
+        toast({
+          title: "Imagem carregada!",
+          description: "O logotipo foi importado com sucesso. Não esqueça de salvar.",
+        });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -66,16 +91,35 @@ export default function SettingsPage() {
           <div className="space-y-4">
             <Label>Logotipo da Empresa</Label>
             <div className="flex flex-col gap-4">
-              <div className="flex gap-4">
+              <div className="flex flex-col md:flex-row gap-3">
                 <Input 
                   value={logoUrl} 
                   onChange={(e) => setLogoUrl(e.target.value)} 
-                  placeholder="Cole o link da sua imagem aqui..."
+                  placeholder="Link da imagem ou selecione um arquivo..."
                   className="bg-background border-muted flex-1"
                 />
-                <Button variant="outline" size="icon" onClick={clearLogo} className="border-muted hover:bg-destructive/10">
-                  <Trash2 className="w-4 h-4" />
-                </Button>
+                
+                <div className="flex gap-2">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                  />
+                  <Button 
+                    variant="outline" 
+                    onClick={() => fileInputRef.current?.click()}
+                    className="border-primary/50 text-primary hover:bg-primary/10"
+                  >
+                    <Upload className="w-4 h-4 mr-2" />
+                    Upload
+                  </Button>
+                  
+                  <Button variant="outline" size="icon" onClick={clearLogo} className="border-muted hover:bg-destructive/10 shrink-0">
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
               
               <div className="relative w-full aspect-video rounded-2xl bg-muted/20 border-2 border-dashed border-muted flex items-center justify-center overflow-hidden">
@@ -95,12 +139,12 @@ export default function SettingsPage() {
                 )}
               </div>
               <p className="text-[10px] text-muted-foreground italic">
-                Dica: Você pode usar links de imagens públicas do Google Drive, Dropbox ou links diretos.
+                Dica: Você pode selecionar uma foto do seu dispositivo ou colar um link direto.
               </p>
             </div>
           </div>
 
-          <Button onClick={handleSave} className="w-full h-12 bg-primary font-bold text-lg">
+          <Button onClick={handleSave} className="w-full h-12 bg-primary font-bold text-lg rounded-xl">
             <Save className="w-5 h-5 mr-2" />
             SALVAR ALTERAÇÕES
           </Button>
