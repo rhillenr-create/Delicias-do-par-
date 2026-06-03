@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -21,8 +22,7 @@ import {
   ArrowDownCircle,
   ArrowUpCircle,
   Clock,
-  Printer,
-  Image as ImageIcon
+  Printer
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -40,12 +40,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function MovementsPage() {
   const [movements, setMovements] = useState<Movement[]>([]);
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState('day'); 
   const [reportDate, setReportDate] = useState<string>('');
+  const logo = PlaceHolderImages.find(img => img.id === 'brand-logo');
 
   const loadMovements = () => {
     setMovements(getMovements());
@@ -113,12 +116,20 @@ export default function MovementsPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div className="flex items-center gap-4">
-           <div className="w-12 h-12 rounded-lg bg-muted/20 border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
-              <ImageIcon className="w-5 h-5 text-muted-foreground/40" />
+           <div className="relative w-20 h-16 rounded-lg bg-white p-1 border border-accent/20 shadow-lg overflow-hidden">
+              {logo && (
+                <Image 
+                  src={logo.imageUrl} 
+                  alt={logo.description} 
+                  fill 
+                  className="object-contain"
+                  data-ai-hint={logo.imageHint}
+                />
+              )}
            </div>
            <div>
              <h1 className="text-xl font-headline font-bold text-white uppercase tracking-tight">RELATÓRIO DE CAIXA</h1>
-             <p className="text-muted-foreground uppercase text-[10px] font-bold tracking-widest">Fluxo de Movimentações</p>
+             <p className="text-accent uppercase text-[10px] font-black tracking-widest">Delícias do Pará</p>
            </div>
         </div>
         
@@ -264,13 +275,20 @@ export default function MovementsPage() {
       <div className="print-only p-8 space-y-10">
         <div className="flex justify-between items-center border-b-4 border-black pb-8">
           <div className="flex items-center gap-6">
-            <div className="relative w-24 h-24 border-2 border-dashed border-black p-1 bg-white flex flex-col items-center justify-center">
-              <ImageIcon className="w-8 h-8 text-black/20" />
-              <span className="text-[8px] uppercase font-bold text-black/40 mt-1">Sua Logo</span>
+            <div className="relative w-32 h-24 border-2 border-black p-1 bg-white">
+               {logo && (
+                  <Image 
+                    src={logo.imageUrl} 
+                    alt={logo.description} 
+                    fill 
+                    className="object-contain"
+                    data-ai-hint={logo.imageHint}
+                  />
+                )}
             </div>
             <div className="flex flex-col">
               <h1 className="text-5xl font-black uppercase italic tracking-tighter">RELATÓRIO DE CAIXA</h1>
-              <p className="text-gray-600 uppercase tracking-[0.3em] text-sm font-bold">Documento Oficial de Conferência</p>
+              <p className="text-gray-600 uppercase tracking-[0.3em] text-sm font-bold">Açaí Delícias do Pará - Oficial</p>
             </div>
           </div>
           <div className="text-right">

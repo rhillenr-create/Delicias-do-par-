@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
@@ -25,12 +26,14 @@ import {
   TrendingUp, 
   TrendingDown, 
   Wallet,
-  Printer,
-  Image as ImageIcon
+  Printer
 } from 'lucide-react';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function DashboardPage() {
   const [movements, setMovements] = useState<Movement[]>([]);
+  const logo = PlaceHolderImages.find(img => img.id === 'brand-logo');
 
   useEffect(() => {
     const load = () => setMovements(getMovements());
@@ -83,12 +86,20 @@ export default function DashboardPage() {
     <div className="space-y-8 animate-in fade-in duration-500 max-w-4xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-muted/20 border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
-            <ImageIcon className="w-5 h-5 text-muted-foreground/40" />
+          <div className="relative w-20 h-16 rounded-lg bg-white p-1 border border-accent/20 shadow-lg overflow-hidden">
+            {logo && (
+              <Image 
+                src={logo.imageUrl} 
+                alt={logo.description} 
+                fill 
+                className="object-contain"
+                data-ai-hint={logo.imageHint}
+              />
+            )}
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-headline font-bold text-white uppercase tracking-tight">PAINEL FINANCEIRO</h1>
-            <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest">Resumo de Desempenho</p>
+            <p className="text-xs text-accent uppercase font-black tracking-widest">Delícias do Pará</p>
           </div>
         </div>
         <Button 

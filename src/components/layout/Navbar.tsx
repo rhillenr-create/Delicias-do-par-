@@ -1,12 +1,16 @@
+
 "use client";
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ReceiptText, Zap, Image as ImageIcon } from 'lucide-react';
+import { LayoutDashboard, ReceiptText, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export function Navbar() {
   const pathname = usePathname();
+  const logo = PlaceHolderImages.find(img => img.id === 'brand-logo');
 
   const navItems = [
     { href: '/', label: 'Caixa', icon: Zap },
@@ -18,10 +22,20 @@ export function Navbar() {
     <nav className="border-b bg-card/50 backdrop-blur-md sticky top-0 z-50 no-print">
       <div className="container mx-auto px-4 h-20 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-4 group">
-          {/* Espaço para Logo Personalizada */}
-          <div className="relative w-14 h-14 overflow-hidden rounded-xl bg-muted/20 border-2 border-dashed border-muted-foreground/30 flex items-center justify-center group-hover:scale-105 transition-transform">
-            <ImageIcon className="w-6 h-6 text-muted-foreground/40" />
-            <span className="absolute bottom-1 text-[8px] uppercase font-bold text-muted-foreground/40">Sua Logo</span>
+          <div className="relative w-16 h-12 overflow-hidden rounded-xl bg-white p-1 border-2 border-accent/20 group-hover:scale-105 transition-transform shadow-[0_0_15px_rgba(104,255,54,0.1)]">
+            {logo && (
+              <Image 
+                src={logo.imageUrl} 
+                alt={logo.description} 
+                fill 
+                className="object-contain"
+                data-ai-hint={logo.imageHint}
+              />
+            )}
+          </div>
+          <div className="flex flex-col -space-y-1">
+             <span className="text-accent font-black text-xl italic tracking-tighter">AÇAÍ</span>
+             <span className="text-[10px] text-white font-bold uppercase tracking-widest">DELÍCIAS DO PARÁ</span>
           </div>
         </Link>
 
