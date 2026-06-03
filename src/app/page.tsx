@@ -1,3 +1,4 @@
+
 "use client";
 
 import { ActionGrid } from '@/components/cashier/ActionGrid';
@@ -23,20 +24,21 @@ export default function CashierPage() {
         
         <div className="flex flex-col items-center justify-center gap-10 relative z-10">
           <div className="w-full flex justify-center">
-            <div className="relative w-full max-w-lg h-[250px] md:h-[400px] rounded-[2rem] overflow-hidden bg-background/50 border-4 border-accent shadow-[0_0_40px_rgba(104,255,54,0.15)] p-6 flex items-center justify-center">
+            {/* Logo container restaurado ao tamanho original */}
+            <div className="relative w-48 h-48 md:w-72 md:h-60 rounded-3xl overflow-hidden bg-background border-4 border-accent shadow-[0_0_30px_rgba(104,255,54,0.3)] p-3 flex items-center justify-center">
               {brand.logoUrl ? (
                 <Image 
                   src={brand.logoUrl} 
                   alt="Brand Logo" 
                   fill 
-                  className="object-contain p-4"
+                  className="object-contain p-2"
                   priority
                   unoptimized
                 />
               ) : (
                 <div className="flex flex-col items-center gap-4">
-                  <ImageIcon className="w-24 h-24 text-muted-foreground opacity-20" />
-                  <span className="text-xs uppercase font-bold text-muted-foreground tracking-widest">Sua Logo Aqui</span>
+                  <ImageIcon className="w-16 h-16 text-muted-foreground opacity-20" />
+                  <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest text-center">Adicione seu logo</span>
                 </div>
               )}
             </div>
