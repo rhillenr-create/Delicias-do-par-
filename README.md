@@ -1,38 +1,46 @@
 
 # 🍧 Açaí Delícias do Pará - Sistema de Gestão de Caixa
 
-Este é o seu sistema de frente de caixa (PDV) completo, moderno e inteligente. Ele foi projetado para funcionar tanto em computadores quanto em dispositivos móveis.
+Este é o seu sistema de frente de caixa (PDV) completo, moderno e inteligente. Ele foi projetado para salvar seus dados permanentemente na nuvem.
 
-## 🚀 Como usar agora (Acesso Rápido)
+## 🚀 Como usar agora (Acesso Permanente)
 
-1. **Link Permanente:** Acesse o sistema através do link oficial: [https://nextn-f5a13.web.app](https://nextn-f5a13.web.app)
-2. **No Celular:** 
-   - Abra o link no Chrome.
-   - Clique nos três pontinhos (menu) e selecione **"Adicionar à tela inicial"**.
-   - O sistema aparecerá como um aplicativo no seu celular!
+O seu sistema será acessado pelo link oficial: **[https://nextn-f5a13.web.app](https://nextn-f5a13.web.app)**
 
-## 🛠️ Configurações Necessárias (Importante)
+## 🛠️ Passo a Passo para Ativar (Hospedagem Grátis)
 
-Para que o sistema salve seus dados na nuvem para sempre, certifique-se de que no seu [Console do Firebase](https://console.firebase.google.com/project/nextn-f5a13):
+Para colocar o sistema no ar "para sempre" e sem custos, siga estes passos no [Console do Firebase](https://console.firebase.google.com/project/nextn-f5a13):
 
-1. **Firestore Database:** Ative o banco de dados em "Modo Produção".
-2. **Authentication:** Em "Sign-in method", ative o provedor **Anônimo**.
-3. **Identidade:** Vá em "Ajustes" dentro do sistema para subir o logo da sua açaíteria e definir o nome da empresa.
+1. **Ativar o Banco de Dados (Firestore):**
+   - No menu lateral, clique em **Build** > **Firestore Database**.
+   - Clique em **Create database**.
+   - Selecione a localização (pode deixar o padrão) e escolha **Start in production mode**.
+   - Clique em "Enable".
 
-## ✨ Funcionalidades Principais
+2. **Ativar o Login (Authentication):**
+   - Vá em **Build** > **Authentication**.
+   - Clique em **Get Started**.
+   - Na aba **Sign-in method**, clique em **Add new provider**.
+   - Selecione **Anonymous** e ative a chave (Enable). Isso permite que você use o sistema sem precisar de senha agora.
 
-- **Registro de Vendas:** Lançamentos rápidos de PIX, Cartão (Crédito/Débito), Dinheiro e Delivery.
-- **Controle de Saídas:** Registro de Sangrias (retiradas) e Despesas (pagamentos).
-- **Inteligência Artificial:** O sistema categoriza seus gastos e sugere economias automaticamente.
-- **Relatórios:** Dashboard visual com gráficos e função de impressão para fechamento de caixa.
-- **Histórico Eterno:** Seus dados ficam salvos na nuvem e você pode consultar meses anteriores a qualquer momento.
+3. **Ativar o Link (Hosting):**
+   - Vá em **Build** > **Hosting**.
+   - Clique em **Get Started**.
+   - Siga as instruções da tela. Como o projeto já está configurado, ao final você terá o link `nextn-f5a13.web.app` funcionando.
 
-## 📦 Como exportar o código
+## 📱 No Celular (Dica de Ouro)
 
-Se você deseja ter uma cópia deste código no seu computador:
-1. Use a ferramenta de exportação do Firebase Studio.
-2. Instale as dependências com `npm install`.
-3. Rode localmente com `npm run dev`.
+1. Abra o link `https://nextn-f5a13.web.app` no Chrome do seu celular.
+2. Clique nos três pontinhos (menu) e selecione **"Adicionar à tela inicial"**.
+3. O sistema aparecerá com um ícone de aplicativo na sua tela, facilitando o uso no balcão!
+
+## ✨ Funcionalidades
+
+- **Registro de Vendas:** Lançamentos rápidos de PIX, Cartão, Dinheiro e Delivery.
+- **Histórico Eterno:** Seus dados ficam salvos na nuvem e você pode consultar meses anteriores no menu "Movimentação".
+- **Dashboard:** Gráficos automáticos de lucro e fluxo de caixa.
+- **Configuração de Marca:** Vá em "Ajustes" para subir o seu logo e definir o nome da sua açaíteria.
 
 ---
-*Desenvolvido com tecnologia de ponta para o sucesso da Açaí Delícias do Pará.*
+*ID do Projeto: nextn-f5a13*
+*Desenvolvido para o sucesso da Açaí Delícias do Pará.*
