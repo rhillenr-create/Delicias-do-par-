@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -42,17 +43,37 @@ export function MovementDialog({ type, onClose }: Props) {
     if (!type || !value || !description) return;
 
     setIsSubmitting(true);
+    
+    // Suporte a vírgula decimal brasileira
+    const normalizedValue = value.replace(',', '.');
+    const numericValue = parseFloat(normalizedValue);
+
+    if (isNaN(numericValue)) {
+      toast({
+        variant: "destructive",
+        title: "Valor inválido",
+        description: "Por favor, insira um número válido.",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       let aiData = null;
       
       // AI Processing for expenses or specific descriptions
+      // Envolvido em try/catch próprio para não impedir o registro se a IA falhar
       if (type === 'EXPENSE' || type === 'WITHDRAWAL') {
-        aiData = await categorizeTransactionAndSuggestSavings({ description });
+        try {
+          aiData = await categorizeTransactionAndSuggestSavings({ description });
+        } catch (aiError) {
+          console.warn("IA indisponível no momento, registrando sem insights.");
+        }
       }
 
       saveMovement({
         type,
-        value: parseFloat(value),
+        value: numericValue,
         description,
         observation,
         aiCategory: aiData?.category,
@@ -81,7 +102,7 @@ export function MovementDialog({ type, onClose }: Props) {
       <DialogContent className="sm:max-w-[425px] bg-card border-primary/20">
         <DialogHeader>
           <DialogTitle className="font-headline text-2xl text-white">
-            Registrar {type}
+            Registrar {type === 'EXPENSE' ? 'Despesa' : type === 'WITHDRAWAL' ? 'Sangria' : type}
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6 py-4">
@@ -89,8 +110,6 @@ export function MovementDialog({ type, onClose }: Props) {
             <Label htmlFor="value" className="text-muted-foreground">Valor (R$)</Label>
             <Input
               id="value"
-              type="number"
-              step="0.01"
               placeholder="0,00"
               value={value}
               onChange={(e) => setValue(e.target.value)}
