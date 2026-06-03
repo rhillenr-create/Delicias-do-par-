@@ -73,7 +73,7 @@ export default function DashboardPage() {
     <div className="space-y-8 animate-in fade-in duration-500 max-w-4xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div className="flex items-center gap-4">
-          <div className="relative w-24 h-20 rounded-xl bg-white p-1 border-2 border-accent shadow-xl overflow-hidden flex items-center justify-center">
+          <div className="relative w-24 h-20 rounded-xl bg-background p-1 border-2 border-accent shadow-xl overflow-hidden flex items-center justify-center">
             {brand.logoUrl ? (
               <Image src={brand.logoUrl} alt="Logo" fill className="object-contain" unoptimized />
             ) : (

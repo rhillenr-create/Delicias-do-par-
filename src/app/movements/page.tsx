@@ -60,7 +60,7 @@ export default function MovementsPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div className="flex items-center gap-4">
-           <div className="relative w-20 h-16 rounded-lg bg-white p-1 border border-accent/20 shadow-lg overflow-hidden flex items-center justify-center">
+           <div className="relative w-20 h-16 rounded-lg bg-background p-1 border border-accent/20 shadow-lg overflow-hidden flex items-center justify-center">
               {brand.logoUrl ? (
                 <Image src={brand.logoUrl} alt="Logo" fill className="object-contain" unoptimized />
               ) : (

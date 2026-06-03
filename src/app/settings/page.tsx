@@ -122,7 +122,7 @@ export default function SettingsPage() {
                 </div>
               </div>
               
-              <div className="relative w-full aspect-video rounded-2xl bg-muted/20 border-2 border-dashed border-muted flex items-center justify-center overflow-hidden">
+              <div className="relative w-full aspect-video rounded-2xl bg-background border-2 border-dashed border-muted flex items-center justify-center overflow-hidden">
                 {logoUrl ? (
                   <Image 
                     src={logoUrl} 
