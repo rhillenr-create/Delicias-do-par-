@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -10,7 +9,7 @@ import { useMemo, useState, useEffect } from 'react';
 import { useDoc, useFirestore } from '@/firebase';
 import { doc } from 'firebase/firestore';
 
-const DEFAULT_LOGO = "https://picsum.photos/seed/acai-para-logo-77/800/600";
+const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -46,7 +45,7 @@ export function Navbar() {
               fill
               className="object-contain"
               unoptimized
-              data-ai-hint="acai icon"
+              data-ai-hint="acai brand"
             />
           </div>
         </Link>

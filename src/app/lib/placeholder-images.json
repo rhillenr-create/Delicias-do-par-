@@ -1,11 +1,10 @@
-
 {
   "placeholderImages": [
     {
       "id": "brand-logo",
-      "description": "Espaço reservado para o logotipo da empresa",
-      "imageUrl": "",
-      "imageHint": "company logo placeholder"
+      "description": "Logotipo Oficial Açaí Delícias do Pará",
+      "imageUrl": "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png",
+      "imageHint": "acai brand logo"
     }
   ]
 }

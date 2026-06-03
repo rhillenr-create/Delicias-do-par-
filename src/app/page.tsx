@@ -1,4 +1,3 @@
-
 'use client';
 
 import { ActionGrid } from '@/components/cashier/ActionGrid';
@@ -9,7 +8,7 @@ import { useDoc, useFirestore } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import { ImageIcon, Plus } from 'lucide-react';
 
-const DEFAULT_LOGO = "https://picsum.photos/seed/acai-para-logo-77/800/600";
+const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
 export default function CashierPage() {
   const db = useFirestore();
@@ -43,7 +42,7 @@ export default function CashierPage() {
               className="object-contain p-2"
               priority
               unoptimized
-              data-ai-hint="acai logo"
+              data-ai-hint="acai brand"
             />
             <div className="absolute inset-0 bg-accent/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                <span className="bg-accent text-accent-foreground text-[10px] font-black px-3 py-1 rounded-full shadow-lg">ALTERAR LOGO</span>

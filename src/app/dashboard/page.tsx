@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useMemo, useState, useEffect } from 'react';
@@ -33,7 +32,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 
-const DEFAULT_LOGO = "https://picsum.photos/seed/acai-para-logo-77/800/600";
+const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
 export default function DashboardPage() {
   const db = useFirestore();
@@ -92,7 +91,7 @@ export default function DashboardPage() {
               fill
               className="object-contain"
               unoptimized
-              data-ai-hint="acai bowl"
+              data-ai-hint="acai brand"
             />
             <div className="absolute inset-0 bg-accent/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                <span className="text-[8px] font-black text-accent-foreground">EDITAR</span>
