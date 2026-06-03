@@ -2,6 +2,7 @@
 'use client';
 
 import { useMemo, useState, useEffect } from 'react';
+import Link from 'next/link';
 import { Movement } from '@/lib/types';
 import { useCollection, useDoc, useFirestore } from '@/firebase';
 import { collection, doc } from 'firebase/firestore';
@@ -77,7 +78,10 @@ export default function DashboardPage() {
     <div className="space-y-8 animate-in fade-in duration-500 max-w-4xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div className="flex items-center gap-4">
-          <div className="relative w-24 h-20 rounded-xl bg-background p-1 border-2 border-accent shadow-xl overflow-hidden flex items-center justify-center">
+          <Link 
+            href="/settings"
+            className="group relative w-24 h-20 rounded-xl bg-background p-1 border-2 border-accent shadow-xl overflow-hidden flex items-center justify-center transition-transform hover:scale-105"
+          >
             {brand?.logoUrl ? (
               <Image
                 src={brand.logoUrl}
@@ -87,9 +91,12 @@ export default function DashboardPage() {
                 unoptimized
               />
             ) : (
-              <ImageIcon className="w-10 h-10 text-accent opacity-30" />
+              <ImageIcon className="w-10 h-10 text-accent opacity-30 group-hover:opacity-100 transition-opacity" />
             )}
-          </div>
+            <div className="absolute inset-0 bg-accent/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+               <span className="text-[8px] font-black text-accent-foreground">EDITAR</span>
+            </div>
+          </Link>
           <div className="space-y-1">
             <h1 className="text-2xl font-headline font-bold text-white uppercase tracking-tight">
               PAINEL FINANCEIRO

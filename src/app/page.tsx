@@ -3,10 +3,11 @@
 
 import { ActionGrid } from '@/components/cashier/ActionGrid';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useMemo, useState, useEffect } from 'react';
 import { useDoc, useFirestore } from '@/firebase';
 import { doc } from 'firebase/firestore';
-import { ImageIcon } from 'lucide-react';
+import { ImageIcon, Plus } from 'lucide-react';
 
 export default function CashierPage() {
   const db = useFirestore();
@@ -27,7 +28,10 @@ export default function CashierPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent pointer-events-none" />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10 w-full">
-          <div className="relative w-48 h-48 md:w-60 md:h-52 rounded-3xl overflow-hidden bg-background border-4 border-accent shadow-[0_0_30px_rgba(104,255,54,0.3)] p-3 flex items-center justify-center shrink-0">
+          <Link 
+            href="/settings" 
+            className="group relative w-48 h-48 md:w-60 md:h-52 rounded-3xl overflow-hidden bg-background border-4 border-accent shadow-[0_0_30px_rgba(104,255,54,0.3)] p-3 flex items-center justify-center shrink-0 transition-transform hover:scale-105 active:scale-95"
+          >
             {brand?.logoUrl ? (
               <Image
                 src={brand.logoUrl}
@@ -39,11 +43,17 @@ export default function CashierPage() {
               />
             ) : (
               <div className="flex flex-col items-center gap-2">
-                <ImageIcon className="w-16 h-16 text-accent opacity-20" />
-                <span className="text-[10px] font-bold text-accent/40 uppercase tracking-widest">Logo da Empresa</span>
+                <div className="relative">
+                  <ImageIcon className="w-16 h-16 text-accent opacity-40 group-hover:opacity-100 transition-opacity" />
+                  <Plus className="absolute -top-1 -right-1 w-6 h-6 text-accent bg-background rounded-full border-2 border-accent" />
+                </div>
+                <span className="text-[10px] font-bold text-accent/60 uppercase tracking-widest text-center">Clique para adicionar sua logo</span>
               </div>
             )}
-          </div>
+            <div className="absolute inset-0 bg-accent/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+               <span className="bg-accent text-accent-foreground text-[10px] font-black px-3 py-1 rounded-full shadow-lg">ALTERAR</span>
+            </div>
+          </Link>
 
           <div className="flex flex-col items-center md:items-end gap-3 text-center md:text-right">
             <span className="text-[10px] uppercase tracking-[0.5em] text-muted-foreground/60 font-black">
