@@ -1,7 +1,10 @@
+
 "use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { getBrandSettings, saveBrandSettings } from '@/lib/db';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { saveBrandSettings } from '@/lib/db';
+import { useDoc, useFirestore } from '@/firebase';
+import { doc } from 'firebase/firestore';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,19 +14,25 @@ import { Image as ImageIcon, Save, Building2, Trash2, Upload } from 'lucide-reac
 import Image from 'next/image';
 
 export default function SettingsPage() {
+  const db = useFirestore();
+  const brandRef = useMemo(() => db ? doc(db, 'settings', 'brand') : null, [db]);
+  const { data: brand } = useDoc<any>(brandRef);
+
   const [name, setName] = useState('');
   const [logoUrl, setLogoUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
-    const brand = getBrandSettings();
-    setName(brand.name);
-    setLogoUrl(brand.logoUrl);
-  }, []);
+    if (brand) {
+      setName(brand.name || '');
+      setLogoUrl(brand.logoUrl || '');
+    }
+  }, [brand]);
 
   const handleSave = () => {
-    saveBrandSettings({ name, logoUrl });
+    if (!db) return;
+    saveBrandSettings(db, { name, logoUrl });
     toast({
       title: "Configurações salvas!",
       description: "A identidade visual foi atualizada com sucesso.",
@@ -38,11 +47,11 @@ export default function SettingsPage() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) { // Limite de 2MB para evitar estouro do LocalStorage
+      if (file.size > 1 * 1024 * 1024) { // Limite de 1MB para Firestore
         toast({
           variant: "destructive",
           title: "Arquivo muito grande",
-          description: "Por favor, escolha uma imagem de até 2MB.",
+          description: "Por favor, escolha uma imagem de até 1MB.",
         });
         return;
       }
@@ -138,9 +147,6 @@ export default function SettingsPage() {
                   </div>
                 )}
               </div>
-              <p className="text-[10px] text-muted-foreground italic">
-                Dica: Você pode selecionar uma foto do seu dispositivo ou colar um link direto.
-              </p>
             </div>
           </div>
 

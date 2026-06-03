@@ -1,50 +1,55 @@
+
 import { Movement, BrandSettings } from './types';
+import { 
+  collection, 
+  doc, 
+  setDoc, 
+  addDoc, 
+  deleteDoc, 
+  Firestore 
+} from 'firebase/firestore';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 
-const MOVEMENTS_KEY = 'acailume_movements';
-const BRAND_KEY = 'acailume_brand';
-
-export const getMovements = (): Movement[] => {
-  if (typeof window === 'undefined') return [];
-  const stored = localStorage.getItem(MOVEMENTS_KEY);
-  if (!stored) return [];
-  return JSON.parse(stored);
-};
-
-export const saveMovement = (movement: Omit<Movement, 'id' | 'timestamp'>): Movement => {
-  const movements = getMovements();
-  const newMovement: Movement = {
+export const saveMovement = (db: Firestore, movement: Omit<Movement, 'id' | 'timestamp'>) => {
+  const movementsRef = collection(db, 'movements');
+  const data = {
     ...movement,
-    id: crypto.randomUUID(),
     timestamp: Date.now(),
   };
-  
-  const updated = [newMovement, ...movements];
-  localStorage.setItem(MOVEMENTS_KEY, JSON.stringify(updated));
-  window.dispatchEvent(new Event('movementsUpdated'));
-  return newMovement;
+
+  addDoc(movementsRef, data)
+    .catch(async (serverError) => {
+      const permissionError = new FirestorePermissionError({
+        path: 'movements',
+        operation: 'create',
+        requestResourceData: data,
+      } satisfies SecurityRuleContext);
+      errorEmitter.emit('permission-error', permissionError);
+    });
 };
 
-export const updateMovement = (id: string, updates: Partial<Movement>): void => {
-  const movements = getMovements();
-  const updated = movements.map(m => m.id === id ? { ...m, ...updates } : m);
-  localStorage.setItem(MOVEMENTS_KEY, JSON.stringify(updated));
-  window.dispatchEvent(new Event('movementsUpdated'));
+export const deleteMovement = (db: Firestore, id: string) => {
+  const docRef = doc(db, 'movements', id);
+  deleteDoc(docRef)
+    .catch(async (serverError) => {
+      const permissionError = new FirestorePermissionError({
+        path: `movements/${id}`,
+        operation: 'delete',
+      } satisfies SecurityRuleContext);
+      errorEmitter.emit('permission-error', permissionError);
+    });
 };
 
-export const deleteMovement = (id: string): void => {
-  const movements = getMovements();
-  const updated = movements.filter(m => m.id !== id);
-  localStorage.setItem(MOVEMENTS_KEY, JSON.stringify(updated));
-  window.dispatchEvent(new Event('movementsUpdated'));
-};
-
-export const getBrandSettings = (): BrandSettings => {
-  if (typeof window === 'undefined') return { name: '', logoUrl: '' };
-  const stored = localStorage.getItem(BRAND_KEY);
-  return stored ? JSON.parse(stored) : { name: '', logoUrl: '' };
-};
-
-export const saveBrandSettings = (settings: BrandSettings): void => {
-  localStorage.setItem(BRAND_KEY, JSON.stringify(settings));
-  window.dispatchEvent(new Event('brandUpdated'));
+export const saveBrandSettings = (db: Firestore, settings: BrandSettings) => {
+  const docRef = doc(db, 'settings', 'brand');
+  setDoc(docRef, settings, { merge: true })
+    .catch(async (serverError) => {
+      const permissionError = new FirestorePermissionError({
+        path: 'settings/brand',
+        operation: 'update',
+        requestResourceData: settings,
+      } satisfies SecurityRuleContext);
+      errorEmitter.emit('permission-error', permissionError);
+    });
 };

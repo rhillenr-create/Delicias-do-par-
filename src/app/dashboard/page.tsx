@@ -1,8 +1,10 @@
+
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
-import { getMovements, getBrandSettings } from '@/lib/db';
+import { useMemo } from 'react';
 import { Movement } from '@/lib/types';
+import { useCollection, useDoc, useFirestore } from '@/firebase';
+import { collection, doc } from 'firebase/firestore';
 import { 
   BarChart, 
   Bar, 
@@ -31,26 +33,21 @@ import {
 import Image from 'next/image';
 
 export default function DashboardPage() {
-  const [movements, setMovements] = useState<Movement[]>([]);
-  const [brand, setBrand] = useState({ name: '', logoUrl: '' });
+  const db = useFirestore();
+  
+  const movementsRef = useMemo(() => db ? collection(db, 'movements') : null, [db]);
+  const { data: movements = [] } = useCollection<Movement>(movementsRef);
 
-  useEffect(() => {
-    const load = () => {
-      setMovements(getMovements());
-      setBrand(getBrandSettings());
-    };
-    load();
-    window.addEventListener('movementsUpdated', load);
-    window.addEventListener('brandUpdated', load);
-    return () => {
-      window.removeEventListener('movementsUpdated', load);
-      window.removeEventListener('brandUpdated', load);
-    };
-  }, []);
+  const brandRef = useMemo(() => db ? doc(db, 'settings', 'brand') : null, [db]);
+  const { data: brand = { name: '', logoUrl: '' } } = useDoc<any>(brandRef);
 
   const stats = useMemo(() => {
     const s = { PIX: 0, CREDITO: 0, DEBITO: 0, DELIVERY: 0, DINHEIRO: 0, DESPESAS: 0, WITHDRAWAL: 0 };
-    movements.forEach(m => { if (s.hasOwnProperty(m.type)) s[m.type as keyof typeof s] += m.value; });
+    movements.forEach(m => { 
+      if (s.hasOwnProperty(m.type)) {
+        s[m.type as keyof typeof s] += m.value; 
+      }
+    });
     const totalIn = s.PIX + s.CREDITO + s.DEBITO + s.DELIVERY + s.DINHEIRO;
     const totalOut = s.DESPESAS + s.WITHDRAWAL;
     return { ...s, totalIn, totalOut, net: totalIn - totalOut };
@@ -74,7 +71,7 @@ export default function DashboardPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div className="flex items-center gap-4">
           <div className="relative w-24 h-20 rounded-xl bg-background p-1 border-2 border-accent shadow-xl overflow-hidden flex items-center justify-center">
-            {brand.logoUrl ? (
+            {brand?.logoUrl ? (
               <Image src={brand.logoUrl} alt="Logo" fill className="object-contain" unoptimized />
             ) : (
               <ImageIcon className="w-8 h-8 text-muted-foreground opacity-30" />
@@ -82,7 +79,7 @@ export default function DashboardPage() {
           </div>
           <div className="space-y-1">
             <h1 className="text-2xl font-headline font-bold text-white uppercase tracking-tight">PAINEL FINANCEIRO</h1>
-            <p className="text-accent uppercase font-black tracking-widest line-clamp-1">{brand.name}</p>
+            <p className="text-accent uppercase font-black tracking-widest line-clamp-1">{brand?.name || 'Sistema de Caixa'}</p>
           </div>
         </div>
         <Button onClick={() => window.print()} className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold rounded-2xl h-14 px-8 shadow-lg shadow-accent/20">

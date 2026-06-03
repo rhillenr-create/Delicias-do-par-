@@ -1,0 +1,45 @@
+
+{
+  "entities": {
+    "Movement": {
+      "title": "Movement",
+      "description": "Representa uma movimentação financeira (entrada ou saída) no sistema de caixa.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["PIX", "CREDITO", "DEBITO", "DELIVERY", "DINHEIRO", "WITHDRAWAL", "DESPESAS"]
+        },
+        "value": { "type": "number" },
+        "description": { "type": "string" },
+        "observation": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "aiCategory": { "type": "string" },
+        "aiSuggestions": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["type", "value", "description", "timestamp"]
+    },
+    "BrandSettings": {
+      "title": "Brand Settings",
+      "description": "Configurações de identidade visual da empresa.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "logoUrl": { "type": "string" }
+      }
+    }
+  },
+  "auth": {
+    "providers": ["anonymous"]
+  },
+  "firestore": {
+    "/movements/{movementId}": {
+      "schema": "Movement",
+      "description": "Coleção de todas as transações financeiras realizadas."
+    },
+    "/settings/brand": {
+      "schema": "BrandSettings",
+      "description": "Documento único que armazena o nome e logo da empresa."
+    }
+  }
+}

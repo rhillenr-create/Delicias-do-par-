@@ -1,12 +1,15 @@
+
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
-import { Movement, MovementType } from '@/lib/types';
-import { getMovements, deleteMovement, getBrandSettings } from '@/lib/db';
+import { useState, useMemo } from 'react';
+import { Movement } from '@/lib/types';
+import { deleteMovement } from '@/lib/db';
+import { useCollection, useDoc, useFirestore } from '@/firebase';
+import { collection, doc, query, orderBy } from 'firebase/firestore';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Trash2, BrainCircuit, Filter, ArrowDownCircle, ArrowUpCircle, Clock, Printer, ImageIcon } from 'lucide-react';
+import { Search, Trash2, BrainCircuit, Filter, Clock, Printer, ImageIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
@@ -15,37 +18,38 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import Image from 'next/image';
 
 export default function MovementsPage() {
-  const [movements, setMovements] = useState<Movement[]>([]);
+  const db = useFirestore();
   const [search, setSearch] = useState('');
-  const [period, setPeriod] = useState('day'); 
-  const [reportDate, setReportDate] = useState<string>('');
-  const [brand, setBrand] = useState({ name: '', logoUrl: '' });
+  const [period, setPeriod] = useState('all');
 
-  const loadAll = () => {
-    setMovements(getMovements());
-    setBrand(getBrandSettings());
-  };
+  const movementsQuery = useMemo(() => {
+    if (!db) return null;
+    return query(collection(db, 'movements'), orderBy('timestamp', 'desc'));
+  }, [db]);
 
-  useEffect(() => {
-    loadAll();
-    setReportDate(format(new Date(), 'dd/MM/yyyy HH:mm'));
-    window.addEventListener('movementsUpdated', loadAll);
-    window.addEventListener('brandUpdated', loadAll);
-    return () => {
-      window.removeEventListener('movementsUpdated', loadAll);
-      window.removeEventListener('brandUpdated', loadAll);
-    };
-  }, []);
+  const { data: movements = [] } = useCollection<Movement>(movementsQuery);
+
+  const brandRef = useMemo(() => db ? doc(db, 'settings', 'brand') : null, [db]);
+  const { data: brand = { name: '', logoUrl: '' } } = useDoc<any>(brandRef);
 
   const filteredMovements = useMemo(() => {
     const now = new Date();
     return movements.filter(m => {
       const mDate = new Date(m.timestamp);
-      const matchesSearch = m.description.toLowerCase().includes(search.toLowerCase()) || m.type.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = m.description.toLowerCase().includes(search.toLowerCase()) || 
+                           m.type.toLowerCase().includes(search.toLowerCase());
+      
       let matchesPeriod = true;
-      if (period === 'day') matchesPeriod = format(mDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
-      else if (period === 'week') { const weekAgo = new Date(); weekAgo.setDate(now.getDate() - 7); matchesPeriod = mDate >= weekAgo; }
-      else if (period === 'month') matchesPeriod = mDate.getMonth() === now.getMonth() && mDate.getFullYear() === now.getFullYear();
+      if (period === 'day') {
+        matchesPeriod = format(mDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd');
+      } else if (period === 'week') {
+        const weekAgo = new Date();
+        weekAgo.setDate(now.getDate() - 7);
+        matchesPeriod = mDate >= weekAgo;
+      } else if (period === 'month') {
+        matchesPeriod = mDate.getMonth() === now.getMonth() && mDate.getFullYear() === now.getFullYear();
+      }
+      
       return matchesSearch && matchesPeriod;
     });
   }, [movements, search, period]);
@@ -61,7 +65,7 @@ export default function MovementsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div className="flex items-center gap-4">
            <div className="relative w-20 h-16 rounded-lg bg-background p-1 border border-accent/20 shadow-lg overflow-hidden flex items-center justify-center">
-              {brand.logoUrl ? (
+              {brand?.logoUrl ? (
                 <Image src={brand.logoUrl} alt="Logo" fill className="object-contain" unoptimized />
               ) : (
                 <ImageIcon className="w-6 h-6 text-muted-foreground opacity-30" />
@@ -69,7 +73,7 @@ export default function MovementsPage() {
            </div>
            <div>
              <h1 className="text-xl font-headline font-bold text-white uppercase tracking-tight">RELATÓRIO DE CAIXA</h1>
-             <p className="text-accent uppercase text-[10px] font-black tracking-widest line-clamp-1">{brand.name}</p>
+             <p className="text-accent uppercase text-[10px] font-black tracking-widest line-clamp-1">{brand?.name || 'Sistema de Caixa'}</p>
            </div>
         </div>
         
@@ -143,7 +147,7 @@ export default function MovementsPage() {
                     </span>
                   </TableCell>
                   <TableCell className="text-center">
-                    <Button variant="ghost" size="icon" onClick={() => deleteMovement(m.id)} className="hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => db && deleteMovement(db, m.id)} className="hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
                   </TableCell>
                 </TableRow>
               ))
@@ -156,16 +160,16 @@ export default function MovementsPage() {
         <div className="flex justify-between items-center border-b-4 border-black pb-8">
           <div className="flex items-center gap-6">
             <div className="relative w-32 h-24 border-2 border-black p-1 bg-white flex items-center justify-center">
-              {brand.logoUrl && <Image src={brand.logoUrl} alt="Logo" fill className="object-contain" unoptimized />}
+              {brand?.logoUrl && <Image src={brand.logoUrl} alt="Logo" fill className="object-contain" unoptimized />}
             </div>
             <div>
               <h1 className="text-4xl font-black uppercase tracking-tighter">RELATÓRIO FINANCEIRO</h1>
-              <p className="text-gray-600 uppercase tracking-widest text-xs font-bold">{brand.name}</p>
+              <p className="text-gray-600 uppercase tracking-widest text-xs font-bold">{brand?.name || 'Sistema de Caixa'}</p>
             </div>
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold uppercase">{format(new Date(), 'MMMM yyyy', { locale: ptBR })}</p>
-            <p className="text-gray-500 font-bold">{reportDate}</p>
+            <p className="text-gray-500 font-bold">{format(new Date(), 'dd/MM/yyyy HH:mm')}</p>
           </div>
         </div>
         <div className="grid grid-cols-3 gap-8">

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -5,21 +6,15 @@ import { usePathname } from 'next/navigation';
 import { LayoutDashboard, ReceiptText, Zap, Settings, ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { getBrandSettings } from '@/lib/db';
+import { useMemo } from 'react';
+import { useDoc, useFirestore } from '@/firebase';
+import { doc } from 'firebase/firestore';
 
 export function Navbar() {
   const pathname = usePathname();
-  const [brand, setBrand] = useState({ name: '', logoUrl: '' });
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    const loadBrand = () => setBrand(getBrandSettings());
-    loadBrand();
-    window.addEventListener('brandUpdated', loadBrand);
-    return () => window.removeEventListener('brandUpdated', loadBrand);
-  }, []);
+  const db = useFirestore();
+  const brandRef = useMemo(() => db ? doc(db, 'settings', 'brand') : null, [db]);
+  const { data: brand } = useDoc<any>(brandRef);
 
   const navItems = [
     { href: '/', label: 'Caixa', icon: Zap },
@@ -33,7 +28,7 @@ export function Navbar() {
       <div className="container mx-auto px-4 h-24 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-4 group">
           <div className="relative w-20 h-16 overflow-hidden rounded-xl bg-background p-1 border-2 border-accent shadow-[0_0_15px_rgba(104,255,54,0.2)] group-hover:scale-105 transition-all flex items-center justify-center">
-            {mounted && brand.logoUrl ? (
+            {brand?.logoUrl ? (
               <Image 
                 src={brand.logoUrl} 
                 alt={brand.name || 'Logo'} 

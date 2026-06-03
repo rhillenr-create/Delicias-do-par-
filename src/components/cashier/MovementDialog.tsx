@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -14,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { saveMovement } from '@/lib/db';
+import { useFirestore } from '@/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { categorizeTransactionAndSuggestSavings } from '@/ai/flows/ai-transaction-categorization-and-savings-suggestions';
 
@@ -23,6 +25,7 @@ interface Props {
 }
 
 export function MovementDialog({ type, onClose }: Props) {
+  const db = useFirestore();
   const [value, setValue] = useState('');
   const [description, setDescription] = useState('');
   const [observation, setObservation] = useState('');
@@ -39,7 +42,7 @@ export function MovementDialog({ type, onClose }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!type || !value || !description) return;
+    if (!type || !value || !description || !db) return;
 
     setIsSubmitting(true);
     
@@ -67,7 +70,7 @@ export function MovementDialog({ type, onClose }: Props) {
         }
       }
 
-      saveMovement({
+      saveMovement(db, {
         type,
         value: numericValue,
         description,
