@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -6,7 +7,7 @@ import { FirebaseProvider } from './provider';
 import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import { Auth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
-import { AlertCircle, Settings } from 'lucide-react';
+import { AlertCircle, Settings, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -53,7 +54,6 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
 
   if (authError && (authError.includes('api-key-not-valid') || authError.includes('operation-not-allowed'))) {
     const isApiKeyError = authError.includes('api-key-not-valid');
-    const isNotAllowed = authError.includes('operation-not-allowed');
 
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4 font-body">
@@ -67,10 +67,8 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
             <h1 className="text-2xl font-black text-white uppercase tracking-tighter">Atenção Necessária</h1>
             <p className="text-sm text-muted-foreground">
               {isApiKeyError 
-                ? "Sua chave de conexão (API Key) está inválida ou expirada." 
-                : isNotAllowed 
-                ? "O login anônimo não está ativado no seu Firebase."
-                : `Erro técnico: ${authError}`}
+                ? "Sua chave de conexão (API Key) está inválida." 
+                : "O login anônimo não está ativado no seu Firebase."}
             </p>
           </div>
 
@@ -81,15 +79,15 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
             <ol className="text-xs text-muted-foreground space-y-3 list-decimal ml-4">
               {isApiKeyError ? (
                 <>
-                  <li className="pl-2">Vá ao <b>Console do Firebase</b> do seu projeto.</li>
-                  <li className="pl-2">Clique no ícone de <b>Engrenagem</b> &gt; Configurações do Projeto.</li>
+                  <li className="pl-2">Vá ao <b>Console do Firebase</b>.</li>
+                  <li className="pl-2">Clique em <b>Configurações do Projeto</b>.</li>
                   <li className="pl-2">Copie a <b>Chave de API da Web</b> real.</li>
                   <li className="pl-2">Cole no arquivo <code>src/firebase/config.ts</code>.</li>
                 </>
               ) : (
                 <>
-                  <li className="pl-2">No Console do Firebase, vá em <b>Authentication</b>.</li>
-                  <li className="pl-2">Acesse a aba <b>Sign-in method</b>.</li>
+                  <li className="pl-2">No Console, vá em <b>Authentication</b>.</li>
+                  <li className="pl-2">Acesse <b>Sign-in method</b>.</li>
                   <li className="pl-2">Ative o provedor <b>Anônimo</b> e salve.</li>
                 </>
               )}
@@ -100,7 +98,8 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
             onClick={() => window.location.reload()} 
             className="w-full h-14 bg-white text-black hover:bg-white/90 font-black rounded-2xl"
           >
-            ATUALIZAR PÁGINA
+            <RefreshCw className="w-4 h-4 mr-2" />
+            TENTAR NOVAMENTE
           </Button>
         </div>
       </div>
@@ -112,7 +111,7 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-6 animate-pulse">
           <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin" />
-          <p className="text-accent font-black tracking-widest uppercase text-xs">Conectando...</p>
+          <p className="text-accent font-black tracking-widest uppercase text-xs">Conectando ao Caixa...</p>
         </div>
       </div>
     );

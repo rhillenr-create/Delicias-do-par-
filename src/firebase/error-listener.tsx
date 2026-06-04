@@ -10,16 +10,16 @@ export function FirebaseErrorListener() {
 
   useEffect(() => {
     const handleError = (error: any) => {
-      // Mostra um erro visual para o usuário
+      // Mostra um erro visual crítico para o usuário
       toast({
         variant: "destructive",
-        title: "Erro de Permissão no Firebase",
-        description: "O banco de dados bloqueou a operação. Verifique se você publicou as 'Rules' no Console do Firebase.",
+        title: "ERRO DE GRAVAÇÃO!",
+        description: "Os dados NÃO foram salvos no Google. Verifique se você publicou as 'Rules' no Console do Firebase conforme o README.",
       });
 
-      // Em desenvolvimento, ainda lançamos o erro para o overlay do Next.js
+      // Em desenvolvimento, logamos o erro detalhado
       if (process.env.NODE_ENV === 'development') {
-        console.error("Firebase Permission Error:", error);
+        console.error("Firebase Permission Error Details:", error);
       }
     };
 
