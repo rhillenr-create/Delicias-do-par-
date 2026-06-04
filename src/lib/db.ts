@@ -11,8 +11,8 @@ import {
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError, type SecurityRuleContext } from '@/firebase/errors';
 
-export const saveMovement = (db: Firestore, movement: Omit<Movement, 'id' | 'timestamp'>) => {
-  if (!db) return;
+export const saveMovement = async (db: Firestore, movement: Omit<Movement, 'id' | 'timestamp'>) => {
+  if (!db) throw new Error("Banco de dados não conectado.");
   
   const movementsRef = collection(db, 'movements');
   const data = {
@@ -20,45 +20,53 @@ export const saveMovement = (db: Firestore, movement: Omit<Movement, 'id' | 'tim
     timestamp: Date.now(),
   };
 
-  addDoc(movementsRef, data)
-    .catch(async (serverError) => {
-      const permissionError = new FirestorePermissionError({
-        path: 'movements',
-        operation: 'create',
-        requestResourceData: data,
-      } satisfies SecurityRuleContext);
-      
-      errorEmitter.emit('permission-error', permissionError);
-    });
+  try {
+    const docRef = await addDoc(movementsRef, data);
+    return docRef;
+  } catch (serverError: any) {
+    console.error("Erro ao salvar no Firestore:", serverError);
+    const permissionError = new FirestorePermissionError({
+      path: 'movements',
+      operation: 'create',
+      requestResourceData: data,
+    } satisfies SecurityRuleContext);
+    
+    errorEmitter.emit('permission-error', permissionError);
+    throw serverError;
+  }
 };
 
-export const deleteMovement = (db: Firestore, id: string) => {
+export const deleteMovement = async (db: Firestore, id: string) => {
   if (!db || !id) return;
   
   const docRef = doc(db, 'movements', id);
-  deleteDoc(docRef)
-    .catch(async (serverError) => {
-      const permissionError = new FirestorePermissionError({
-        path: `movements/${id}`,
-        operation: 'delete',
-      } satisfies SecurityRuleContext);
-      
-      errorEmitter.emit('permission-error', permissionError);
-    });
+  try {
+    await deleteDoc(docRef);
+  } catch (serverError: any) {
+    const permissionError = new FirestorePermissionError({
+      path: `movements/${id}`,
+      operation: 'delete',
+    } satisfies SecurityRuleContext);
+    
+    errorEmitter.emit('permission-error', permissionError);
+    throw serverError;
+  }
 };
 
-export const saveBrandSettings = (db: Firestore, settings: BrandSettings) => {
+export const saveBrandSettings = async (db: Firestore, settings: BrandSettings) => {
   if (!db) return;
   
   const docRef = doc(db, 'settings', 'brand');
-  setDoc(docRef, settings, { merge: true })
-    .catch(async (serverError) => {
-      const permissionError = new FirestorePermissionError({
-        path: 'settings/brand',
-        operation: 'update',
-        requestResourceData: settings,
-      } satisfies SecurityRuleContext);
-      
-      errorEmitter.emit('permission-error', permissionError);
-    });
+  try {
+    await setDoc(docRef, settings, { merge: true });
+  } catch (serverError: any) {
+    const permissionError = new FirestorePermissionError({
+      path: 'settings/brand',
+      operation: 'update',
+      requestResourceData: settings,
+    } satisfies SecurityRuleContext);
+    
+    errorEmitter.emit('permission-error', permissionError);
+    throw serverError;
+  }
 };

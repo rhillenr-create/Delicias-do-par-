@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -70,7 +71,8 @@ export function MovementDialog({ type, onClose }: Props) {
         }
       }
 
-      saveMovement(db, {
+      // Agora esperamos o salvamento real no servidor
+      await saveMovement(db, {
         type,
         value: numericValue,
         description,
@@ -81,16 +83,13 @@ export function MovementDialog({ type, onClose }: Props) {
 
       toast({
         title: "Sucesso!",
-        description: "Movimentação registrada com sucesso.",
+        description: "Movimentação registrada e salva no servidor.",
         className: "bg-accent text-accent-foreground",
       });
       onClose();
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Erro",
-        description: "Não foi possível registrar a movimentação.",
-      });
+      console.error("Falha ao salvar movimentação:", error);
+      // O erro visual já é tratado pelo FirebaseErrorListener
     } finally {
       setIsSubmitting(false);
     }
@@ -147,7 +146,7 @@ export function MovementDialog({ type, onClose }: Props) {
               className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-bold text-lg"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Salvando..." : "Salvar Movimentação"}
+              {isSubmitting ? "Salvando no Google..." : "Salvar Movimentação"}
             </Button>
           </DialogFooter>
         </form>

@@ -3,26 +3,29 @@
 
 Este é o seu sistema de frente de caixa (PDV) completo, otimizado para ser hospedado na **Vercel** e versionado no **GitHub**.
 
-## 🚀 Como resolver o problema de "Perda de Dados" (Firestore Rules)
+## 🛑 OS DADOS SUMIRAM? (COMO RESOLVER EM 1 MINUTO)
 
-Se ao atualizar a página os dados somem, é porque o Firebase está bloqueando a gravação. Siga exatamente estes passos:
+Se você atualiza a página e os dados desaparecem, é porque o Google está bloqueando a gravação. Siga estes 3 passos obrigatórios no seu [Console do Firebase](https://console.firebase.google.com/):
 
-1. Acesse o [Console do Firebase](https://console.firebase.google.com/).
-2. No menu lateral, clique em **Firestore Database**.
-3. Vá na aba **Rules** (Regras).
-4. Substitua TODO o conteúdo que estiver lá por este código:
-    ```javascript
-    rules_version = '2';
-    service cloud.firestore {
-      match /databases/{database}/documents {
-        match /{document=**} {
-          allow read, write: if request.auth != null;
-        }
-      }
+### 1. Criar o Banco de Dados
+No menu lateral, vá em **Firestore Database** e clique em **Create Database**. Escolha um servidor (ex: `southamerica-east1` para o Brasil) e selecione **"Start in Test Mode"** (ou apenas crie o banco).
+
+### 2. Publicar as Regras de Acesso (Rules)
+Na aba **Rules** do Firestore, substitua TUDO o que estiver lá por este código exatamente:
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.auth != null;
     }
-    ```
-5. Clique em **Publish** (Publicar).
-6. **Importante**: No menu **Authentication**, certifique-se que o método **Anônimo** está "Ativado".
+  }
+}
+```
+**NÃO ESQUEÇA DE CLICAR EM "PUBLISH"!**
+
+### 3. Ativar Autenticação Anônima
+No menu **Authentication** > aba **Sign-in method** > clique em **Add new provider** > selecione **Anonymous** e mude para **Enabled** (Ativado). Clique em **Save**.
 
 ---
 
@@ -38,13 +41,5 @@ git branch -M main
 git remote add origin https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
 git push -u origin main
 ```
-
----
-
-## 🛠️ Funcionalidades
-- **Frente de Caixa:** Registro rápido de PIX, Cartões, Dinheiro e Delivery.
-- **Relatórios:** Gere PDFs profissionais para conferência ou impressão.
-- **Dashboard:** Gráficos de vendas e lucro em tempo real.
-- **Status de Conexão:** Indicador visual de **ONLINE/OFFLINE** em tempo real.
 
 *ID do Projeto Firebase: nextn-f5a13*
