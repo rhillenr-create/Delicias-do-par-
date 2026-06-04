@@ -3,33 +3,38 @@
 
 Este é o seu sistema de frente de caixa (PDV) completo, otimizado para o Google Firebase.
 
-## 🛑 DADOS SUMINDO? (RESOLVA EM 1 MINUTO)
+## 🛑 TRANSIÇÃO PARA PRODUÇÃO (DADOS NÃO EXPIRAREM)
 
-Se você atualiza a página e os dados somem, é porque o Google está bloqueando a gravação definitiva. Siga estes 3 passos no seu [Console do Firebase](https://console.firebase.google.com/):
+O "Modo de Teste" do Firebase expira após 30 dias. Para manter seu sistema funcionando para sempre de forma segura, siga estes passos:
 
-### 1. Criar o Banco de Dados (Firestore)
-No menu lateral, vá em **Firestore Database** e clique em **Create Database**. 
-- Escolha o local (ex: `southamerica-east1`).
-- Selecione **"Start in Test Mode"**. 
-- **Sem clicar no botão "Create Database", o sistema não tem onde salvar!**
+### 1. Configurar Regras de Produção
+No seu [Console do Firebase](https://console.firebase.google.com/), vá em **Firestore Database** > aba **Rules** e substitua todo o código por este:
 
-### 2. Publicar as Regras (Rules)
-Na aba **Rules** do Firestore, cole este código e clique em **PUBLISH**:
 ```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Permite leitura e escrita apenas se o usuário estiver autenticado
+    // Como o app usa Login Anônimo, isso garante que apenas o seu app acesse os dados.
     match /{document=**} {
-      allow read, write: if true;
+      allow read, write: if request.auth != null;
     }
   }
 }
 ```
+Clique em **PUBLISH** (Publicar).
 
-### 3. Ativar Autenticação Anônima
-Em **Authentication** > **Sign-in method** > **Add new provider** > **Anonymous** > **Enabled** (Ativado).
+### 2. Verificar Autenticação
+Certifique-se de que o provedor **Anonymous** (Anônimo) está ativado em **Authentication** > **Sign-in method**. Sem isso, o sistema não conseguirá "logar" para salvar os dados com as novas regras.
 
 ---
+
+## 🚀 Funcionalidades do Sistema
+- **Registro de Vendas**: PIX, Cartões, Dinheiro e Delivery.
+- **Gestão de Saídas**: Sangrias e Despesas com categorização por IA.
+- **Dashboard**: Gráficos em tempo real de faturamento e lucro líquido.
+- **Relatórios**: Geração de relatórios formatados para impressão.
+- **Offline First**: Funciona mesmo com instabilidade na internet e sincroniza ao voltar.
 
 ## 📤 Como subir para o GitHub
 1. Crie um repositório no GitHub.
@@ -37,7 +42,7 @@ Em **Authentication** > **Sign-in method** > **Add new provider** > **Anonymous*
 ```bash
 git init
 git add .
-git commit -m "Versão Final - persistência corrigida"
+git commit -m "Versão Final - Regras de Produção"
 git branch -M main
 git remote add origin https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
 git push -u origin main
