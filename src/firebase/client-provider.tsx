@@ -15,6 +15,7 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     auth: Auth;
   } | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -27,9 +28,10 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
             .then(() => {
               setIsAuthReady(true);
             })
-            .catch((error) => {
-              console.error("Erro crítico de autenticação:", error);
-              // Em ambiente de desenvolvimento, permitimos prosseguir para ver erros do Firestore
+            .catch((error: any) => {
+              console.error("Erro de autenticação:", error);
+              setAuthError(error.message);
+              // Permitimos prosseguir para ver erros de permissão no Firestore se necessário
               setIsAuthReady(true);
             });
         } else {
@@ -38,10 +40,34 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
       });
 
       return () => unsubscribe();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao inicializar Firebase:", error);
+      setAuthError(error.message);
     }
   }, []);
+
+  if (authError && authError.includes('api-key-not-valid')) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <div className="max-w-md w-full bg-card border-2 border-destructive p-8 rounded-3xl shadow-2xl text-center space-y-6">
+          <div className="w-20 h-20 bg-destructive/10 rounded-full flex items-center justify-center mx-auto">
+            <span className="text-4xl">⚠️</span>
+          </div>
+          <h1 className="text-xl font-black text-white uppercase tracking-tighter">Erro de Configuração</h1>
+          <p className="text-sm text-muted-foreground">A sua <b>Chave de API</b> do Firebase é inválida ou não foi configurada.</p>
+          <div className="bg-black/40 p-4 rounded-xl text-left">
+            <p className="text-[10px] font-bold text-destructive uppercase mb-2">Como Resolver:</p>
+            <ol className="text-xs text-muted-foreground space-y-2 list-decimal ml-4">
+              <li>Acesse o <b>Console do Firebase</b>.</li>
+              <li>Vá em <b>Configurações do Projeto</b>.</li>
+              <li>Copie a <b>Chave de API da Web</b> real.</li>
+              <li>Cole no arquivo <code>src/firebase/config.ts</code>.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!firebaseInstance || !isAuthReady) {
     return (
