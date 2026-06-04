@@ -33,11 +33,10 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
             .catch((error: any) => {
               console.error("Erro de autenticação:", error);
               setAuthError(error.code || error.message);
-              // Se houver erro de API Key ou Provedor, mostramos a tela de erro
               if (error.code === 'auth/api-key-not-valid' || error.code === 'auth/operation-not-allowed') {
                 setIsAuthReady(false);
               } else {
-                setIsAuthReady(true); // Tenta prosseguir para outros erros
+                setIsAuthReady(true);
               }
             });
         } else {

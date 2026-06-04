@@ -7,8 +7,11 @@ Este é o seu sistema de frente de caixa (PDV) completo, otimizado para ser hosp
 
 Se você atualiza a página e os dados desaparecem, é porque o Google está bloqueando a gravação. Siga estes 3 passos obrigatórios no seu [Console do Firebase](https://console.firebase.google.com/):
 
-### 1. Criar o Banco de Dados
-No menu lateral, vá em **Firestore Database** e clique em **Create Database**. Escolha um servidor (ex: `southamerica-east1` para o Brasil) e selecione **"Start in Test Mode"** (ou apenas crie o banco).
+### 1. Criar o Banco de Dados (Firestore)
+No menu lateral do console, vá em **Firestore Database** e clique no botão **Create Database**. 
+- Escolha um servidor (ex: `southamerica-east1` para o Brasil).
+- Selecione **"Start in Test Mode"** (ou apenas crie o banco). 
+- **Sem clicar nesse botão "Create Database", o sistema não tem onde salvar!**
 
 ### 2. Publicar as Regras de Acesso (Rules)
 Na aba **Rules** do Firestore, substitua TUDO o que estiver lá por este código exatamente:
@@ -41,5 +44,3 @@ git branch -M main
 git remote add origin https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
 git push -u origin main
 ```
-
-*ID do Projeto Firebase: nextn-f5a13*
