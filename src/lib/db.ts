@@ -20,7 +20,6 @@ export const saveMovement = (db: Firestore, movement: Omit<Movement, 'id' | 'tim
     timestamp: Date.now(),
   };
 
-  // Executa a gravação. O Firestore lidará com o cache local imediatamente.
   addDoc(movementsRef, data)
     .catch(async (serverError) => {
       const permissionError = new FirestorePermissionError({
