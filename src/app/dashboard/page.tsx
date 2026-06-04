@@ -30,6 +30,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
@@ -99,7 +100,7 @@ export default function DashboardPage() {
         </div>
         <Button
           onClick={() => window.print()}
-          className="bg-accent text-accent-foreground hover:bg-accent/90 font-black rounded-2xl h-14 px-8 shadow-xl shadow-accent/20 transition-all hover:scale-105 active:scale-95"
+          className="bg-accent text-accent-foreground hover:bg-accent/90 font-black rounded-2xl h-14 px-8 shadow-xl shadow-accent/20 transition-all hover:scale-[1.02] active:scale-95"
         >
           <Printer className="w-5 h-5 mr-3" />
           GERAR RELATÓRIO
@@ -197,9 +198,11 @@ export default function DashboardPage() {
 function StatCard({ title, value, icon: Icon, color, highlight, large, gradient }: any) {
   return (
     <Card
-      className={`glass-card overflow-hidden group transition-all duration-300 hover:scale-[1.02] ${
-        large ? 'rounded-[2rem]' : 'rounded-3xl'
-      } ${gradient ? 'bg-gradient-to-br from-primary/20 via-card/40 to-accent/10 border-accent/20' : ''}`}
+      className={cn(
+        "glass-card overflow-hidden group transition-all duration-300 hover:scale-[1.02]",
+        large ? 'rounded-[2rem]' : 'rounded-3xl',
+        gradient ? 'bg-gradient-to-br from-primary/20 via-card/40 to-accent/10 border-accent/20' : ''
+      )}
     >
       <CardContent className="p-6 md:p-8 relative">
         {gradient && <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 blur-[60px] -mr-16 -mt-16 rounded-full" />}
@@ -209,9 +212,11 @@ function StatCard({ title, value, icon: Icon, color, highlight, large, gradient 
               {title}
             </p>
             <p
-              className={`font-headline font-black leading-none ${large ? 'text-4xl md:text-5xl' : 'text-2xl'} ${
+              className={cn(
+                "font-headline font-black leading-none",
+                large ? 'text-4xl md:text-5xl' : 'text-2xl',
                 highlight ? 'text-white' : 'text-white/90'
-              }`}
+              )}
             >
               R$ {value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </p>
@@ -245,7 +250,7 @@ function ChartCard({ title, children }: any) {
 function LegendItem({ color, label }: any) {
   return (
     <div className="flex items-center gap-2.5">
-      <div className={`w-2.5 h-2.5 rounded-full ${color} shadow-[0_0_10px_currentColor]`} />
+      <div className={cn(`w-2.5 h-2.5 rounded-full ${color} shadow-[0_0_10px_currentColor]`)} />
       <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">
         {label}
       </span>
