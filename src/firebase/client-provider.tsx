@@ -81,9 +81,10 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
             <ol className="text-xs text-muted-foreground space-y-3 list-decimal ml-4">
               {isApiKeyError ? (
                 <>
-                  <li className="pl-2">Acesse o <b>Console do Firebase</b>.</li>
-                  <li className="pl-2">Vá em Configurações do Projeto (ícone de engrenagem).</li>
-                  <li className="pl-2">Verifique se a <b>Chave de API da Web</b> está correta.</li>
+                  <li className="pl-2">Vá ao <b>Console do Firebase</b> do seu projeto.</li>
+                  <li className="pl-2">Clique no ícone de <b>Engrenagem</b> &gt; Configurações do Projeto.</li>
+                  <li className="pl-2">Copie a <b>Chave de API da Web</b> real.</li>
+                  <li className="pl-2">Cole no arquivo <code>src/firebase/config.ts</code>.</li>
                 </>
               ) : (
                 <>

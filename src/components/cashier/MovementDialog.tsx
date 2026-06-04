@@ -75,8 +75,8 @@ export function MovementDialog({ type, onClose }: Props) {
         value: numericValue,
         description,
         observation,
-        aiCategory: aiData?.category,
-        aiSuggestions: aiData?.suggestions,
+        aiCategory: aiData?.category || '',
+        aiSuggestions: aiData?.suggestions || [],
       });
 
       toast({
