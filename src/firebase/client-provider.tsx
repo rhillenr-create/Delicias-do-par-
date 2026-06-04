@@ -13,35 +13,38 @@ import Image from 'next/image';
 
 const LOGO_URL = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
-// Componente de carregamento definido fora para evitar problemas de re-definição e hidratação
+// Componente de carregamento com logo em 70% da tela e status no canto inferior
 const LoadingScreen = () => (
   <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
-    <div className="flex flex-col items-center gap-10">
-      <div className="relative w-48 h-40 md:w-64 md:h-52 animate-bounce">
-        <Image 
-          src={LOGO_URL} 
-          alt="Açaíteria Delícias do Pará" 
-          fill 
-          className="object-contain" 
-          unoptimized
-          priority
-        />
-      </div>
-      <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin shadow-[0_0_20px_rgba(104,255,54,0.4)]" />
+    {/* Logotipo ocupando 70% da viewport */}
+    <div className="relative w-[70vw] h-[70vh] animate-pulse transition-all duration-1000">
+      <Image 
+        src={LOGO_URL} 
+        alt="Açaíteria Delícias do Pará" 
+        fill 
+        className="object-contain" 
+        unoptimized
+        priority
+      />
     </div>
     
-    {/* Status no canto inferior esquerdo conforme solicitado */}
-    <div className="absolute bottom-8 left-8 flex items-center gap-3">
-      <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(104,255,54,0.8)]" />
-      <p className="text-accent font-black tracking-[0.4em] uppercase text-[10px] animate-pulse">
-        Conectando ao Caixa...
+    {/* Status no canto inferior esquerdo */}
+    <div className="absolute bottom-12 left-12 flex flex-col gap-2">
+      <div className="flex items-center gap-3">
+        <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_10px_rgba(104,255,54,0.8)]" />
+        <p className="text-accent font-black tracking-[0.5em] uppercase text-[10px] animate-pulse">
+          SISTEMA INICIALIZANDO
+        </p>
+      </div>
+      <p className="text-white/20 font-black tracking-[0.2em] uppercase text-[8px]">
+        CONECTANDO AO CAIXA...
       </p>
     </div>
   </div>
 );
 
 export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isMounted, setIsMounted] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [firebaseInstance, setFirebaseInstance] = useState<{
     firebaseApp: FirebaseApp;
     firestore: Firestore;
@@ -51,8 +54,7 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
   const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Marca como montado apenas no cliente após o primeiro render
-    setIsMounted(true);
+    setMounted(true);
     
     try {
       const instance = initializeFirebase();
@@ -82,15 +84,12 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
   }, []);
 
   // RENDEREZAÇÃO UNIVERSAL (SSR e Primeiro Frame do Cliente)
-  // Para evitar erros de hidratação, o servidor e o cliente DEVEM renderizar a mesma coisa no início.
-  // Retornamos um div vazio com o fundo padrão para garantir essa sincronia.
-  if (!isMounted) {
+  // Isso resolve 100% dos erros de hidratação em componentes root.
+  if (!mounted) {
     return <div className="min-h-screen bg-background" />;
   }
 
-  // A partir daqui, estamos garantidamente no lado do Cliente
-  
-  // Tratamento de erros críticos de configuração
+  // Se houver erro crítico de configuração após montar
   if (authError && (authError.includes('api-key-not-valid') || authError.includes('operation-not-allowed') || authError.includes('invalid-api-key'))) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4 font-body">
