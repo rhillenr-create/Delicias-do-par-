@@ -1,17 +1,49 @@
 
 # 🍧 ACAITERIA DELICIAS DO PARÁ - Gestão de Caixa Inteligente
 
-Este é o seu sistema de frente de caixa (PDV) completo, otimizado para ser hospedado na **Vercel**.
+Este é o seu sistema de frente de caixa (PDV) completo, otimizado para ser hospedado na **Vercel** e versionado no **GitHub**.
+
+## 📤 Como subir para o GitHub
+
+Siga estes passos para salvar seu código na nuvem:
+
+1. **Crie um Repositório**: Vá ao seu [GitHub](https://github.com) e crie um novo repositório (ex: `caixa-acaiteria`).
+2. **Abra o Terminal**: Na pasta do seu projeto, execute os seguintes comandos:
+
+```bash
+# Iniciar o rastreamento do Git
+git init
+
+# Adicionar todos os arquivos
+git add .
+
+# Criar a primeira versão (salvamento local)
+git commit -m "Versão Inicial - ACAITERIA DELICIAS DO PARÁ"
+
+# Criar o link com o seu GitHub (Substitua pelo link que o GitHub te deu)
+git branch -M main
+git remote add origin https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
+
+# Enviar os arquivos para a nuvem
+git push -u origin main
+```
+
+---
 
 ## 🚀 Como colocar no ar (Vercel)
 
-Siga estes passos para ter o seu link oficial (ex: `sua-acaiteria.vercel.app`):
+Após subir para o GitHub, siga estes passos para ter o seu link oficial (ex: `sua-acaiteria.vercel.app`):
 
-### 1. Preparação no Firebase (Obrigatório)
-Mesmo usando a Vercel para o site, os dados ficam no Firebase. Ative estes dois serviços no Console do Firebase:
-- **Authentication**: Ative o provedor **Anônimo** (Anonymous).
-- **Firestore Database**: Crie o banco em **Modo de Produção**.
-  - Na aba **Rules**, publique estas regras:
+1. **Conecte à Vercel**: 
+   - Crie uma conta em [vercel.com](https://vercel.com).
+   - Clique em "Add New" > "Project".
+   - Importe o repositório que você acabou de criar no GitHub.
+   - A Vercel detectará automaticamente que é um projeto **Next.js**. Clique em **Deploy**.
+
+2. **Configuração no Firebase (Obrigatório)**:
+   - No Console do Firebase, ative a **Authentication** com o provedor **Anônimo** (Anonymous).
+   - Crie o banco **Firestore Database** em **Modo de Produção**.
+   - Na aba **Rules** do Firestore, publique estas regras:
     ```javascript
     rules_version = '2';
     service cloud.firestore {
@@ -23,31 +55,12 @@ Mesmo usando a Vercel para o site, os dados ficam no Firebase. Ative estes dois 
     }
     ```
 
-### 2. Hospedagem na Vercel
-1. Crie uma conta em [vercel.com](https://vercel.com).
-2. Conecte seu **GitHub** (após subir o código para lá) ou use a **Vercel CLI**.
-3. A Vercel detectará automaticamente que é um projeto **Next.js**.
-
----
-
-## ❓ Perguntas Frequentes
-
-### Se eu mudar as cores ou botões, perco minhas vendas?
-**Não!** Seus dados (vendas, despesas e lucros) estão salvos no banco de dados do Firebase. Mudar o visual do aplicativo (o código) é como trocar a decoração da sua loja; o dinheiro que está no cofre (banco de dados) continua lá guardado e seguro.
-
-### As mudanças visuais são automáticas?
-- **No Código**: Se a IA fizer uma mudança visual (mudar uma cor ou ícone), você precisa baixar o código novo e atualizar na Vercel. 
-- **Nas Vendas**: Sim! Todas as vendas que você registra no dia a dia aparecem instantaneamente em todos os seus aparelhos, pois o Firebase sincroniza tudo em tempo real.
-
-### Preciso pagar algo?
-Não. Tanto a Vercel quanto o Firebase possuem planos gratuitos que atendem perfeitamente uma açaíteria em crescimento.
-
 ---
 
 ## 🛠️ Funcionalidades
 - **Frente de Caixa:** Registro rápido de PIX, Cartões, Dinheiro e Delivery.
 - **Relatórios:** Gere PDFs profissionais para conferência ou impressão.
 - **Dashboard:** Gráficos de vendas e lucro em tempo real.
-- **IA Financeira:** Insights automáticos sobre suas despesas.
+- **Status de Conexão:** Indicador visual de **ONLINE/OFFLINE** em tempo real.
 
 *ID do Projeto Firebase: nextn-f5a13*
