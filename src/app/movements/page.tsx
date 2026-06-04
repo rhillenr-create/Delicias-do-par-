@@ -79,7 +79,6 @@ export default function MovementsPage() {
            </Link>
            <div>
              <h1 className="text-xl font-headline font-bold text-white uppercase tracking-tight">RELATÓRIO DE CAIXA</h1>
-             <p className="text-accent uppercase text-[10px] font-black tracking-widest line-clamp-1">{brand?.name || 'ACAITERIA DELICIAS DO PARÁ'}</p>
            </div>
         </div>
         

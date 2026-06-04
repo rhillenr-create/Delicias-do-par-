@@ -100,9 +100,6 @@ export default function DashboardPage() {
             <h1 className="text-2xl font-headline font-bold text-white uppercase tracking-tight">
               PAINEL FINANCEIRO
             </h1>
-            <p className="text-accent uppercase font-black tracking-widest line-clamp-1">
-              {brand?.name || 'ACAITERIA DELICIAS DO PARÁ'}
-            </p>
           </div>
         </div>
         <Button

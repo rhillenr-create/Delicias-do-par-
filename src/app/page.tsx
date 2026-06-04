@@ -67,22 +67,18 @@ export default function CashierPage() {
               SISTEMA DE GESTÃO
             </span>
             <div className="bg-black/60 border border-white/10 px-8 py-5 rounded-3xl flex flex-col md:flex-row items-center gap-6 shadow-2xl backdrop-blur-md">
-              <p className="text-accent font-black text-2xl tracking-[0.2em] uppercase">
-                {brand?.name || 'ACAITERIA DELICIAS DO PARÁ'}
-              </p>
-              
-              <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/5 border border-white/10">
+              <div className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 border border-white/10">
                 {isOnline ? (
                   <>
-                    <span className="text-[10px] font-black text-accent tracking-widest uppercase">ONLINE</span>
+                    <span className="text-sm font-black text-accent tracking-widest uppercase">SISTEMA ONLINE</span>
                     <div className="w-3 h-3 rounded-full bg-accent animate-pulse shadow-[0_0_15px_#4ade80]" />
-                    <Wifi className="w-4 h-4 text-accent" />
+                    <Wifi className="w-5 h-5 text-accent" />
                   </>
                 ) : (
                   <>
-                    <span className="text-[10px] font-black text-destructive tracking-widest uppercase">OFFLINE</span>
+                    <span className="text-sm font-black text-destructive tracking-widest uppercase">SISTEMA OFFLINE</span>
                     <div className="w-3 h-3 rounded-full bg-destructive animate-pulse shadow-[0_0_15px_#ef4444]" />
-                    <WifiOff className="w-4 h-4 text-destructive" />
+                    <WifiOff className="w-5 h-5 text-destructive" />
                   </>
                 )}
               </div>
