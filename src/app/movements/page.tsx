@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Movement } from '@/lib/types';
 import { deleteMovement } from '@/lib/db';
 import { useCollection, useDoc, useFirestore } from '@/firebase';
@@ -23,6 +22,7 @@ export default function MovementsPage() {
   const db = useFirestore();
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState('all');
+  const [mounted, setMounted] = useState(false);
 
   const movementsQuery = useMemo(() => {
     if (!db) return null;
@@ -33,6 +33,10 @@ export default function MovementsPage() {
 
   const brandRef = useMemo(() => db ? doc(db, 'settings', 'brand') : null, [db]);
   const { data: brand } = useDoc<any>(brandRef);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const filteredMovements = useMemo(() => {
     const now = new Date();
@@ -61,6 +65,8 @@ export default function MovementsPage() {
     else acc.in += curr.value;
     return acc;
   }, { in: 0, out: 0 }), [filteredMovements]);
+
+  if (!mounted) return null;
 
   const currentLogo = brand?.logoUrl || DEFAULT_LOGO;
 
