@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -71,7 +70,6 @@ export function MovementDialog({ type, onClose }: Props) {
         }
       }
 
-      // Agora esperamos o salvamento real no servidor
       await saveMovement(db, {
         type,
         value: numericValue,
@@ -89,7 +87,6 @@ export function MovementDialog({ type, onClose }: Props) {
       onClose();
     } catch (error) {
       console.error("Falha ao salvar movimentação:", error);
-      // O erro visual já é tratado pelo FirebaseErrorListener
     } finally {
       setIsSubmitting(false);
     }
@@ -123,7 +120,7 @@ export function MovementDialog({ type, onClose }: Props) {
             <Label htmlFor="description" className="text-muted-foreground">Descrição</Label>
             <Input
               id="description"
-              placeholder="Ex: Coca-cola 2L ou Aluguel"
+              placeholder="Ex: Coca-cola 2L ou Açaí"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="bg-background border-muted"
