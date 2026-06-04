@@ -8,12 +8,22 @@ import { collection, doc, query, orderBy } from 'firebase/firestore';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Trash2, BrainCircuit, Filter, Clock, Printer } from 'lucide-react';
+import { Search, Trash2, BrainCircuit, Filter, Clock, Printer, AlertTriangle } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import Image from 'next/image';
 
 const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/6a0cd7fe4b63fecad5f17a1eca98207bff5faa39/delicias_do_para.png";
@@ -23,6 +33,7 @@ export default function MovementsPage() {
   const [search, setSearch] = useState('');
   const [period, setPeriod] = useState('all');
   const [mounted, setMounted] = useState(false);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -69,6 +80,13 @@ export default function MovementsPage() {
   if (!mounted) return null;
 
   const currentLogo = brand?.logoUrl || DEFAULT_LOGO;
+
+  const handleDelete = () => {
+    if (db && deleteConfirmId) {
+      deleteMovement(db, deleteConfirmId);
+      setDeleteConfirmId(null);
+    }
+  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -152,7 +170,14 @@ export default function MovementsPage() {
                     </span>
                   </TableCell>
                   <TableCell className="text-center">
-                    <Button variant="ghost" size="icon" onClick={() => db && deleteMovement(db, m.id)} className="hover:text-destructive"><Trash2 className="w-4 h-4" /></Button>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      onClick={() => setDeleteConfirmId(m.id)} 
+                      className="hover:text-destructive"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))
@@ -194,6 +219,35 @@ export default function MovementsPage() {
           ))}</tbody>
         </table>
       </div>
+
+      <AlertDialog open={!!deleteConfirmId} onOpenChange={(open) => !open && setDeleteConfirmId(null)}>
+        <AlertDialogContent className="bg-card border-2 border-destructive/20 rounded-[2rem] overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-1 bg-destructive" />
+          <AlertDialogHeader className="space-y-4">
+            <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto sm:mx-0">
+              <AlertTriangle className="w-8 h-8 text-destructive" />
+            </div>
+            <AlertDialogTitle className="text-2xl font-black text-white uppercase tracking-tighter text-center sm:text-left">
+              Confirmar Exclusão
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground font-medium text-center sm:text-left">
+              Você realmente deseja excluir esta operação de caixa? <br />
+              <span className="text-destructive/80 font-bold uppercase text-[10px] tracking-widest">Atenção: Esta ação não pode ser desfeita.</span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-6 flex-col sm:flex-row gap-3">
+            <AlertDialogCancel className="h-14 rounded-2xl border-white/5 bg-white/5 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[10px] w-full sm:w-auto">
+              CANCELAR
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDelete}
+              className="h-14 rounded-2xl bg-destructive hover:bg-destructive/90 text-white font-black uppercase tracking-widest text-[10px] shadow-xl shadow-destructive/20 w-full sm:w-auto"
+            >
+              SIM, EXCLUIR AGORA
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
