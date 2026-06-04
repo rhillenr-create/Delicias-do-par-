@@ -33,11 +33,11 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
             .catch((error: any) => {
               console.error("Erro de autenticação:", error);
               setAuthError(error.code || error.message);
-              // Se for erro de API Key ou Provedor Desativado, não deixamos prosseguir
+              // Se houver erro de API Key ou Provedor, mostramos a tela de erro
               if (error.code === 'auth/api-key-not-valid' || error.code === 'auth/operation-not-allowed') {
                 setIsAuthReady(false);
               } else {
-                setIsAuthReady(true);
+                setIsAuthReady(true); // Tenta prosseguir para outros erros
               }
             });
         } else {
@@ -67,7 +67,7 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
             <h1 className="text-2xl font-black text-white uppercase tracking-tighter">Atenção Necessária</h1>
             <p className="text-sm text-muted-foreground">
               {isApiKeyError 
-                ? "Sua chave de conexão (API Key) está inválida." 
+                ? "Sua chave de conexão (API Key) está inválida ou expirada." 
                 : "O login anônimo não está ativado no seu Firebase."}
             </p>
           </div>
@@ -79,8 +79,8 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
             <ol className="text-xs text-muted-foreground space-y-3 list-decimal ml-4">
               {isApiKeyError ? (
                 <>
-                  <li className="pl-2">Vá ao <b>Console do Firebase</b>.</li>
-                  <li className="pl-2">Clique em <b>Configurações do Projeto</b>.</li>
+                  <li className="pl-2">Vá ao <b>Console do Firebase</b> do seu projeto.</li>
+                  <li className="pl-2">Clique no ícone de <b>Engrenagem</b> &gt; Configurações do Projeto.</li>
                   <li className="pl-2">Copie a <b>Chave de API da Web</b> real.</li>
                   <li className="pl-2">Cole no arquivo <code>src/firebase/config.ts</code>.</li>
                 </>
