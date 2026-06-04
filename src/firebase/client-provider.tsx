@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -11,7 +12,6 @@ import { Button } from '@/components/ui/button';
 
 const LoadingScreen = () => (
   <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
-    {/* Status no canto inferior esquerdo conforme solicitado */}
     <div className="absolute bottom-12 left-12 flex flex-col gap-2 z-10">
       <div className="flex items-center gap-3">
         <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shadow-[0_0_15px_rgba(104,255,54,0.8)]" />
@@ -66,12 +66,10 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, []);
 
-  // Rendereização idêntica no servidor e no primeiro frame do cliente para evitar erro de hidratação
   if (!mounted) {
     return <div className="min-h-screen bg-background" />;
   }
 
-  // Se houver erro crítico de configuração após montar
   if (authError && (authError.includes('api-key-not-valid') || authError.includes('operation-not-allowed') || authError.includes('invalid-api-key'))) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4 font-body">
@@ -111,12 +109,10 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     );
   }
 
-  // Se o Firebase ainda não estiver pronto para o cliente, exibe a tela de carregamento
   if (!firebaseInstance || !isAuthReady) {
     return <LoadingScreen />;
   }
 
-  // Sucesso: renderiza o provedor e os filhos
   return (
     <FirebaseProvider
       firebaseApp={firebaseInstance.firebaseApp}
