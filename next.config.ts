@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -10,6 +11,12 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'gitlab.com',
+        port: '',
+        pathname: '/**',
+      },
       {
         protocol: 'https',
         hostname: 'placehold.co',
