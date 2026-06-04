@@ -63,9 +63,6 @@ export default function CashierPage() {
           </Link>
 
           <div className="flex flex-col items-center md:items-end gap-3 text-center md:text-right">
-            <span className="text-[10px] uppercase tracking-[0.5em] text-muted-foreground/60 font-black">
-              SISTEMA DE GESTÃO
-            </span>
             <div className="bg-black/60 border border-white/10 px-8 py-5 rounded-3xl flex flex-col md:flex-row items-center gap-6 shadow-2xl backdrop-blur-md">
               <div className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 border border-white/10">
                 {isOnline ? (

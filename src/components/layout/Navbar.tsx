@@ -41,7 +41,7 @@ export function Navbar() {
           <div className="relative w-20 h-16 overflow-hidden rounded-xl bg-background p-1 border-2 border-accent shadow-[0_0_15px_rgba(104,255,54,0.2)] group-hover:scale-105 transition-all flex items-center justify-center">
             <Image
               src={currentLogo}
-              alt={brand?.name || 'ACAITERIA DELICIAS DO PARÁ'}
+              alt="Logo"
               fill
               className="object-contain"
               unoptimized

@@ -32,7 +32,7 @@ export default function MovementsPage() {
   const { data: movements = [] } = useCollection<Movement>(movementsQuery);
 
   const brandRef = useMemo(() => db ? doc(db, 'settings', 'brand') : null, [db]);
-  const { data: brand = { name: '', logoUrl: '' } } = useDoc<any>(brandRef);
+  const { data: brand } = useDoc<any>(brandRef);
 
   const filteredMovements = useMemo(() => {
     const now = new Date();
@@ -169,7 +169,7 @@ export default function MovementsPage() {
             </div>
             <div>
               <h1 className="text-4xl font-black uppercase tracking-tighter">RELATÓRIO FINANCEIRO</h1>
-              <p className="text-gray-600 uppercase tracking-widest text-xs font-bold">{brand?.name || 'ACAITERIA DELICIAS DO PARÁ'}</p>
+              <p className="text-gray-600 uppercase tracking-widest text-xs font-bold">{brand?.name || 'ESTABELECIMENTO'}</p>
             </div>
           </div>
           <div className="text-right">
