@@ -13,11 +13,11 @@ import Image from 'next/image';
 
 const LOGO_URL = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
-// Componente de carregamento com logo em 70% da tela e status no canto inferior
+// Componente de carregamento com logo em 85% da tela e status no canto inferior
 const LoadingScreen = () => (
   <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
-    {/* Logotipo ocupando 70% da viewport */}
-    <div className="relative w-[70vw] h-[70vh] animate-pulse transition-all duration-1000">
+    {/* Logotipo ocupando 85% da viewport para impacto máximo */}
+    <div className="relative w-[85vw] h-[85vh] transition-all duration-1000 animate-in fade-in zoom-in duration-1000">
       <Image 
         src={LOGO_URL} 
         alt="Açaíteria Delícias do Pará" 
@@ -29,15 +29,15 @@ const LoadingScreen = () => (
     </div>
     
     {/* Status no canto inferior esquerdo */}
-    <div className="absolute bottom-12 left-12 flex flex-col gap-2">
+    <div className="absolute bottom-12 left-12 flex flex-col gap-2 z-10">
       <div className="flex items-center gap-3">
-        <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_10px_rgba(104,255,54,0.8)]" />
+        <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shadow-[0_0_15px_rgba(104,255,54,0.8)]" />
         <p className="text-accent font-black tracking-[0.5em] uppercase text-[10px] animate-pulse">
           SISTEMA INICIALIZANDO
         </p>
       </div>
-      <p className="text-white/20 font-black tracking-[0.2em] uppercase text-[8px]">
-        CONECTANDO AO CAIXA...
+      <p className="text-white/30 font-black tracking-[0.2em] uppercase text-[8px] ml-5">
+        CONECTANDO AO CAIXA CENTRAL...
       </p>
     </div>
   </div>
@@ -83,8 +83,7 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, []);
 
-  // RENDEREZAÇÃO UNIVERSAL (SSR e Primeiro Frame do Cliente)
-  // Isso resolve 100% dos erros de hidratação em componentes root.
+  // Rendereização idêntica no servidor e no primeiro frame do cliente para evitar erro de hidratação
   if (!mounted) {
     return <div className="min-h-screen bg-background" />;
   }
@@ -129,7 +128,7 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     );
   }
 
-  // Se o Firebase ainda não estiver pronto para o cliente
+  // Se o Firebase ainda não estiver pronto para o cliente, exibe a tela de carregamento estilizada
   if (!firebaseInstance || !isAuthReady) {
     return <LoadingScreen />;
   }
