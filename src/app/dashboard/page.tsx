@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useMemo, useState, useEffect } from 'react';
@@ -28,6 +27,7 @@ import {
   TrendingDown,
   Wallet,
   Printer,
+  ChevronRight,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -77,66 +77,74 @@ export default function DashboardPage() {
   const currentLogo = brand?.logoUrl || DEFAULT_LOGO;
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 max-w-4xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
-        <div className="flex items-center gap-4">
-          <div className="relative w-24 h-20 rounded-xl bg-background p-1 border-2 border-accent shadow-xl overflow-hidden flex items-center justify-center">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-5xl mx-auto pb-12">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 no-print">
+        <div className="flex items-center gap-5">
+          <div className="relative w-20 h-16 rounded-2xl bg-card border-2 border-white/5 p-2 shadow-xl flex items-center justify-center">
             <Image
               src={currentLogo}
               alt="Logo"
               fill
-              className="object-contain"
+              className="object-contain p-1"
               unoptimized
               data-ai-hint="acai brand"
             />
           </div>
-          <div className="space-y-1">
-            <h1 className="text-2xl font-headline font-bold text-white uppercase tracking-tight">
-              PAINEL FINANCEIRO
+          <div>
+            <h1 className="text-3xl font-headline font-black text-white uppercase tracking-tighter">
+              PAINEL <span className="text-accent">DE GESTÃO</span>
             </h1>
+            <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold">Visão geral do faturamento</p>
           </div>
         </div>
         <Button
           onClick={() => window.print()}
-          className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold rounded-2xl h-14 px-8 shadow-lg shadow-accent/20"
+          className="bg-accent text-accent-foreground hover:bg-accent/90 font-black rounded-2xl h-14 px-8 shadow-xl shadow-accent/20 transition-all hover:scale-105 active:scale-95"
         >
           <Printer className="w-5 h-5 mr-3" />
-          IMPRIMIR RELATÓRIO
+          GERAR RELATÓRIO
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <StatCard title="Total PIX" value={stats.PIX} icon={Smartphone} color="text-primary" />
-        <StatCard title="Total Cartões" value={stats.CREDITO + stats.DEBITO} icon={CreditCard} color="text-indigo-400" />
+        <StatCard title="Total Cartões" value={stats.CREDITO + stats.DEBITO} icon={CreditCard} color="text-blue-400" />
         <StatCard title="Total Delivery" value={stats.DELIVERY} icon={Truck} color="text-primary" />
         <StatCard title="Total Dinheiro" value={stats.DINHEIRO} icon={Banknote} color="text-accent" />
-        <StatCard title="Total Entradas" value={stats.totalIn} icon={TrendingUp} color="text-accent" highlight />
-        <StatCard title="Total Saídas" value={stats.totalOut} icon={TrendingDown} color="text-destructive" />
-        <StatCard title="Lucro Líquido" value={stats.net} icon={Wallet} color="text-accent" large />
+        
+        <div className="md:col-span-2">
+          <StatCard title="Total de Entradas" value={stats.totalIn} icon={TrendingUp} color="text-accent" highlight large />
+        </div>
+        <div className="md:col-span-2">
+          <StatCard title="Saldo Líquido em Caixa" value={stats.net} icon={Wallet} color="text-white" highlight large gradient />
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 no-print">
-        <ChartCard title="Distribuição de Vendas">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 no-print">
+        <ChartCard title="Distribuição por Canal">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={barData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+            <BarChart data={barData} margin={{ top: 20, right: 20, left: -10, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
               <XAxis
                 dataKey="name"
                 stroke="rgba(255,255,255,0.3)"
-                fontSize={10}
+                fontSize={11}
+                fontWeight="bold"
                 tickLine={false}
                 axisLine={false}
               />
-              <YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} tickLine={false} axisLine={false} />
+              <YAxis stroke="rgba(255,255,255,0.3)" fontSize={11} tickLine={false} axisLine={false} />
               <Tooltip
-                cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                 contentStyle={{
-                  backgroundColor: 'hsl(var(--card))',
+                  backgroundColor: 'rgba(15,10,25,0.95)',
                   border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '12px',
+                  borderRadius: '16px',
+                  backdropFilter: 'blur(10px)',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
                 }}
               />
-              <Bar dataKey="value" radius={[6, 6, 0, 0]} barSize={45}>
+              <Bar dataKey="value" radius={[8, 8, 0, 0]} barSize={50}>
                 {barData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
@@ -145,35 +153,40 @@ export default function DashboardPage() {
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard title="Fluxo de Entradas vs Saídas">
-          <ResponsiveContainer width="100%" height="80%">
-            <PieChart>
-              <Pie
-                data={pieData}
-                cx="50%"
-                cy="50%"
-                innerRadius={65}
-                outerRadius={90}
-                stroke="none"
-                paddingAngle={10}
-                dataKey="value"
-              >
-                {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: 'hsl(var(--card))',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '12px',
-                }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-          <div className="flex gap-8 mt-4">
-            <LegendItem color="bg-accent" label="Entradas" />
-            <LegendItem color="bg-destructive" label="Saídas" />
+        <ChartCard title="Fluxo de Caixa">
+          <div className="flex flex-col h-full">
+            <div className="flex-1 min-h-[220px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={70}
+                    outerRadius={95}
+                    stroke="none"
+                    paddingAngle={8}
+                    dataKey="value"
+                  >
+                    {pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'rgba(15,10,25,0.95)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '16px',
+                      backdropFilter: 'blur(10px)'
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="flex justify-center gap-10 mt-2">
+              <LegendItem color="bg-accent" label="Entradas" />
+              <LegendItem color="bg-destructive" label="Saídas" />
+            </div>
           </div>
         </ChartCard>
       </div>
@@ -181,28 +194,32 @@ export default function DashboardPage() {
   );
 }
 
-function StatCard({ title, value, icon: Icon, color, highlight, large }: any) {
+function StatCard({ title, value, icon: Icon, color, highlight, large, gradient }: any) {
   return (
     <Card
-      className={`bg-card/40 border-white/5 shadow-md hover:bg-card/60 transition-all ${
-        large ? 'md:col-span-2' : ''
-      } rounded-2xl`}
+      className={`glass-card overflow-hidden group transition-all duration-300 hover:scale-[1.02] ${
+        large ? 'rounded-[2rem]' : 'rounded-3xl'
+      } ${gradient ? 'bg-gradient-to-br from-primary/20 via-card/40 to-accent/10 border-accent/20' : ''}`}
     >
-      <CardContent className="p-6">
+      <CardContent className="p-6 md:p-8 relative">
+        {gradient && <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 blur-[60px] -mr-16 -mt-16 rounded-full" />}
         <div className="flex justify-between items-start">
-          <div className="space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">
+          <div className="space-y-2">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">
               {title}
             </p>
             <p
-              className={`font-headline font-bold ${large ? 'text-4xl' : 'text-2xl'} ${
-                highlight ? 'text-accent' : 'text-white'
+              className={`font-headline font-black leading-none ${large ? 'text-4xl md:text-5xl' : 'text-2xl'} ${
+                highlight ? 'text-white' : 'text-white/90'
               }`}
             >
               R$ {value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </p>
           </div>
-          <div className={`p-3 rounded-xl bg-white/5 border border-white/10 ${color}`}>
+          <div className={cn(
+            "p-3.5 rounded-2xl bg-white/5 border border-white/5 transition-all group-hover:bg-white/10",
+            color
+          )}>
             <Icon className="w-6 h-6" />
           </div>
         </div>
@@ -213,22 +230,23 @@ function StatCard({ title, value, icon: Icon, color, highlight, large }: any) {
 
 function ChartCard({ title, children }: any) {
   return (
-    <Card className="bg-card/50 border-white/5 shadow-xl overflow-hidden flex flex-col items-center pt-4">
-      <CardHeader className="pb-2 w-full">
-        <CardTitle className="text-sm font-bold uppercase tracking-wider text-white">
+    <Card className="glass-card rounded-[2.5rem] overflow-hidden pt-6 flex flex-col">
+      <CardHeader className="px-8 pb-0">
+        <CardTitle className="text-xs font-black uppercase tracking-[0.3em] text-white/50 flex items-center gap-2">
+          <div className="w-1.5 h-4 bg-accent rounded-full" />
           {title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="h-[250px] w-full pt-4">{children}</CardContent>
+      <CardContent className="flex-1 p-8 min-h-[300px]">{children}</CardContent>
     </Card>
   );
 }
 
 function LegendItem({ color, label }: any) {
   return (
-    <div className="flex items-center gap-2">
-      <div className={`w-3 h-3 rounded-full ${color}`} />
-      <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
+    <div className="flex items-center gap-2.5">
+      <div className={`w-2.5 h-2.5 rounded-full ${color} shadow-[0_0_10px_currentColor]`} />
+      <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">
         {label}
       </span>
     </div>
