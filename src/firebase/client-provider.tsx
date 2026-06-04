@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -91,9 +90,9 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
 
   if (!firebaseInstance || !isAuthReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-8">
-          <div className="relative w-32 h-24 animate-bounce">
+      <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
+        <div className="flex flex-col items-center gap-10">
+          <div className="relative w-48 h-40 md:w-64 md:h-52 animate-bounce">
             <Image 
               src={LOGO_URL} 
               alt="Açaíteria Delícias do Pará" 
@@ -102,12 +101,14 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
               unoptimized
             />
           </div>
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin shadow-[0_0_15px_rgba(104,255,54,0.3)]" />
-            <p className="text-accent font-black tracking-[0.3em] uppercase text-[10px] animate-pulse">
-              Conectando ao Caixa...
-            </p>
-          </div>
+          <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin shadow-[0_0_20px_rgba(104,255,54,0.4)]" />
+        </div>
+        
+        <div className="absolute bottom-8 left-8 flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(104,255,54,0.8)]" />
+          <p className="text-accent font-black tracking-[0.4em] uppercase text-[10px] animate-pulse">
+            Conectando ao Caixa...
+          </p>
         </div>
       </div>
     );
