@@ -25,9 +25,19 @@ Mesmo usando a Vercel para o site, os dados ficam no Firebase. Ative estes dois 
 
 ### 2. Hospedagem na Vercel
 1. Crie uma conta em [vercel.com](https://vercel.com).
-2. Conecte seu **GitHub** (após subir o código para lá) ou use a **Vercel CLI** para fazer o upload da pasta.
-3. A Vercel detectará automaticamente que é um projeto **Next.js** e fará o deploy em segundos.
-4. **Dica:** Se você quiser proteger suas chaves, mova os dados de `src/firebase/config.ts` para as *Environment Variables* no painel da Vercel.
+2. Conecte seu **GitHub** (após subir o código para lá) ou use a **Vercel CLI**.
+3. A Vercel detectará automaticamente que é um projeto **Next.js**.
+
+---
+
+## ❓ Perguntas Frequentes
+
+### As mudanças são automáticas?
+- **No Código**: Se a IA fizer uma mudança visual aqui, você precisa baixar o `.zip` novo e atualizar na Vercel. O código "parado" na Vercel não sabe o que estamos conversando aqui.
+- **Nas Vendas**: Sim! Todas as vendas, lucros e configurações que você salvar no aplicativo *depois de publicado* são automáticas. Se você registrar uma venda no balcão, ela aparece na hora no seu Dashboard no celular, pois o Firebase cuida da sincronização em tempo real.
+
+### Preciso pagar algo?
+Não. Tanto a Vercel quanto o Firebase possuem planos gratuitos (Hobby/Spark) que são perfeitos para uma açaíteria.
 
 ---
 
@@ -36,8 +46,5 @@ Mesmo usando a Vercel para o site, os dados ficam no Firebase. Ative estes dois 
 - **Relatórios:** Gere PDFs profissionais para conferência ou impressão.
 - **Dashboard:** Gráficos de vendas e lucro em tempo real.
 - **IA Financeira:** Insights automáticos sobre suas despesas.
-
-## 📁 Como baixar os arquivos
-Clique no ícone de **Download** ou **Export** no menu superior do Firebase Studio para baixar o código `.zip` completo e subir para a Vercel.
 
 *ID do Projeto Firebase: nextn-f5a13*
