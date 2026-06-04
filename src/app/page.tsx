@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useMemo, useState, useEffect } from 'react';
 import { useDoc, useFirestore } from '@/firebase';
 import { doc } from 'firebase/firestore';
-import { ImageIcon, Plus } from 'lucide-react';
 
 const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
@@ -55,7 +54,7 @@ export default function CashierPage() {
             </span>
             <div className="bg-black/60 border border-white/10 px-8 py-5 rounded-3xl flex items-center gap-6 shadow-2xl backdrop-blur-md">
               <p className="text-accent font-black text-2xl tracking-[0.2em] uppercase">
-                {brand?.name || 'Açaí Delícias'}
+                {brand?.name || 'ACAITERIA DELICIAS DO PARÁ'}
               </p>
               <div className="w-5 h-5 rounded-full bg-accent animate-pulse shadow-[0_0_25px_#4ade80]" />
             </div>

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from 'react';
@@ -92,7 +91,7 @@ export default function SettingsPage() {
               id="name" 
               value={name} 
               onChange={(e) => setName(e.target.value)} 
-              placeholder="Ex: Açaí Delícias do Pará"
+              placeholder="Ex: ACAITERIA DELICIAS DO PARÁ"
               className="bg-background border-muted"
             />
           </div>

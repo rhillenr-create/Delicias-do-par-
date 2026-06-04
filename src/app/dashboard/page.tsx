@@ -28,7 +28,6 @@ import {
   TrendingDown,
   Wallet,
   Printer,
-  ImageIcon,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -102,7 +101,7 @@ export default function DashboardPage() {
               PAINEL FINANCEIRO
             </h1>
             <p className="text-accent uppercase font-black tracking-widest line-clamp-1">
-              {brand?.name || 'Açaí Delícias'}
+              {brand?.name || 'ACAITERIA DELICIAS DO PARÁ'}
             </p>
           </div>
         </div>

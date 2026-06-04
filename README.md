@@ -1,5 +1,5 @@
 
-# 🍧 Açaí Delícias do Pará - Gestão de Caixa Inteligente
+# 🍧 ACAITERIA DELICIAS DO PARÁ - Gestão de Caixa Inteligente
 
 Este é o seu sistema de frente de caixa (PDV) completo, otimizado para ser hospedado na **Vercel**.
 

@@ -9,7 +9,7 @@ import { collection, doc, query, orderBy } from 'firebase/firestore';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Trash2, BrainCircuit, Filter, Clock, Printer, ImageIcon } from 'lucide-react';
+import { Search, Trash2, BrainCircuit, Filter, Clock, Printer } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
@@ -79,7 +79,7 @@ export default function MovementsPage() {
            </Link>
            <div>
              <h1 className="text-xl font-headline font-bold text-white uppercase tracking-tight">RELATÓRIO DE CAIXA</h1>
-             <p className="text-accent uppercase text-[10px] font-black tracking-widest line-clamp-1">{brand?.name || 'Açaí Delícias'}</p>
+             <p className="text-accent uppercase text-[10px] font-black tracking-widest line-clamp-1">{brand?.name || 'ACAITERIA DELICIAS DO PARÁ'}</p>
            </div>
         </div>
         
@@ -170,7 +170,7 @@ export default function MovementsPage() {
             </div>
             <div>
               <h1 className="text-4xl font-black uppercase tracking-tighter">RELATÓRIO FINANCEIRO</h1>
-              <p className="text-gray-600 uppercase tracking-widest text-xs font-bold">{brand?.name || 'Açaí Delícias'}</p>
+              <p className="text-gray-600 uppercase tracking-widest text-xs font-bold">{brand?.name || 'ACAITERIA DELICIAS DO PARÁ'}</p>
             </div>
           </div>
           <div className="text-right">

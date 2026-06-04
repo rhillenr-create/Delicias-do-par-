@@ -1,4 +1,3 @@
-
 import type { Metadata } from 'next';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
@@ -6,7 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
-  title: 'Açaí Delícias do Pará | Gestão de Caixa',
+  title: 'ACAITERIA DELICIAS DO PARÁ | Gestão de Caixa',
   description: 'Sistema moderno de frente de caixa para açaíteria',
 };
 
