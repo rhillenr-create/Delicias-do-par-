@@ -6,18 +6,32 @@ import Link from 'next/link';
 import { useMemo, useState, useEffect } from 'react';
 import { useDoc, useFirestore } from '@/firebase';
 import { doc } from 'firebase/firestore';
+import { Wifi, WifiOff } from 'lucide-react';
 
 const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
 export default function CashierPage() {
   const db = useFirestore();
   const [mounted, setMounted] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
   
   const brandRef = useMemo(() => (db ? doc(db, 'settings', 'brand') : null), [db]);
   const { data: brand } = useDoc<any>(brandRef);
 
   useEffect(() => {
     setMounted(true);
+    setIsOnline(navigator.onLine);
+
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
   }, []);
 
   if (!mounted) return null;
@@ -52,11 +66,26 @@ export default function CashierPage() {
             <span className="text-[10px] uppercase tracking-[0.5em] text-muted-foreground/60 font-black">
               SISTEMA DE GESTÃO
             </span>
-            <div className="bg-black/60 border border-white/10 px-8 py-5 rounded-3xl flex items-center gap-6 shadow-2xl backdrop-blur-md">
+            <div className="bg-black/60 border border-white/10 px-8 py-5 rounded-3xl flex flex-col md:flex-row items-center gap-6 shadow-2xl backdrop-blur-md">
               <p className="text-accent font-black text-2xl tracking-[0.2em] uppercase">
                 {brand?.name || 'ACAITERIA DELICIAS DO PARÁ'}
               </p>
-              <div className="w-5 h-5 rounded-full bg-accent animate-pulse shadow-[0_0_25px_#4ade80]" />
+              
+              <div className="flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/5 border border-white/10">
+                {isOnline ? (
+                  <>
+                    <span className="text-[10px] font-black text-accent tracking-widest uppercase">ONLINE</span>
+                    <div className="w-3 h-3 rounded-full bg-accent animate-pulse shadow-[0_0_15px_#4ade80]" />
+                    <Wifi className="w-4 h-4 text-accent" />
+                  </>
+                ) : (
+                  <>
+                    <span className="text-[10px] font-black text-destructive tracking-widest uppercase">OFFLINE</span>
+                    <div className="w-3 h-3 rounded-full bg-destructive animate-pulse shadow-[0_0_15px_#ef4444]" />
+                    <WifiOff className="w-4 h-4 text-destructive" />
+                  </>
+                )}
+              </div>
             </div>
           </div>
         </div>
