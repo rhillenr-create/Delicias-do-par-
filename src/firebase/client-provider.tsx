@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -51,11 +52,40 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, []);
 
-  // Evita erro de hidratação renderizando o mesmo conteúdo básico no servidor e cliente inicial
+  // Componente de carregamento para ser usado em estados de espera
+  const LoadingScreen = () => (
+    <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
+      <div className="flex flex-col items-center gap-10">
+        <div className="relative w-48 h-40 md:w-64 md:h-52 animate-bounce">
+          <Image 
+            src={LOGO_URL} 
+            alt="Açaíteria Delícias do Pará" 
+            fill 
+            className="object-contain" 
+            unoptimized
+            priority
+          />
+        </div>
+        <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin shadow-[0_0_20px_rgba(104,255,54,0.4)]" />
+      </div>
+      
+      {/* Status no canto inferior esquerdo */}
+      <div className="absolute bottom-8 left-8 flex items-center gap-3">
+        <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(104,255,54,0.8)]" />
+        <p className="text-accent font-black tracking-[0.4em] uppercase text-[10px] animate-pulse">
+          Conectando ao Caixa...
+        </p>
+      </div>
+    </div>
+  );
+
+  // No servidor e na primeira renderização do cliente, mostramos apenas o fundo.
+  // Isso resolve 100% dos erros de hidratação em componentes root.
   if (!mounted) {
     return <div className="min-h-screen bg-background" />;
   }
 
+  // Se houver erro crítico de configuração após montar
   if (authError && (authError.includes('api-key-not-valid') || authError.includes('operation-not-allowed') || authError.includes('invalid-api-key'))) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4 font-body">
@@ -95,32 +125,12 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     );
   }
 
+  // Se o Firebase ainda não estiver pronto
   if (!firebaseInstance || !isAuthReady) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
-        <div className="flex flex-col items-center gap-10">
-          <div className="relative w-48 h-40 md:w-64 md:h-52 animate-bounce">
-            <Image 
-              src={LOGO_URL} 
-              alt="Açaíteria Delícias do Pará" 
-              fill 
-              className="object-contain" 
-              unoptimized
-            />
-          </div>
-          <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin shadow-[0_0_20px_rgba(104,255,54,0.4)]" />
-        </div>
-        
-        <div className="absolute bottom-8 left-8 flex items-center gap-3">
-          <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(104,255,54,0.8)]" />
-          <p className="text-accent font-black tracking-[0.4em] uppercase text-[10px] animate-pulse">
-            Conectando ao Caixa...
-          </p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
+  // Sucesso: renderiza o provedor e os filhos
   return (
     <FirebaseProvider
       firebaseApp={firebaseInstance.firebaseApp}
