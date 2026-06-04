@@ -20,7 +20,7 @@ git add .
 # Criar a primeira versão (salvamento local)
 git commit -m "Versão Inicial - ACAITERIA DELICIAS DO PARÁ"
 
-# Criar o link com o seu GitHub (Substitua pelo link que o GitHub te deu)
+# Criar o link com o seu GitHub
 git branch -M main
 git remote add origin https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
 
@@ -30,20 +30,14 @@ git push -u origin main
 
 ---
 
-## 🚀 Como colocar no ar (Vercel)
+## 🚀 Como resolver o problema de "Perda de Dados" (Firestore Rules)
 
-Após subir para o GitHub, siga estes passos para ter o seu link oficial (ex: `sua-acaiteria.vercel.app`):
+Se ao atualizar a página os dados somem, é porque o Firebase está bloqueando a gravação. Siga exatamente estes passos:
 
-1. **Conecte à Vercel**: 
-   - Crie uma conta em [vercel.com](https://vercel.com).
-   - Clique em "Add New" > "Project".
-   - Importe o repositório que você acabou de criar no GitHub.
-   - A Vercel detectará automaticamente que é um projeto **Next.js**. Clique em **Deploy**.
-
-2. **Configuração no Firebase (Obrigatório)**:
-   - No Console do Firebase, ative a **Authentication** com o provedor **Anônimo** (Anonymous).
-   - Crie o banco **Firestore Database** em **Modo de Produção**.
-   - Na aba **Rules** do Firestore, publique estas regras:
+1. Acesse o [Console do Firebase](https://console.firebase.google.com/).
+2. No menu lateral, clique em **Firestore Database**.
+3. Vá na aba **Rules** (Regras).
+4. Substitua TODO o conteúdo que estiver lá por este código:
     ```javascript
     rules_version = '2';
     service cloud.firestore {
@@ -54,6 +48,8 @@ Após subir para o GitHub, siga estes passos para ter o seu link oficial (ex: `s
       }
     }
     ```
+5. Clique em **Publish** (Publicar).
+6. **Importante**: No menu **Authentication**, certifique-se que o método **Anônimo** está "Ativado".
 
 ---
 
