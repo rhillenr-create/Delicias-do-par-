@@ -32,12 +32,15 @@ Mesmo usando a Vercel para o site, os dados ficam no Firebase. Ative estes dois 
 
 ## ❓ Perguntas Frequentes
 
-### As mudanças são automáticas?
-- **No Código**: Se a IA fizer uma mudança visual aqui, você precisa baixar o `.zip` novo e atualizar na Vercel. O código "parado" na Vercel não sabe o que estamos conversando aqui.
-- **Nas Vendas**: Sim! Todas as vendas, lucros e configurações que você salvar no aplicativo *depois de publicado* são automáticas. Se você registrar uma venda no balcão, ela aparece na hora no seu Dashboard no celular, pois o Firebase cuida da sincronização em tempo real.
+### Se eu mudar as cores ou botões, perco minhas vendas?
+**Não!** Seus dados (vendas, despesas e lucros) estão salvos no banco de dados do Firebase. Mudar o visual do aplicativo (o código) é como trocar a decoração da sua loja; o dinheiro que está no cofre (banco de dados) continua lá guardado e seguro.
+
+### As mudanças visuais são automáticas?
+- **No Código**: Se a IA fizer uma mudança visual (mudar uma cor ou ícone), você precisa baixar o código novo e atualizar na Vercel. 
+- **Nas Vendas**: Sim! Todas as vendas que você registra no dia a dia aparecem instantaneamente em todos os seus aparelhos, pois o Firebase sincroniza tudo em tempo real.
 
 ### Preciso pagar algo?
-Não. Tanto a Vercel quanto o Firebase possuem planos gratuitos (Hobby/Spark) que são perfeitos para uma açaíteria.
+Não. Tanto a Vercel quanto o Firebase possuem planos gratuitos que atendem perfeitamente uma açaíteria em crescimento.
 
 ---
 
