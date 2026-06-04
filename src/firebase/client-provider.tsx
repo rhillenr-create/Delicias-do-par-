@@ -83,7 +83,8 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, []);
 
-  // Rendereização idêntica no servidor e no primeiro frame do cliente para evitar erro de hidratação
+  // Rendereização idêntica no servidor e no primeiro frame do cliente para evitar erro de hidratação.
+  // O contêiner retornado aqui deve ser o mais simples possível para não divergir dos atributos do LoadingScreen.
   if (!mounted) {
     return <div className="min-h-screen bg-background" />;
   }
