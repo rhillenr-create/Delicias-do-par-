@@ -9,6 +9,9 @@ import { Firestore } from 'firebase/firestore';
 import { Auth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { AlertCircle, Settings, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+
+const LOGO_URL = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
 export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [firebaseInstance, setFirebaseInstance] = useState<{
@@ -33,7 +36,6 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
             .catch((error: any) => {
               console.error("Erro de autenticação:", error);
               setAuthError(error.code || error.message);
-              // Mesmo com erro, tentamos deixar o app pronto para mostrar a tela de erro customizada
               setIsAuthReady(true);
             });
         } else {
@@ -48,7 +50,6 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, []);
 
-  // Se houver erro de API Key ou Provedor não ativado
   if (authError && (authError.includes('api-key-not-valid') || authError.includes('operation-not-allowed') || authError.includes('invalid-api-key'))) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4 font-body">
@@ -91,9 +92,22 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
   if (!firebaseInstance || !isAuthReady) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-6 animate-pulse">
-          <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin" />
-          <p className="text-accent font-black tracking-widest uppercase text-xs">Conectando ao Caixa...</p>
+        <div className="flex flex-col items-center gap-8">
+          <div className="relative w-32 h-24 animate-bounce">
+            <Image 
+              src={LOGO_URL} 
+              alt="Açaíteria Delícias do Pará" 
+              fill 
+              className="object-contain" 
+              unoptimized
+            />
+          </div>
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin shadow-[0_0_15px_rgba(104,255,54,0.3)]" />
+            <p className="text-accent font-black tracking-[0.3em] uppercase text-[10px] animate-pulse">
+              Conectando ao Caixa...
+            </p>
+          </div>
         </div>
       </div>
     );
