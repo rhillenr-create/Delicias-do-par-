@@ -6,7 +6,7 @@ import { FirebaseProvider } from './provider';
 import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import { Auth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
-import { AlertCircle, Key, Lock, Settings } from 'lucide-react';
+import { AlertCircle, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {

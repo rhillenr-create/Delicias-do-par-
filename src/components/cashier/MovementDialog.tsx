@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -8,7 +7,8 @@ import {
   DialogContent, 
   DialogHeader, 
   DialogTitle,
-  DialogFooter
+  DialogFooter,
+  DialogDescription
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -103,6 +103,9 @@ export function MovementDialog({ type, onClose }: Props) {
           <DialogTitle className="font-headline text-2xl text-white">
             Registrar {type === 'DESPESAS' ? 'Despesa' : type === 'WITHDRAWAL' ? 'Sangria' : type}
           </DialogTitle>
+          <DialogDescription className="text-muted-foreground text-xs">
+            Preencha os dados abaixo para registrar a movimentação financeira no caixa.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6 py-4">
           <div className="space-y-2">
