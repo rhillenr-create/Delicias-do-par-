@@ -13,8 +13,35 @@ import Image from 'next/image';
 
 const LOGO_URL = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
+// Componente de carregamento definido fora para evitar problemas de re-definição e hidratação
+const LoadingScreen = () => (
+  <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
+    <div className="flex flex-col items-center gap-10">
+      <div className="relative w-48 h-40 md:w-64 md:h-52 animate-bounce">
+        <Image 
+          src={LOGO_URL} 
+          alt="Açaíteria Delícias do Pará" 
+          fill 
+          className="object-contain" 
+          unoptimized
+          priority
+        />
+      </div>
+      <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin shadow-[0_0_20px_rgba(104,255,54,0.4)]" />
+    </div>
+    
+    {/* Status no canto inferior esquerdo conforme solicitado */}
+    <div className="absolute bottom-8 left-8 flex items-center gap-3">
+      <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(104,255,54,0.8)]" />
+      <p className="text-accent font-black tracking-[0.4em] uppercase text-[10px] animate-pulse">
+        Conectando ao Caixa...
+      </p>
+    </div>
+  </div>
+);
+
 export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [mounted, setMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [firebaseInstance, setFirebaseInstance] = useState<{
     firebaseApp: FirebaseApp;
     firestore: Firestore;
@@ -24,7 +51,9 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
   const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
-    setMounted(true);
+    // Marca como montado apenas no cliente após o primeiro render
+    setIsMounted(true);
+    
     try {
       const instance = initializeFirebase();
       setFirebaseInstance(instance);
@@ -52,40 +81,16 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, []);
 
-  // Componente de carregamento para ser usado em estados de espera
-  const LoadingScreen = () => (
-    <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
-      <div className="flex flex-col items-center gap-10">
-        <div className="relative w-48 h-40 md:w-64 md:h-52 animate-bounce">
-          <Image 
-            src={LOGO_URL} 
-            alt="Açaíteria Delícias do Pará" 
-            fill 
-            className="object-contain" 
-            unoptimized
-            priority
-          />
-        </div>
-        <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin shadow-[0_0_20px_rgba(104,255,54,0.4)]" />
-      </div>
-      
-      {/* Status no canto inferior esquerdo */}
-      <div className="absolute bottom-8 left-8 flex items-center gap-3">
-        <div className="w-2 h-2 rounded-full bg-accent animate-pulse shadow-[0_0_8px_rgba(104,255,54,0.8)]" />
-        <p className="text-accent font-black tracking-[0.4em] uppercase text-[10px] animate-pulse">
-          Conectando ao Caixa...
-        </p>
-      </div>
-    </div>
-  );
-
-  // No servidor e na primeira renderização do cliente, mostramos apenas o fundo.
-  // Isso resolve 100% dos erros de hidratação em componentes root.
-  if (!mounted) {
+  // RENDEREZAÇÃO UNIVERSAL (SSR e Primeiro Frame do Cliente)
+  // Para evitar erros de hidratação, o servidor e o cliente DEVEM renderizar a mesma coisa no início.
+  // Retornamos um div vazio com o fundo padrão para garantir essa sincronia.
+  if (!isMounted) {
     return <div className="min-h-screen bg-background" />;
   }
 
-  // Se houver erro crítico de configuração após montar
+  // A partir daqui, estamos garantidamente no lado do Cliente
+  
+  // Tratamento de erros críticos de configuração
   if (authError && (authError.includes('api-key-not-valid') || authError.includes('operation-not-allowed') || authError.includes('invalid-api-key'))) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4 font-body">
@@ -125,7 +130,7 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     );
   }
 
-  // Se o Firebase ainda não estiver pronto
+  // Se o Firebase ainda não estiver pronto para o cliente
   if (!firebaseInstance || !isAuthReady) {
     return <LoadingScreen />;
   }
