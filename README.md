@@ -24,8 +24,7 @@ Antes de tudo, ative estes dois serviços no menu **Build**:
     ```
 
 ### 2. Hospedagem (Onde seu site vai morar)
-**NÃO use o comando `firebase deploy` no terminal.** No plano gratuito, o Next.js dá erro de "Executable files".
-**O JEITO CERTO:**
+**DICA IMPORTANTE:** No plano gratuito, o jeito mais fácil de publicar sem erros é usar o **Firebase App Hosting**.
 1. Vá em **Build** > **App Hosting**.
 2. Clique em **Get Started**.
 3. Conecte seu **GitHub** e selecione a pasta deste projeto.
@@ -37,9 +36,9 @@ Antes de tudo, ative estes dois serviços no menu **Build**:
 - **Frente de Caixa:** Registro rápido de PIX, Cartões, Dinheiro e Delivery.
 - **Relatórios:** Gere PDFs profissionais para conferência ou impressão.
 - **Dashboard:** Gráficos de vendas e lucro em tempo real.
-- **IA Financeira:** Categorização automática e sugestões de economia.
+- **IA Financeira:** Categorização automática e sugestões de economia para sua açaíteria.
 
-## 📁 Como baixar os arquivos
-Se você está vendo isso no Firebase Studio, clique no ícone de exportação/download para baixar o código `.zip` completo para o seu computador.
+## 📁 Como baixar os arquivos agora
+No menu superior do Firebase Studio, clique em **Export** ou **Download** para baixar o arquivo `.zip` completo. Nele está todo o código que construímos.
 
 *ID do Projeto: nextn-f5a13*
