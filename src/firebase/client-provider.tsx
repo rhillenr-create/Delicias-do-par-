@@ -32,8 +32,10 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
             .catch((error: any) => {
               console.error("Erro de autenticação:", error);
               setAuthError(error.code || error.message);
-              // Permitimos prosseguir apenas se não for erro de chave crítica
-              if (error.code !== 'auth/api-key-not-valid') {
+              // Se for erro de API Key ou Provedor Desativado, não deixamos prosseguir
+              if (error.code === 'auth/api-key-not-valid' || error.code === 'auth/operation-not-allowed') {
+                setIsAuthReady(false);
+              } else {
                 setIsAuthReady(true);
               }
             });
@@ -49,8 +51,8 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, []);
 
-  if (authError) {
-    const isApiKeyError = authError.includes('api-key-not-valid') || authError.includes('invalid-api-key');
+  if (authError && (authError.includes('api-key-not-valid') || authError.includes('operation-not-allowed'))) {
+    const isApiKeyError = authError.includes('api-key-not-valid');
     const isNotAllowed = authError.includes('operation-not-allowed');
 
     return (
@@ -65,31 +67,29 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
             <h1 className="text-2xl font-black text-white uppercase tracking-tighter">Atenção Necessária</h1>
             <p className="text-sm text-muted-foreground">
               {isApiKeyError 
-                ? "Sua chave de conexão (API Key) está inválida." 
+                ? "Sua chave de conexão (API Key) está inválida ou expirada." 
                 : isNotAllowed 
-                ? "O login anônimo não está ativado no Firebase."
-                : `Ocorreu um erro técnico: ${authError}`}
+                ? "O login anônimo não está ativado no seu Firebase."
+                : `Erro técnico: ${authError}`}
             </p>
           </div>
 
           <div className="bg-black/40 p-6 rounded-3xl border border-white/5 space-y-4">
             <p className="text-[10px] font-black text-accent uppercase tracking-widest flex items-center gap-2">
-              <Settings className="w-3 h-3" /> Passo a passo para corrigir:
+              <Settings className="w-3 h-3" /> Como resolver:
             </p>
             <ol className="text-xs text-muted-foreground space-y-3 list-decimal ml-4">
               {isApiKeyError ? (
                 <>
-                  <li className="pl-2">Vá ao <b>Console do Firebase</b> do seu projeto.</li>
-                  <li className="pl-2">Clique no ícone de <b>Engrenagem</b> &gt; Configurações do Projeto.</li>
-                  <li className="pl-2">Copie a <b>Chave de API da Web</b> real.</li>
-                  <li className="pl-2">Cole no arquivo <code>src/firebase/config.ts</code>.</li>
+                  <li className="pl-2">Acesse o <b>Console do Firebase</b>.</li>
+                  <li className="pl-2">Vá em Configurações do Projeto (ícone de engrenagem).</li>
+                  <li className="pl-2">Verifique se a <b>Chave de API da Web</b> está correta.</li>
                 </>
               ) : (
                 <>
                   <li className="pl-2">No Console do Firebase, vá em <b>Authentication</b>.</li>
-                  <li className="pl-2">Clique na aba <b>Sign-in method</b>.</li>
-                  <li className="pl-2">Ative o provedor <b>Anônimo</b>.</li>
-                  <li className="pl-2">Salve e atualize esta página.</li>
+                  <li className="pl-2">Acesse a aba <b>Sign-in method</b>.</li>
+                  <li className="pl-2">Ative o provedor <b>Anônimo</b> e salve.</li>
                 </>
               )}
             </ol>
@@ -99,7 +99,7 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
             onClick={() => window.location.reload()} 
             className="w-full h-14 bg-white text-black hover:bg-white/90 font-black rounded-2xl"
           >
-            TENTAR NOVAMENTE
+            ATUALIZAR PÁGINA
           </Button>
         </div>
       </div>
@@ -110,11 +110,8 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-6 animate-pulse">
-          <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin shadow-[0_0_20px_rgba(104,255,54,0.3)]" />
-          <div className="space-y-2 text-center">
-            <p className="text-accent font-black tracking-[0.2em] uppercase text-xs">Conectando ao Sistema</p>
-            <p className="text-muted-foreground text-[10px] uppercase font-bold tracking-widest">Delícias do Pará</p>
-          </div>
+          <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+          <p className="text-accent font-black tracking-widest uppercase text-xs">Conectando...</p>
         </div>
       </div>
     );
