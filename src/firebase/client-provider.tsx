@@ -13,6 +13,7 @@ import Image from 'next/image';
 const LOGO_URL = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
 export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [mounted, setMounted] = useState(false);
   const [firebaseInstance, setFirebaseInstance] = useState<{
     firebaseApp: FirebaseApp;
     firestore: Firestore;
@@ -22,6 +23,7 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
   const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
+    setMounted(true);
     try {
       const instance = initializeFirebase();
       setFirebaseInstance(instance);
@@ -48,6 +50,11 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
       setAuthError(error.message);
     }
   }, []);
+
+  // Evita erro de hidratação renderizando o mesmo conteúdo básico no servidor e cliente inicial
+  if (!mounted) {
+    return <div className="min-h-screen bg-background" />;
+  }
 
   if (authError && (authError.includes('api-key-not-valid') || authError.includes('operation-not-allowed') || authError.includes('invalid-api-key'))) {
     return (

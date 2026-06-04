@@ -24,6 +24,10 @@ export default function MovementsPage() {
   const [period, setPeriod] = useState('all');
   const [mounted, setMounted] = useState(false);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const movementsQuery = useMemo(() => {
     if (!db) return null;
     return query(collection(db, 'movements'), orderBy('timestamp', 'desc'));
@@ -33,10 +37,6 @@ export default function MovementsPage() {
 
   const brandRef = useMemo(() => db ? doc(db, 'settings', 'brand') : null, [db]);
   const { data: brand } = useDoc<any>(brandRef);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const filteredMovements = useMemo(() => {
     const now = new Date();
