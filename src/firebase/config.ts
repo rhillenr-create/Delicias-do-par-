@@ -1,6 +1,6 @@
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyB-placeholder-key-nextn", 
+  apiKey: "AIzaSyC2iQbYA15uEHA2v9w0rX5DsVw8iHnL9JU", 
   authDomain: "nextn-f5a13.firebaseapp.com",
   projectId: "nextn-f5a13",
   storageBucket: "nextn-f5a13.firebasestorage.app",
