@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -11,9 +10,8 @@ import { AlertCircle, Settings, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 
-const LOGO_URL = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
+const LOGO_URL = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/6a0cd7fe4b63fecad5f17a1eca98207bff5faa39/delicias_do_para.png";
 
-// Componente de carregamento com logo em 85% da tela e status no canto inferior
 const LoadingScreen = () => (
   <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
     {/* Logotipo ocupando 85% da viewport para impacto máximo */}
@@ -83,8 +81,7 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     }
   }, []);
 
-  // Rendereização idêntica no servidor e no primeiro frame do cliente para evitar erro de hidratação.
-  // O contêiner retornado aqui deve ser o mais simples possível para não divergir dos atributos do LoadingScreen.
+  // Rendereização idêntica no servidor e no primeiro frame do cliente para evitar erro de hidratação
   if (!mounted) {
     return <div className="min-h-screen bg-background" />;
   }
