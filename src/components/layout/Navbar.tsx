@@ -1,8 +1,9 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ReceiptText, Zap, Settings } from 'lucide-react';
+import { LayoutDashboard, ReceiptText, Zap, Wifi, WifiOff } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useMemo, useState, useEffect } from 'react';
@@ -15,19 +16,31 @@ export function Navbar() {
   const pathname = usePathname();
   const db = useFirestore();
   const [mounted, setMounted] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
   
   const brandRef = useMemo(() => (db ? doc(db, 'settings', 'brand') : null), [db]);
   const { data: brand } = useDoc<any>(brandRef);
 
   useEffect(() => {
     setMounted(true);
+    setIsOnline(navigator.onLine);
+
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
   }, []);
 
   const navItems = [
     { href: '/', label: 'Caixa', icon: Zap },
     { href: '/movements', label: 'Movimentação', icon: ReceiptText },
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { href: '/settings', label: 'Ajustes', icon: Settings },
   ];
 
   if (!mounted) return null;
@@ -70,6 +83,27 @@ export function Navbar() {
               </Link>
             );
           })}
+          
+          <div className={cn(
+            "flex items-center gap-2 px-4 py-2.5 rounded-full text-[10px] font-black tracking-widest border transition-all",
+            isOnline 
+              ? "text-accent bg-accent/5 border-accent/20" 
+              : "text-destructive bg-destructive/5 border-destructive/20"
+          )}>
+            {isOnline ? (
+              <>
+                <Wifi className="w-3.5 h-3.5" />
+                <span className="hidden xs:inline">ONLINE</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+              </>
+            ) : (
+              <>
+                <WifiOff className="w-3.5 h-3.5" />
+                <span className="hidden xs:inline">OFFLINE</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />
+              </>
+            )}
+          </div>
         </div>
       </div>
     </nav>

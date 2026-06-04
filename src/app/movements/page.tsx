@@ -1,7 +1,7 @@
+
 "use client";
 
 import { useState, useMemo } from 'react';
-import Link from 'next/link';
 import { Movement } from '@/lib/types';
 import { deleteMovement } from '@/lib/db';
 import { useCollection, useDoc, useFirestore } from '@/firebase';
@@ -68,15 +68,9 @@ export default function MovementsPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div className="flex items-center gap-4">
-           <Link 
-             href="/settings"
-             className="group relative w-20 h-16 rounded-lg bg-background p-1 border border-accent/20 shadow-lg overflow-hidden flex items-center justify-center transition-transform hover:scale-105"
-           >
+           <div className="relative w-20 h-16 rounded-lg bg-background p-1 border border-accent/20 shadow-lg overflow-hidden flex items-center justify-center">
               <Image src={currentLogo} alt="Logo" fill className="object-contain" unoptimized data-ai-hint="acai brand" />
-              <div className="absolute inset-0 bg-accent/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                 <span className="text-[6px] font-black text-accent-foreground">EDITAR</span>
-              </div>
-           </Link>
+           </div>
            <div>
              <h1 className="text-xl font-headline font-bold text-white uppercase tracking-tight">RELATÓRIO DE CAIXA</h1>
            </div>
