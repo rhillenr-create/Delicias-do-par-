@@ -1,16 +1,16 @@
 
 # 🍧 Açaí Delícias do Pará - Gestão de Caixa Inteligente
 
-Este é o seu sistema de frente de caixa (PDV) completo, desenvolvido para ser simples, rápido e moderno.
+Este é o seu sistema de frente de caixa (PDV) completo, otimizado para ser hospedado na **Vercel**.
 
-## 🚀 Como colocar no ar (Link Permanente Grátis)
+## 🚀 Como colocar no ar (Vercel)
 
-Para ter o seu link oficial (ex: `sua-acaiteria.web.app`), siga estes passos no Console do Firebase:
+Siga estes passos para ter o seu link oficial (ex: `sua-acaiteria.vercel.app`):
 
-### 1. Preparação (Obrigatório)
-Antes de tudo, ative estes dois serviços no menu **Build**:
-- **Authentication**: Vá em *Sign-in method* > *Add new provider* > **Anonymous** > Ative e Salve. (Isso permite salvar as vendas com segurança).
-- **Firestore Database**: Clique em *Create database* > Escolha o local (ex: southamerica-east1) > Inicie em **Modo de Produção**. 
+### 1. Preparação no Firebase (Obrigatório)
+Mesmo usando a Vercel para o site, os dados ficam no Firebase. Ative estes dois serviços no Console do Firebase:
+- **Authentication**: Ative o provedor **Anônimo** (Anonymous).
+- **Firestore Database**: Crie o banco em **Modo de Produção**.
   - Na aba **Rules**, publique estas regras:
     ```javascript
     rules_version = '2';
@@ -23,12 +23,11 @@ Antes de tudo, ative estes dois serviços no menu **Build**:
     }
     ```
 
-### 2. Hospedagem (Onde seu site vai morar)
-**DICA IMPORTANTE:** No plano gratuito, o jeito mais fácil de publicar sem erros é usar o **Firebase App Hosting**.
-1. Vá em **Build** > **App Hosting**.
-2. Clique em **Get Started**.
-3. Conecte seu **GitHub** e selecione a pasta deste projeto.
-4. O Firebase cuidará de tudo e gerará o seu link automático e gratuito.
+### 2. Hospedagem na Vercel
+1. Crie uma conta em [vercel.com](https://vercel.com).
+2. Conecte seu **GitHub** (após subir o código para lá) ou use a **Vercel CLI** para fazer o upload da pasta.
+3. A Vercel detectará automaticamente que é um projeto **Next.js** e fará o deploy em segundos.
+4. **Dica:** Se você quiser proteger suas chaves, mova os dados de `src/firebase/config.ts` para as *Environment Variables* no painel da Vercel.
 
 ---
 
@@ -36,9 +35,9 @@ Antes de tudo, ative estes dois serviços no menu **Build**:
 - **Frente de Caixa:** Registro rápido de PIX, Cartões, Dinheiro e Delivery.
 - **Relatórios:** Gere PDFs profissionais para conferência ou impressão.
 - **Dashboard:** Gráficos de vendas e lucro em tempo real.
-- **IA Financeira:** Categorização automática e sugestões de economia para sua açaíteria.
+- **IA Financeira:** Insights automáticos sobre suas despesas.
 
-## 📁 Como baixar os arquivos agora
-No menu superior do Firebase Studio, clique em **Export** ou **Download** para baixar o arquivo `.zip` completo. Nele está todo o código que construímos.
+## 📁 Como baixar os arquivos
+Clique no ícone de **Download** ou **Export** no menu superior do Firebase Studio para baixar o código `.zip` completo e subir para a Vercel.
 
-*ID do Projeto: nextn-f5a13*
+*ID do Projeto Firebase: nextn-f5a13*
