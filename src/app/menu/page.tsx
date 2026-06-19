@@ -221,21 +221,25 @@ export default function MenuPage() {
   const total = cart.reduce((acc, item) => acc + (item.preco * item.qtd), 0);
 
   const handleFinishOrder = async () => {
-    if (!db || cart.length === 0 || !clienteNome || !clienteTelefone) return;
+    if (!db || cart.length === 0 || !clienteNome || !clienteTelefone) {
+      toast({ title: "Campos obrigatórios", description: "Por favor, informe seu nome e telefone.", variant: "destructive" });
+      return;
+    }
+    
     if (tipoEntrega === 'entrega' && !endereco) {
       toast({ title: "Endereço incompleto", description: "Por favor, informe seu endereço para entrega.", variant: "destructive" });
       return;
     }
 
     const orderData = {
-      userId: user?.uid,
+      userId: user?.uid || 'anonymous',
       clienteNome,
       clienteTelefone,
       itens: cart,
       total,
       pagamento: formaPagamento,
       tipoEntrega,
-      endereco: tipoEntrega === 'entrega' ? endereco : '',
+      endereco: tipoEntrega === 'entrega' ? endereco : 'Retirada no Balcão',
       troco: formaPagamento === 'dinheiro' ? (parseFloat(valorTroco) || 0) : 0
     };
 
@@ -255,13 +259,14 @@ export default function MenuPage() {
     const trocoMsg = (formaPagamento === 'dinheiro' && valorTroco) ? `\n*Troco para:* R$ ${valorTroco}` : '';
     const entregaMsg = tipoEntrega === 'entrega' ? `*Entrega:* ${endereco}` : '*Retirada no Balcão*';
 
-    const msg = `*NOVO PEDIDO - ${brand?.name || 'AÇAÍ DELICIAS DO PARA'}*\n\n*Cliente:* ${clienteNome}\n*Tel:* ${clienteTelefone}\n\n*Pedido:*\n${itensMsg}\n\n${entregaMsg}\n*Pagamento:* ${pgtoLabel}${trocoMsg}\n\n*Total: R$ ${total.toFixed(2)}*`;
+    const msg = `*NOVO PEDIDO - ${brand?.name || 'AÇAÍ DELICIAS DO PARA'}*\n\n*Cliente:* ${clienteNome}\n*Tel:* ${clienteTelefone}\n\n*Pedido:*\n${itensMsg}\n\n${entregaMsg}\n*Pagamento:* ${pgtoLabel}${trocoMsg}\n\n*Total: R$ ${total.toFixed(2).replace('.', ',')}*`;
     
     const storeWhatsapp = brand?.whatsapp || '5591999999999';
     const zapLink = `https://wa.me/${storeWhatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
     
     window.open(zapLink, '_blank');
     setCart([]);
+    localStorage.removeItem('acai-cart');
     setClienteNome('');
     setClienteTelefone('');
     setEndereco('');
@@ -457,8 +462,12 @@ export default function MenuPage() {
                 </div>
               </ScrollArea>
               <DrawerFooter className="p-8 border-t border-white/5 bg-card/40 backdrop-blur-2xl shrink-0">
-                <Button onClick={handleFinishOrder} disabled={!clienteNome || !clienteTelefone || (tipoEntrega === 'entrega' && !endereco) || cart.length === 0} className="h-20 rounded-[2.5rem] bg-accent text-accent-foreground font-black text-xl shadow-2xl uppercase tracking-tighter disabled:opacity-20">
-                  Confirmar Pedido • R$ {total.toFixed(2).replace('.', ',')}
+                <Button 
+                  onClick={handleFinishOrder} 
+                  disabled={!clienteNome || !clienteTelefone || (tipoEntrega === 'entrega' && !endereco) || cart.length === 0} 
+                  className="h-20 w-full rounded-[2.5rem] bg-accent text-accent-foreground font-black text-xl shadow-2xl uppercase tracking-tighter disabled:opacity-20 transition-all hover:scale-[1.02] active:scale-95"
+                >
+                  Finalizar Pedido • R$ {total.toFixed(2).replace('.', ',')}
                 </Button>
                 <DrawerClose asChild><Button variant="ghost" className="text-muted-foreground font-black uppercase tracking-[0.2em] text-[9px] mt-2">Continuar Comprando</Button></DrawerClose>
               </DrawerFooter>
