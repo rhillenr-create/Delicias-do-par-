@@ -48,5 +48,8 @@ export interface Order {
   total: number;
   status: OrderStatus;
   pagamento: string;
+  tipoEntrega: 'entrega' | 'retirada';
+  endereco?: string;
+  troco?: number;
   createdAt: number;
 }

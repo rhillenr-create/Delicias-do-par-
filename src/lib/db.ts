@@ -84,7 +84,7 @@ export function createOrder(db: Firestore, order: Omit<Order, 'id' | 'status' | 
   if (!db) return;
   const data = {
     ...order,
-    status: 'novo',
+    status: 'novo' as OrderStatus,
     createdAt: Date.now(),
   };
   addDoc(collection(db, 'orders'), data)
