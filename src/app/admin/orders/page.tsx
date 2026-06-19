@@ -2,8 +2,8 @@
 'use client';
 
 import { useMemo, useState, useEffect } from 'react';
-import { useCollection, useFirestore } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { useCollection, useFirestore, useDoc } from '@/firebase';
+import { collection, query, orderBy, doc } from 'firebase/firestore';
 import { Order, OrderStatus } from '@/lib/types';
 import { updateOrderStatus } from '@/lib/db';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -12,17 +12,21 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ShoppingBag, Search, ExternalLink, Info } from 'lucide-react';
+import { ShoppingBag, Search, ExternalLink, Info, Printer, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function AdminOrdersPage() {
   const db = useFirestore();
   const [mounted, setMounted] = useState(false);
   const [filter, setFilter] = useState('');
+  const [printingOrder, setPrintingOrder] = useState<Order | null>(null);
 
   const ordersQuery = useMemo(() => (db ? query(collection(db, 'orders'), orderBy('createdAt', 'desc')) : null), [db]);
   const { data: orders = [] } = useCollection<Order>(ordersQuery);
+
+  const brandRef = useMemo(() => (db ? doc(db, 'settings', 'brand') : null), [db]);
+  const { data: brand } = useDoc<any>(brandRef);
 
   useEffect(() => {
     setMounted(true);
@@ -34,6 +38,13 @@ export default function AdminOrdersPage() {
 
   const handleStatusChange = (id: string, status: string) => {
     if (db) updateOrderStatus(db, id, status as OrderStatus);
+  };
+
+  const handlePrint = (order: Order) => {
+    setPrintingOrder(order);
+    setTimeout(() => {
+      window.print();
+    }, 500);
   };
 
   const getStatusBadge = (status: OrderStatus) => {
@@ -50,8 +61,8 @@ export default function AdminOrdersPage() {
   if (!mounted) return null;
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-8 max-w-7xl mx-auto pb-20">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div>
           <h1 className="text-3xl font-headline font-black text-white uppercase tracking-tighter">CONTROLE DE <span className="text-accent">PEDIDOS</span></h1>
           <p className="text-muted-foreground text-sm uppercase tracking-widest font-bold">Gerenciamento completo de delivery</p>
@@ -69,7 +80,7 @@ export default function AdminOrdersPage() {
         </div>
       </div>
 
-      <div className="bg-card border border-white/5 rounded-[2.5rem] overflow-hidden shadow-2xl">
+      <div className="bg-card border border-white/5 rounded-[2.5rem] overflow-hidden shadow-2xl no-print">
         <Table>
           <TableHeader className="bg-white/5">
             <TableRow className="border-white/5">
@@ -97,8 +108,8 @@ export default function AdminOrdersPage() {
                       <div key={idx} className="bg-white/5 p-2 rounded-lg border border-white/5">
                         <div className="font-black text-accent">{i.qtd}x {i.nome}</div>
                         {i.complements && i.complements.map((c, cidx) => (
-                          <div key={cidx} className="pl-2 text-[10px] border-l border-white/10 mt-1">
-                            <span className="opacity-50 uppercase">{c.category}:</span> {c.items.join(', ')}
+                          <div key={cidx} className="pl-2 border-l border-white/10 mt-1">
+                            <span className="opacity-50 uppercase text-[9px]">{c.category}:</span> <span className="text-[9px]">{c.items.join(', ')}</span>
                           </div>
                         ))}
                       </div>
@@ -112,24 +123,100 @@ export default function AdminOrdersPage() {
                   R$ {order.total.toFixed(2)}
                 </TableCell>
                 <TableCell className="p-6">
-                  <Select value={order.status} onValueChange={(val) => handleStatusChange(order.id, val)}>
-                    <SelectTrigger className="h-10 bg-background border-white/10 rounded-xl text-xs">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="novo">Novo</SelectItem>
-                      <SelectItem value="preparando">Preparando</SelectItem>
-                      <SelectItem value="saiu_entrega">Em Entrega</SelectItem>
-                      <SelectItem value="entregue">Entregue</SelectItem>
-                      <SelectItem value="cancelado">Cancelado</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex items-center gap-3">
+                    <Select value={order.status} onValueChange={(val) => handleStatusChange(order.id, val)}>
+                      <SelectTrigger className="h-10 bg-background border-white/10 rounded-xl text-xs w-32">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="novo">Novo</SelectItem>
+                        <SelectItem value="preparando">Preparando</SelectItem>
+                        <SelectItem value="saiu_entrega">Em Entrega</SelectItem>
+                        <SelectItem value="entregue">Entregue</SelectItem>
+                        <SelectItem value="cancelado">Cancelado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button 
+                      variant="outline" 
+                      size="icon" 
+                      className="rounded-xl border-accent/20 text-accent hover:bg-accent/10 h-10 w-10"
+                      onClick={() => handlePrint(order)}
+                    >
+                      <Printer className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
+
+      {/* Recibo para Impressão Térmica */}
+      {printingOrder && (
+        <div className="print-only fixed inset-0 bg-white text-black p-4 z-[9999] overflow-auto font-mono text-sm leading-tight w-[80mm] mx-auto">
+          <div className="text-center border-b border-dashed border-black pb-4 mb-4">
+            <h2 className="text-xl font-bold uppercase">{brand?.name || 'AÇAÍ DELÍCIAS DO PARÁ'}</h2>
+            <p className="text-[10px] mt-1">Sabor Original do Pará!</p>
+            <p className="text-[10px]">{format(printingOrder.createdAt, "dd/MM/yyyy HH:mm")}</p>
+          </div>
+
+          <div className="mb-4">
+            <p className="font-bold uppercase">CLIENTE: {printingOrder.clienteNome}</p>
+            <p>TEL: {printingOrder.clienteTelefone}</p>
+            <p className="mt-2 font-bold uppercase">TIPO: {printingOrder.tipoEntrega === 'entrega' ? 'DELIVERY' : 'RETIRADA'}</p>
+            {printingOrder.tipoEntrega === 'entrega' && (
+              <p className="uppercase">END: {printingOrder.endereco}</p>
+            )}
+          </div>
+
+          <div className="border-y border-dashed border-black py-4 mb-4">
+            <p className="font-bold mb-2 uppercase">ITENS DO PEDIDO:</p>
+            {printingOrder.itens.map((item, idx) => (
+              <div key={idx} className="mb-3">
+                <div className="flex justify-between font-bold">
+                  <span>{item.qtd}x {item.nome}</span>
+                  <span>R$ {(item.preco * item.qtd).toFixed(2)}</span>
+                </div>
+                {item.complements && item.complements.map((c, cidx) => (
+                  <div key={cidx} className="text-[11px] pl-2">
+                    <span className="opacity-70">{c.category}:</span> {c.items.join(', ')}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          <div className="space-y-1 mb-4">
+            <div className="flex justify-between">
+              <span>Subtotal:</span>
+              <span>R$ {(printingOrder.total - (printingOrder.taxaEntrega || 0)).toFixed(2)}</span>
+            </div>
+            {printingOrder.tipoEntrega === 'entrega' && (
+              <div className="flex justify-between">
+                <span>Taxa Entrega:</span>
+                <span>R$ {(printingOrder.taxaEntrega || 0).toFixed(2)}</span>
+              </div>
+            )}
+            <div className="flex justify-between text-lg font-bold border-t border-black pt-2 mt-2">
+              <span>TOTAL:</span>
+              <span>R$ {printingOrder.total.toFixed(2)}</span>
+            </div>
+          </div>
+
+          <div className="border-t border-dashed border-black pt-4">
+            <p className="font-bold uppercase">PAGAMENTO: {printingOrder.pagamento.toUpperCase()}</p>
+            {printingOrder.pagamento === 'dinheiro' && printingOrder.troco && (
+              <p>TROCO PARA: R$ {printingOrder.troco.toFixed(2)}</p>
+            )}
+          </div>
+
+          <div className="text-center mt-10 opacity-50 text-[10px]">
+            <p>Obrigado pela preferência!</p>
+            <p>www.acaiteriadelicias.com.br</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
