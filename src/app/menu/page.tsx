@@ -320,7 +320,7 @@ export default function MenuPage() {
 
     const msg = `*NOVO PEDIDO - ${brand?.name || 'AÇAÍ DELICIAS DO PARA'}*\n\n*Cliente:* ${clienteNome}\n*Tel:* ${clienteTelefone}\n\n*Pedido:*\n${itensMsg}\n\n${entregaMsg}\n*Pagamento:* ${pgtoLabel}${trocoMsg}\n\n*Itens: R$ ${itemsTotal.toFixed(2).replace('.', ',')}*\n*Total: R$ ${finalTotal.toFixed(2).replace('.', ',')}*`;
     
-    const storeWhatsapp = brand?.whatsapp || '5591999999999';
+    const storeWhatsapp = brand?.whatsapp || '558894380886';
     const zapLink = `https://wa.me/${storeWhatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
     
     window.open(zapLink, '_blank');

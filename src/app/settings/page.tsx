@@ -29,6 +29,9 @@ export default function SettingsPage() {
       setName(brand.name || '');
       setLogoUrl(brand.logoUrl || '');
       setWhatsapp(brand.whatsapp || '');
+    } else {
+      // Valor padrão solicitado para pedidos
+      setWhatsapp('558894380886');
     }
   }, [brand]);
 
@@ -106,7 +109,7 @@ export default function SettingsPage() {
                 <Input 
                   value={whatsapp} 
                   onChange={(e) => setWhatsapp(e.target.value)} 
-                  placeholder="Ex: 5591999999999"
+                  placeholder="Ex: 558894380886"
                   className="h-14 bg-background border-white/5 rounded-2xl pl-12 text-white font-bold"
                 />
               </div>
