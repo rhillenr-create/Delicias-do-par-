@@ -8,34 +8,28 @@
       "imageHint": "acai brand logo"
     },
     {
-      "id": "acai-300",
-      "description": "Açaí Tradicional 300ml",
-      "imageUrl": "https://picsum.photos/seed/acai300/600/400",
+      "id": "acai-sizes",
+      "description": "Açaí em diversos tamanhos",
+      "imageUrl": "https://picsum.photos/seed/acaisizes/600/400",
       "imageHint": "acai bowl"
     },
     {
-      "id": "acai-500",
-      "description": "Açaí Tradicional 500ml",
-      "imageUrl": "https://picsum.photos/seed/acai500/600/400",
-      "imageHint": "acai fruit"
+      "id": "acai-puro",
+      "description": "Açaí puro e cremoso",
+      "imageUrl": "https://picsum.photos/seed/puro/600/400",
+      "imageHint": "raw acai"
     },
     {
-      "id": "acai-700",
-      "description": "Açaí Tradicional 700ml",
-      "imageUrl": "https://picsum.photos/seed/acai700/600/400",
-      "imageHint": "big acai"
+      "id": "cremes-gods",
+      "description": "Cremes variados",
+      "imageUrl": "https://picsum.photos/seed/cremes/600/400",
+      "imageHint": "fruit cream"
     },
     {
-      "id": "cupuacu-500",
-      "description": "Creme de Cupuaçu 500ml",
-      "imageUrl": "https://picsum.photos/seed/cupuacu500/600/400",
-      "imageHint": "white cream"
-    },
-    {
-      "id": "casadinho",
-      "description": "Casadinho Açaí e Cupuaçu",
-      "imageUrl": "https://picsum.photos/seed/casadinho/600/400",
-      "imageHint": "mixed acai"
+      "id": "acai-paraense",
+      "description": "Açaí moda paraense",
+      "imageUrl": "https://picsum.photos/seed/parastyle/600/400",
+      "imageHint": "brazilian acai"
     }
   ]
 }

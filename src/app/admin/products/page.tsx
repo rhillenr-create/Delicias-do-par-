@@ -57,18 +57,44 @@ export default function AdminProductsPage() {
   const seedProducts = async () => {
     if (!db) return;
     const defaults = [
-      { nome: 'Açaí 300ml', preco: 15.00, categoria: 'Açaí no Copo', descricao: 'Açaí puro e cremoso.', imagem: 'https://picsum.photos/seed/acai300/600/400', ativo: true },
-      { nome: 'Açaí 500ml', preco: 22.00, categoria: 'Açaí no Copo', descricao: 'O tamanho ideal para sua fome.', imagem: 'https://picsum.photos/seed/acai500/600/400', ativo: true },
-      { nome: 'Creme de Cupuaçu 500ml', preco: 25.00, categoria: 'Cremes', descricao: 'Creme de cupuaçu legítimo.', imagem: 'https://picsum.photos/seed/cupuacu500/600/400', ativo: true },
-      { nome: 'Leite em Pó', preco: 2.00, categoria: 'Complementos', descricao: 'Adicional de Leite Ninho.', imagem: 'https://picsum.photos/seed/milk/600/400', ativo: true },
-      { nome: 'Nutella Original', preco: 5.00, categoria: 'Complementos', descricao: 'A verdadeira Nutella.', imagem: 'https://picsum.photos/seed/nutella/600/400', ativo: true },
-      { nome: 'Granola Especial', preco: 1.50, categoria: 'Complementos', descricao: 'Mix de cereais crocantes.', imagem: 'https://picsum.photos/seed/granola/600/400', ativo: true }
+      // Açaí no Tamanho Certo!
+      { nome: 'Açaí 200g', preco: 14.99, categoria: 'Açaí no Tamanho Certo!', descricao: 'Doce na medida! Porção perfeita para um momento rápido e delicioso: 200g de puro sabor!', imagem: 'https://picsum.photos/seed/acai200/600/400', ativo: true },
+      { nome: 'Açaí 300g', preco: 17.99, categoria: 'Açaí no Tamanho Certo!', descricao: 'Pequeno, mas poderoso! A medida exata pra saborear com alegria e sem exagero.', imagem: 'https://picsum.photos/seed/acai300/600/400', ativo: true },
+      { nome: 'Açaí 400g', preco: 22.99, categoria: 'Açaí no Tamanho Certo!', descricao: 'Alegria Generosa. Suficiente para dividir… se você quiser!', imagem: 'https://picsum.photos/seed/acai400/600/400', ativo: true },
+      
+      // Açaí Para Quem Ama Muito!
+      { nome: 'Açaí 500g', preco: 26.99, categoria: 'Açaí Para Quem Ama Muito!', descricao: 'Meio quilo de alegria! Porção reforçada para aproveitar cada colherada.', imagem: 'https://picsum.photos/seed/acai500/600/400', ativo: true },
+      { nome: 'Açaí 600g', preco: 32.99, categoria: 'Açaí Para Quem Ama Muito!', descricao: 'Festa No Pote! Ideal para quem não brinca em serviço.', imagem: 'https://picsum.photos/seed/acai600/600/400', ativo: true },
+      { nome: 'Açaí 700g', preco: 36.99, categoria: 'Açaí Para Quem Ama Muito!', descricao: 'Um Mar De Energia! Uma onda gigante de açaí fresquinho.', imagem: 'https://picsum.photos/seed/acai700/600/400', ativo: true },
+      { nome: 'Açaí 1kg', preco: 53.99, categoria: 'Açaí Para Quem Ama Muito!', descricao: 'Gigante do Pará! Um quilo de pura felicidade na sua mão.', imagem: 'https://picsum.photos/seed/acai1000/600/400', ativo: true },
+      
+      // Açaí Puro & Poderoso!
+      { nome: 'Açaí Puro 500g', preco: 21.99, categoria: 'Açaí Puro & Poderoso!', descricao: 'Sabor Autêntico. Açaí na sua essência: puro, cremoso e geladinho, do jeitinho que você ama.', imagem: 'https://picsum.photos/seed/puro500/600/400', ativo: true },
+      { nome: 'Açaí Puro 1kg', preco: 43.99, categoria: 'Açaí Puro & Poderoso!', descricao: 'O Clássico Gigante. Para os amantes do sabor Original do açaí.', imagem: 'https://picsum.photos/seed/puro1000/600/400', ativo: true },
+      
+      // Cremes dos Deuses
+      { nome: 'Creme de Ninho', preco: 21.90, categoria: 'Cremes dos Deuses', descricao: 'Doce como abraço! Leve, cremoso e irresistível.', imagem: 'https://picsum.photos/seed/cremeninho/600/400', ativo: true },
+      { nome: 'Creme de Morango', preco: 21.90, categoria: 'Cremes dos Deuses', descricao: 'Amor Gelado! Doce, suave e refrescante.', imagem: 'https://picsum.photos/seed/crememorango/600/400', ativo: true },
+      { nome: 'Creme Abacaxi ao Vinho', preco: 21.90, categoria: 'Cremes dos Deuses', descricao: 'Exótico & refinado! Uma combinação elegante e refrescante.', imagem: 'https://picsum.photos/seed/cremeabacaxi/600/400', ativo: true },
+      { nome: 'Creme Oreo', preco: 21.90, categoria: 'Cremes dos Deuses', descricao: 'Crocância e sabor! O biscoito mais amado no creme mais gostoso.', imagem: 'https://picsum.photos/seed/cremeoreo/600/400', ativo: true },
+      { nome: 'Creme Cupuaçu', preco: 21.90, categoria: 'Cremes dos Deuses', descricao: 'Amazônia na colher! Azedinho e doce na medida.', imagem: 'https://picsum.photos/seed/cremecupuacu/600/400', ativo: true },
+      { nome: 'Creme Kit Kat', preco: 21.90, categoria: 'Cremes dos Deuses', descricao: 'Crocante de alegria! Um mergulho no sabor com pedaços crocantes.', imagem: 'https://picsum.photos/seed/cremekitkat/600/400', ativo: true },
+      { nome: 'Creme Fini', preco: 21.90, categoria: 'Cremes dos Deuses', descricao: 'Diversão em forma de doce! Colorido, divertido e docinho.', imagem: 'https://picsum.photos/seed/cremefini/600/400', ativo: true },
+      { nome: 'Creme Maracujá', preco: 21.90, categoria: 'Cremes dos Deuses', descricao: 'Tropical e refrescante! Um toque ácido com cremosidade perfeita.', imagem: 'https://picsum.photos/seed/crememaracuja/600/400', ativo: true },
+      
+      // Açaí A Moda Paraense
+      { nome: 'Polpa de Açaí Congelada', preco: 35.00, categoria: 'Açaí A Moda Paraense', descricao: 'Litro de polpa de açaí congelado original do Pará.', imagem: 'https://picsum.photos/seed/polpacongelada/600/400', ativo: true },
+
+      // Complementos (Adicionais)
+      { nome: 'Leite em Pó', preco: 2.50, categoria: 'Complementos', descricao: 'Leite Ninho em pó.', imagem: 'https://picsum.photos/seed/milk/600/400', ativo: true },
+      { nome: 'Nutella', preco: 5.00, categoria: 'Complementos', descricao: 'Nutella original Ferrero.', imagem: 'https://picsum.photos/seed/nutella/600/400', ativo: true },
+      { nome: 'Granola', preco: 1.50, categoria: 'Complementos', descricao: 'Mix de cereais crocantes.', imagem: 'https://picsum.photos/seed/granola/600/400', ativo: true }
     ];
 
     for (const p of defaults) {
       await saveProduct(db, p);
     }
-    toast({ title: "Produtos Adicionados!", description: "Itens e complementos populados." });
+    toast({ title: "Produtos Adicionados!", description: "O novo cardápio foi populado com sucesso." });
   };
 
   const openAddDialog = (category?: string) => {
@@ -213,6 +239,7 @@ function ProductGrid({ products, onEdit, onDelete }: { products: Product[], onEd
       {products.map(product => (
         <Card key={product.id} className="glass-card rounded-[2.5rem] overflow-hidden border-white/5 transition-all hover:scale-[1.02]">
           <div className="relative h-40 w-full bg-black/40">
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
             <Image 
               src={product.imagem || `https://picsum.photos/seed/${product.id}/600/400`} 
               alt={product.nome} 
@@ -220,7 +247,7 @@ function ProductGrid({ products, onEdit, onDelete }: { products: Product[], onEd
               className={product.ativo ? "object-cover opacity-80" : "object-cover opacity-30 grayscale"} 
               unoptimized 
             />
-            <div className="absolute top-4 right-4 flex gap-2">
+            <div className="absolute top-4 right-4 flex gap-2 z-20">
               <Badge className={product.ativo ? "bg-accent text-accent-foreground" : "bg-destructive text-white"}>
                 {product.ativo ? "ATIVO" : "INATIVO"}
               </Badge>
