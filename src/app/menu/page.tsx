@@ -29,6 +29,13 @@ const CATEGORY_ORDER = [
 
 const ACAI_COMPLEMENTS = [
   {
+    id: 'base_acai',
+    title: 'Escolha seu açaí',
+    description: 'Escolha 1 item',
+    max: 1,
+    items: ['Açai Tradicional', 'Açaí Premium']
+  },
+  {
     id: 'cremes',
     title: 'Escolha seu creme favorito',
     description: 'Escolha até 2 itens',
