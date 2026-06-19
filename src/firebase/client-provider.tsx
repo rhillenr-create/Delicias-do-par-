@@ -10,6 +10,7 @@ import { Auth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { AlertCircle, Settings, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
 
 const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
@@ -47,6 +48,8 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
   } | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -56,17 +59,26 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
       setFirebaseInstance(instance);
 
       const unsubscribe = onAuthStateChanged(instance.auth, (user) => {
+        const isMenuPath = pathname === '/menu';
+        const isLoginPath = pathname === '/login';
+
         if (!user) {
-          signInAnonymously(instance.auth)
-            .then(() => {
-              setIsAuthReady(true);
-            })
-            .catch((error: any) => {
-              console.error("Erro de autenticação:", error);
-              setAuthError(error.code || error.message);
-              setIsAuthReady(true);
-            });
+          if (isMenuPath) {
+            // Clientes entram anonimamente
+            signInAnonymously(instance.auth).then(() => setIsAuthReady(true));
+          } else if (!isLoginPath) {
+            // Outras rotas exigem login, mas permitimos carregar para o router redirecionar se necessário
+            // Ou apenas sinalizamos que está pronto para o componente de Login ou Proteção agir
+            setIsAuthReady(true);
+            router.push('/login');
+          } else {
+            setIsAuthReady(true);
+          }
         } else {
+          // Se for anônimo tentando acessar admin, manda pro login
+          if (user.isAnonymous && !isMenuPath && !isLoginPath) {
+            router.push('/login');
+          }
           setIsAuthReady(true);
         }
       });
@@ -76,7 +88,7 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
       console.error("Erro ao inicializar Firebase:", error);
       setAuthError(error.message);
     }
-  }, []);
+  }, [pathname, router]);
 
   if (!mounted) {
     return <div className="min-h-screen bg-background" />;

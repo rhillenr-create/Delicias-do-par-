@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { 
   LayoutDashboard, 
   ReceiptText, 
@@ -11,20 +11,25 @@ import {
   UtensilsCrossed, 
   PackageSearch, 
   Settings as SettingsIcon,
-  ArrowLeftRight
+  ArrowLeftRight,
+  LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useMemo, useState, useEffect } from 'react';
-import { useDoc, useFirestore } from '@/firebase';
+import { useDoc, useFirestore, useUser, useAuth } from '@/firebase';
 import { doc } from 'firebase/firestore';
 import { Button } from '@/components/ui/button';
+import { signOut } from 'firebase/auth';
 
 const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const db = useFirestore();
+  const auth = useAuth();
+  const { user } = useUser();
   const [mounted, setMounted] = useState(false);
   
   const brandRef = useMemo(() => (db ? doc(db, 'settings', 'brand') : null), [db]);
@@ -33,6 +38,11 @@ export function Navbar() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push('/login');
+  };
 
   // Define os grupos de navegação
   const cashierItems = [
@@ -53,13 +63,14 @@ export function Navbar() {
   // Verifica em qual "sistema" o usuário está
   const isDeliveryPath = pathname.startsWith('/admin') || pathname === '/kitchen';
   const isMenuPath = pathname === '/menu';
+  const isLoginPath = pathname === '/login';
   
-  // Se for o cardápio do cliente, mostra apenas uma versão minimalista ou nada
-  if (isMenuPath) {
+  // Se for o cardápio do cliente ou tela de login, não mostra a navbar completa
+  if (isMenuPath || isLoginPath) {
     return (
       <nav className="border-b bg-card/60 backdrop-blur-2xl sticky top-0 z-50 no-print border-white/5">
-        <div className="container mx-auto px-4 h-20 flex items-center justify-center">
-          <div className="relative w-16 h-14">
+        <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+          <Link href={isMenuPath ? "#" : "/"} className="relative w-16 h-14">
             <Image
               src={brand?.logoUrl || DEFAULT_LOGO}
               alt="Logo"
@@ -67,7 +78,13 @@ export function Navbar() {
               className="object-contain"
               unoptimized
             />
-          </div>
+          </Link>
+          {isMenuPath && (
+             <div className="flex flex-col items-end">
+               <span className="text-[10px] font-black text-accent uppercase tracking-widest leading-none">Cardápio Online</span>
+               <span className="text-[8px] text-white/40 uppercase tracking-tighter">Delícias do Pará</span>
+             </div>
+          )}
         </div>
       </nav>
     );
@@ -125,14 +142,26 @@ export function Navbar() {
           
           <div className="w-px h-8 bg-white/10 mx-2 hidden md:block" />
           
-          <Link href={isDeliveryPath ? '/' : '/admin/orders'}>
-            <Button variant="ghost" className="rounded-full text-[10px] font-black uppercase tracking-widest gap-2 text-white/40 hover:text-accent">
-              <ArrowLeftRight className="w-4 h-4" />
-              <span className="hidden md:inline">
-                {isDeliveryPath ? 'IR PARA CAIXA' : 'IR PARA DELIVERY'}
-              </span>
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href={isDeliveryPath ? '/' : '/admin/orders'}>
+              <Button variant="ghost" className="rounded-full text-[10px] font-black uppercase tracking-widest gap-2 text-white/40 hover:text-accent p-2 md:px-4">
+                <ArrowLeftRight className="w-4 h-4" />
+                <span className="hidden md:inline">
+                  {isDeliveryPath ? 'IR PARA CAIXA' : 'IR PARA DELIVERY'}
+                </span>
+              </Button>
+            </Link>
+
+            {user && !user.isAnonymous && (
+              <Button 
+                variant="ghost" 
+                onClick={handleLogout}
+                className="rounded-full w-10 h-10 p-0 text-destructive hover:bg-destructive/10"
+              >
+                <LogOut className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </nav>
