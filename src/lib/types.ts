@@ -34,6 +34,10 @@ export interface OrderItem {
   nome: string;
   preco: number;
   qtd: number;
+  complements?: {
+    category: string;
+    items: string[];
+  }[];
 }
 
 export interface Order {

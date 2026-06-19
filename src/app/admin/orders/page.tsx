@@ -12,8 +12,9 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ShoppingBag, Search, ExternalLink } from 'lucide-react';
+import { ShoppingBag, Search, ExternalLink, Info } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function AdminOrdersPage() {
   const db = useFirestore();
@@ -74,7 +75,7 @@ export default function AdminOrdersPage() {
             <TableRow className="border-white/5">
               <TableHead className="text-[10px] font-black uppercase tracking-widest p-6">Data</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest p-6">Cliente</TableHead>
-              <TableHead className="text-[10px] font-black uppercase tracking-widest p-6">Itens</TableHead>
+              <TableHead className="text-[10px] font-black uppercase tracking-widest p-6">Itens e Montagem</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest p-6">Status</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest p-6 text-right">Total</TableHead>
               <TableHead className="text-[10px] font-black uppercase tracking-widest p-6 text-center">Ações</TableHead>
@@ -91,9 +92,16 @@ export default function AdminOrdersPage() {
                   <div className="text-[10px] text-accent uppercase font-black">{order.clienteTelefone}</div>
                 </TableCell>
                 <TableCell className="p-6">
-                  <div className="text-xs text-white/60 space-y-1">
+                  <div className="text-xs text-white/60 space-y-2">
                     {order.itens.map((i, idx) => (
-                      <div key={idx}>{i.qtd}x {i.nome}</div>
+                      <div key={idx} className="bg-white/5 p-2 rounded-lg border border-white/5">
+                        <div className="font-black text-accent">{i.qtd}x {i.nome}</div>
+                        {i.complements && i.complements.map((c, cidx) => (
+                          <div key={cidx} className="pl-2 text-[10px] border-l border-white/10 mt-1">
+                            <span className="opacity-50 uppercase">{c.category}:</span> {c.items.join(', ')}
+                          </div>
+                        ))}
+                      </div>
                     ))}
                   </div>
                 </TableCell>
