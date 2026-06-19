@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -26,7 +27,7 @@ const CATEGORY_ORDER = [
   "Açaí A Moda Paraense"
 ];
 
-const COMPLEMENT_CATEGORIES = [
+const ACAI_COMPLEMENTS = [
   {
     id: 'cremes',
     title: 'Escolha seu creme favorito',
@@ -64,6 +65,44 @@ const COMPLEMENT_CATEGORIES = [
   }
 ];
 
+const CREME_COMPLEMENTS = [
+  {
+    id: 'tamanho_creme',
+    title: 'Escolha o tamanho de sua preferência',
+    description: 'Escolha 1 item',
+    max: 1,
+    items: ['Creme 300g', 'Creme 500g (R$ 13,00)', 'Creme 700g (R$ 25,00)', 'Creme 1k (R$ 39,00)']
+  },
+  {
+    id: 'toppings_creme',
+    title: 'Topping pra ficar mais gostoso!',
+    description: 'Escolha até 3 itens',
+    max: 3,
+    items: ['Skocopow', 'Paçoquinha', 'Ovomaltine', 'Nutella', 'Morango em calda', 'Marshmallow', 'Leite em pó', 'Jujuba', 'Granulado', 'Granola', 'Gota de chocolate', 'Finne', 'Fine', 'Disquete', 'Creme de cookeis', 'Cereja', 'Castanha', 'Brigadeiro']
+  },
+  {
+    id: 'frutas_creme',
+    title: 'Escolha uma fruta pra dar aquele up!',
+    description: 'Escolha até 1 item',
+    max: 1,
+    items: ['Morango', 'Banana com leite condensado']
+  },
+  {
+    id: 'coberturas_creme',
+    title: 'Que tal uma cobertura para finalizar!',
+    description: 'Escolha até 2 itens',
+    max: 2,
+    items: ['Calda de chocolate', 'Charope de Guaraná', 'Leite condensado', 'Calda de beijinho - Finni', 'Calda de dentadura - Finni', 'Calda de banana - Finni', 'Calda de morango', 'Doce de leite', 'Mel']
+  },
+  {
+    id: 'montagem_creme',
+    title: 'Como você deseja a montagem do seu creme??',
+    description: 'Escolha até 1 item',
+    max: 1,
+    items: ['Quero Mais Creme', 'Quero Mais Recheio']
+  }
+];
+
 export default function MenuPage() {
   const db = useFirestore();
   const { toast } = useToast();
@@ -72,7 +111,6 @@ export default function MenuPage() {
   const [clienteNome, setClienteNome] = useState('');
   const [clienteTelefone, setClienteTelefone] = useState('');
   
-  // States para o configurador
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [tempComplements, setTempComplements] = useState<{ [key: string]: string[] }>({});
 
@@ -111,7 +149,6 @@ export default function MenuPage() {
   const orderedCategories = useMemo(() => {
     const categories = Object.keys(groupedProducts);
     const ordered = CATEGORY_ORDER.filter(cat => categories.includes(cat));
-    // Add any categories not in the pre-defined order at the end
     const others = categories.filter(cat => !CATEGORY_ORDER.includes(cat));
     return [...ordered, ...others];
   }, [groupedProducts]);
@@ -153,8 +190,10 @@ export default function MenuPage() {
   const finalizeCustomization = () => {
     if (!selectedProduct) return;
 
+    const activeComplements = selectedProduct.categoria === 'Cremes dos Deuses' ? CREME_COMPLEMENTS : ACAI_COMPLEMENTS;
+
     const complementsArray = Object.entries(tempComplements).map(([catId, items]) => ({
-      category: COMPLEMENT_CATEGORIES.find(c => c.id === catId)?.title || catId,
+      category: activeComplements.find(c => c.id === catId)?.title || catId,
       items
     })).filter(c => c.items.length > 0);
 
@@ -219,11 +258,15 @@ export default function MenuPage() {
     toast({ title: "Pedido Enviado!", description: "Seu pedido foi registrado com sucesso." });
   };
 
+  const currentComplementCategories = useMemo(() => {
+    if (!selectedProduct) return [];
+    return selectedProduct.categoria === 'Cremes dos Deuses' ? CREME_COMPLEMENTS : ACAI_COMPLEMENTS;
+  }, [selectedProduct]);
+
   if (!mounted) return null;
 
   return (
     <div className="min-h-screen bg-[#f1f1f1] pb-32 font-body">
-      {/* Header */}
       <header className="bg-[#4a148c] text-white px-4 h-20 flex items-center justify-between sticky top-0 z-40 shadow-xl border-b-4 border-[#68ff36]">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 bg-white rounded-2xl overflow-hidden relative border-2 border-white/20 shadow-lg">
@@ -244,7 +287,6 @@ export default function MenuPage() {
         </div>
       </header>
 
-      {/* Info Bar */}
       <div className="bg-white border-b px-6 py-4 flex justify-between items-center shadow-sm">
         <div className="flex flex-col">
           <span className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Entrega estimada</span>
@@ -257,7 +299,6 @@ export default function MenuPage() {
         </div>
       </div>
 
-      {/* Listagem Ordenada */}
       <div className="max-w-4xl mx-auto p-4 space-y-12">
         {orderedCategories.map((category) => (
           <section key={category} className="space-y-6">
@@ -273,7 +314,6 @@ export default function MenuPage() {
         ))}
       </div>
 
-      {/* Configurador de Produto (Etapas de Complementos) */}
       <Drawer open={!!selectedProduct} onOpenChange={(open) => !open && setSelectedProduct(null)}>
         <DrawerContent className="bg-white rounded-t-[3rem] h-[95vh] flex flex-col">
           <DrawerHeader className="border-b shrink-0">
@@ -290,7 +330,7 @@ export default function MenuPage() {
           
           <ScrollArea className="flex-1 px-6">
             <div className="space-y-10 py-6">
-              {COMPLEMENT_CATEGORIES.map((cat) => (
+              {currentComplementCategories.map((cat) => (
                 <div key={cat.id} className="space-y-4">
                   <div className="flex justify-between items-end border-b pb-2">
                     <div>
@@ -359,7 +399,6 @@ export default function MenuPage() {
         </DrawerContent>
       </Drawer>
 
-      {/* Carrinho Flutuante */}
       {cart.length > 0 && (
         <div className="fixed bottom-24 left-0 right-0 px-6 z-50 flex justify-center">
           <Drawer>
@@ -437,7 +476,6 @@ export default function MenuPage() {
         </div>
       )}
 
-      {/* Nav Inferior */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-50 h-20 flex items-center justify-around px-8 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
         <div className="flex flex-col items-center text-[#4a148c]">
           <div className="bg-[#4a148c]/10 p-2 rounded-xl">
