@@ -1,3 +1,4 @@
+
 {
   "placeholderImages": [
     {
@@ -7,22 +8,34 @@
       "imageHint": "acai brand logo"
     },
     {
-      "id": "acai-puro",
-      "description": "Açaí Médio 500ml",
-      "imageUrl": "https://picsum.photos/seed/acai1/600/400",
+      "id": "acai-300",
+      "description": "Açaí Tradicional 300ml",
+      "imageUrl": "https://picsum.photos/seed/acai300/600/400",
       "imageHint": "acai bowl"
     },
     {
-      "id": "acai-completo",
-      "description": "Açaí Turbinado com Frutas",
-      "imageUrl": "https://picsum.photos/seed/acai2/600/400",
+      "id": "acai-500",
+      "description": "Açaí Tradicional 500ml",
+      "imageUrl": "https://picsum.photos/seed/acai500/600/400",
       "imageHint": "acai fruit"
     },
     {
-      "id": "cupuacu",
-      "description": "Creme de Cupuaçu Gelaaado",
-      "imageUrl": "https://picsum.photos/seed/cupuacu/600/400",
-      "imageHint": "white fruit cream"
+      "id": "acai-700",
+      "description": "Açaí Tradicional 700ml",
+      "imageUrl": "https://picsum.photos/seed/acai700/600/400",
+      "imageHint": "big acai"
+    },
+    {
+      "id": "cupuacu-500",
+      "description": "Creme de Cupuaçu 500ml",
+      "imageUrl": "https://picsum.photos/seed/cupuacu500/600/400",
+      "imageHint": "white cream"
+    },
+    {
+      "id": "casadinho",
+      "description": "Casadinho Açaí e Cupuaçu",
+      "imageUrl": "https://picsum.photos/seed/casadinho/600/400",
+      "imageHint": "mixed acai"
     }
   ]
 }
