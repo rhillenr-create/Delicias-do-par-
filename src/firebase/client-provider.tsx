@@ -9,17 +9,29 @@ import { Firestore } from 'firebase/firestore';
 import { Auth, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { AlertCircle, Settings, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+
+const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
 
 const LoadingScreen = () => (
-  <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
-    <div className="absolute bottom-12 left-12 flex flex-col gap-2 z-10">
+  <div className="min-h-screen flex flex-col items-center justify-center bg-background relative overflow-hidden">
+    <div className="relative w-48 h-32 mb-8 animate-pulse">
+      <Image 
+        src={DEFAULT_LOGO} 
+        alt="Logo" 
+        fill 
+        className="object-contain" 
+        unoptimized 
+      />
+    </div>
+    <div className="flex flex-col gap-2 items-center">
       <div className="flex items-center gap-3">
         <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shadow-[0_0_15px_rgba(104,255,54,0.8)]" />
         <p className="text-accent font-black tracking-[0.5em] uppercase text-[10px] animate-pulse">
           SISTEMA INICIALIZANDO
         </p>
       </div>
-      <p className="text-white/30 font-black tracking-[0.2em] uppercase text-[8px] ml-5">
+      <p className="text-white/30 font-black tracking-[0.2em] uppercase text-[8px]">
         CONECTANDO AO CAIXA CENTRAL...
       </p>
     </div>
