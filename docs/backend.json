@@ -21,11 +21,12 @@
     },
     "BrandSettings": {
       "title": "Brand Settings",
-      "description": "Configurações de identidade visual da empresa.",
+      "description": "Configurações de identidade visual e contato da empresa.",
       "type": "object",
       "properties": {
         "name": { "type": "string" },
-        "logoUrl": { "type": "string" }
+        "logoUrl": { "type": "string" },
+        "whatsapp": { "type": "string" }
       }
     },
     "Product": {
@@ -47,6 +48,7 @@
       "description": "Pedido realizado pelo cliente.",
       "type": "object",
       "properties": {
+        "userId": { "type": "string" },
         "clienteNome": { "type": "string" },
         "clienteTelefone": { "type": "string" },
         "itens": { 
@@ -67,6 +69,8 @@
           "enum": ["novo", "preparando", "saiu_entrega", "entregue", "cancelado"]
         },
         "pagamento": { "type": "string" },
+        "tipoEntrega": { "type": "string" },
+        "endereco": { "type": "string" },
         "createdAt": { "type": "number" }
       },
       "required": ["clienteNome", "itens", "total", "status", "createdAt"]
@@ -82,7 +86,7 @@
     },
     "/settings/brand": {
       "schema": "BrandSettings",
-      "description": "Documento único que armazena o nome e logo da empresa."
+      "description": "Documento único que armazena o nome, logo e contato da empresa."
     },
     "/products/{productId}": {
       "schema": "Product",

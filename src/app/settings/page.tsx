@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useRef, useMemo } from 'react';
@@ -9,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Image as ImageIcon, Save, Building2, Trash2, Upload } from 'lucide-react';
+import { Image as ImageIcon, Save, Building2, Trash2, Upload, Phone } from 'lucide-react';
 import Image from 'next/image';
 
 export default function SettingsPage() {
@@ -19,6 +20,7 @@ export default function SettingsPage() {
 
   const [name, setName] = useState('');
   const [logoUrl, setLogoUrl] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -26,15 +28,16 @@ export default function SettingsPage() {
     if (brand) {
       setName(brand.name || '');
       setLogoUrl(brand.logoUrl || '');
+      setWhatsapp(brand.whatsapp || '');
     }
   }, [brand]);
 
   const handleSave = () => {
     if (!db) return;
-    saveBrandSettings(db, { name, logoUrl });
+    saveBrandSettings(db, { name, logoUrl, whatsapp });
     toast({
       title: "Configurações salvas!",
-      description: "A identidade visual foi atualizada com sucesso.",
+      description: "A identidade visual e contatos foram atualizados com sucesso.",
       className: "bg-accent text-accent-foreground",
     });
   };
@@ -68,43 +71,58 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
       <div>
-        <h1 className="text-3xl font-headline font-bold text-white uppercase tracking-tight">Configurações</h1>
-        <p className="text-muted-foreground">Personalize a identidade do seu sistema.</p>
+        <h1 className="text-3xl font-headline font-black text-white uppercase tracking-tighter">CONFIGURAÇÕES <span className="text-accent">DO SISTEMA</span></h1>
+        <p className="text-muted-foreground uppercase text-[10px] font-bold tracking-widest">Personalize a identidade da sua Açaíteria</p>
       </div>
 
-      <Card className="bg-card/40 border-white/5 overflow-hidden">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-primary" />
-            Identidade da Marca
+      <Card className="glass-card rounded-[2.5rem] overflow-hidden border-white/5">
+        <CardHeader className="p-8 pb-4">
+          <CardTitle className="flex items-center gap-3 text-white font-black uppercase text-lg">
+            <Building2 className="w-6 h-6 text-accent" />
+            Identidade & Contato
           </CardTitle>
-          <CardDescription>
-            Defina o nome e o logotipo que aparecerão em todo o sistema e relatórios.
+          <CardDescription className="text-muted-foreground uppercase text-[10px] font-bold tracking-widest">
+            Defina como sua marca aparece para os clientes.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="name">Nome da Empresa</Label>
-            <Input 
-              id="name" 
-              value={name} 
-              onChange={(e) => setName(e.target.value)} 
-              placeholder="Ex: ACAITERIA DELICIAS DO PARÁ"
-              className="bg-background border-muted"
-            />
+        <CardContent className="p-8 space-y-8">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Nome da Empresa</Label>
+              <Input 
+                value={name} 
+                onChange={(e) => setName(e.target.value)} 
+                placeholder="Ex: ACAITERIA DELICIAS DO PARÁ"
+                className="h-14 bg-background border-white/5 rounded-2xl text-white font-bold"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">WhatsApp de Recebimento (com DDD)</Label>
+              <div className="relative">
+                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-accent" />
+                <Input 
+                  value={whatsapp} 
+                  onChange={(e) => setWhatsapp(e.target.value)} 
+                  placeholder="Ex: 5591999999999"
+                  className="h-14 bg-background border-white/5 rounded-2xl pl-12 text-white font-bold"
+                />
+              </div>
+              <p className="text-[9px] text-muted-foreground">O número para onde os pedidos serão enviados.</p>
+            </div>
           </div>
 
           <div className="space-y-4">
-            <Label>Logotipo da Empresa</Label>
+            <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Logotipo Oficial</Label>
             <div className="flex flex-col gap-4">
               <div className="flex flex-col md:flex-row gap-3">
                 <Input 
                   value={logoUrl} 
                   onChange={(e) => setLogoUrl(e.target.value)} 
-                  placeholder="Link da imagem ou selecione um arquivo..."
-                  className="bg-background border-muted flex-1"
+                  placeholder="Link da imagem..."
+                  className="h-12 bg-background border-white/5 rounded-xl text-xs flex-1"
                 />
                 
                 <div className="flex gap-2">
@@ -118,39 +136,39 @@ export default function SettingsPage() {
                   <Button 
                     variant="outline" 
                     onClick={() => fileInputRef.current?.click()}
-                    className="border-primary/50 text-primary hover:bg-primary/10"
+                    className="h-12 rounded-xl border-accent/20 text-accent font-bold hover:bg-accent/10"
                   >
                     <Upload className="w-4 h-4 mr-2" />
-                    Upload
+                    UPLOAD
                   </Button>
                   
-                  <Button variant="outline" size="icon" onClick={clearLogo} className="border-muted hover:bg-destructive/10 shrink-0">
-                    <Trash2 className="w-4 h-4" />
+                  <Button variant="outline" size="icon" onClick={clearLogo} className="h-12 w-12 rounded-xl border-white/10 hover:bg-destructive/10">
+                    <Trash2 className="w-4 h-4 text-destructive" />
                   </Button>
                 </div>
               </div>
               
-              <div className="relative w-full aspect-video rounded-2xl bg-background border-2 border-dashed border-muted flex items-center justify-center overflow-hidden">
+              <div className="relative w-full aspect-video rounded-[2rem] bg-black/40 border-2 border-dashed border-white/5 flex items-center justify-center overflow-hidden">
                 {logoUrl ? (
                   <Image 
                     src={logoUrl} 
                     alt="Preview Logo" 
                     fill 
-                    className="object-contain p-4"
+                    className="object-contain p-8"
                     unoptimized
                   />
                 ) : (
-                  <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                    <ImageIcon className="w-12 h-12 opacity-20" />
-                    <p className="text-xs uppercase font-bold tracking-widest">Sem Logotipo</p>
+                  <div className="flex flex-col items-center gap-4 text-muted-foreground opacity-20">
+                    <ImageIcon className="w-16 h-16" />
+                    <p className="text-[10px] uppercase font-black tracking-[0.3em]">Visualização Indisponível</p>
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          <Button onClick={handleSave} className="w-full h-12 bg-primary font-bold text-lg rounded-xl">
-            <Save className="w-5 h-5 mr-2" />
+          <Button onClick={handleSave} className="w-full h-16 bg-accent text-accent-foreground font-black text-xl rounded-2xl shadow-xl shadow-accent/20 active:scale-95 transition-all">
+            <Save className="w-6 h-6 mr-3" />
             SALVAR ALTERAÇÕES
           </Button>
         </CardContent>

@@ -15,6 +15,7 @@ export interface Movement {
 export interface BrandSettings {
   name: string;
   logoUrl: string;
+  whatsapp: string;
 }
 
 export type OrderStatus = 'novo' | 'preparando' | 'saiu_entrega' | 'entregue' | 'cancelado';
@@ -42,6 +43,7 @@ export interface OrderItem {
 
 export interface Order {
   id: string;
+  userId?: string;
   clienteNome: string;
   clienteTelefone: string;
   itens: OrderItem[];

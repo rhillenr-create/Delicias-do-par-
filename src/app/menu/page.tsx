@@ -2,11 +2,11 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { useCollection, useDoc, useFirestore } from '@/firebase';
+import { useCollection, useDoc, useFirestore, useUser } from '@/firebase';
 import { collection, query, where, doc } from 'firebase/firestore';
 import { Product, OrderItem } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Plus, Minus, Search, Share2, Home, Receipt, Utensils, Check, X, ChevronRight, Clock, MapPin, Store, CreditCard, Banknote, Smartphone } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Search, X, Check, MapPin, Store, CreditCard, Banknote, Smartphone, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerFooter, DrawerClose } from '@/components/ui/drawer';
@@ -113,6 +113,7 @@ const CREME_COMPLEMENTS = [
 
 export default function MenuPage() {
   const db = useFirestore();
+  const { user } = useUser();
   const { toast } = useToast();
   const [cart, setCart] = useState<OrderItem[]>([]);
   const [mounted, setMounted] = useState(false);
@@ -227,6 +228,7 @@ export default function MenuPage() {
     }
 
     const orderData = {
+      userId: user?.uid,
       clienteNome,
       clienteTelefone,
       itens: cart,
@@ -254,7 +256,9 @@ export default function MenuPage() {
     const entregaMsg = tipoEntrega === 'entrega' ? `*Entrega:* ${endereco}` : '*Retirada no Balcão*';
 
     const msg = `*NOVO PEDIDO - ${brand?.name || 'AÇAÍ DELICIAS DO PARA'}*\n\n*Cliente:* ${clienteNome}\n*Tel:* ${clienteTelefone}\n\n*Pedido:*\n${itensMsg}\n\n${entregaMsg}\n*Pagamento:* ${pgtoLabel}${trocoMsg}\n\n*Total: R$ ${total.toFixed(2)}*`;
-    const zapLink = `https://wa.me/55${clienteTelefone.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
+    
+    const storeWhatsapp = brand?.whatsapp || '5591999999999';
+    const zapLink = `https://wa.me/${storeWhatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
     
     window.open(zapLink, '_blank');
     setCart([]);
@@ -375,7 +379,6 @@ export default function MenuPage() {
               </DrawerHeader>
               <ScrollArea className="flex-1 p-8">
                 <div className="space-y-10 pb-10">
-                  {/* Itens do Carrinho */}
                   <div className="space-y-6">
                     {cart.map(item => (
                       <div key={item.id} className="flex flex-col py-6 border-b border-white/5 gap-4">
@@ -394,7 +397,6 @@ export default function MenuPage() {
                     ))}
                   </div>
 
-                  {/* Informações do Cliente */}
                   <div className="space-y-8">
                     <div className="space-y-4">
                       <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">Informações de Contato</Label>
