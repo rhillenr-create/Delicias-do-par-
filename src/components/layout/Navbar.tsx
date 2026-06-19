@@ -32,7 +32,8 @@ export function Navbar() {
   const { user } = useUser();
   const [mounted, setMounted] = useState(false);
   
-  const brandRef = useMemo(() => (db ? doc(db, 'settings', 'brand') : null), [db]);
+  // Só busca dados se houver um usuário autenticado (evita erros de permissão na tela de login)
+  const brandRef = useMemo(() => (db && user ? doc(db, 'settings', 'brand') : null), [db, user]);
   const { data: brand } = useDoc<any>(brandRef);
 
   useEffect(() => {
@@ -44,7 +45,6 @@ export function Navbar() {
     router.push('/login');
   };
 
-  // Define os grupos de navegação
   const cashierItems = [
     { href: '/', label: 'Caixa', icon: Zap },
     { href: '/movements', label: 'Histórico', icon: ReceiptText },
@@ -60,12 +60,10 @@ export function Navbar() {
 
   if (!mounted) return null;
 
-  // Verifica em qual "sistema" o usuário está
   const isDeliveryPath = pathname.startsWith('/admin') || pathname === '/kitchen';
   const isMenuPath = pathname === '/menu';
   const isLoginPath = pathname === '/login';
   
-  // Se for o cardápio do cliente ou tela de login, não mostra a navbar completa
   if (isMenuPath || isLoginPath) {
     return (
       <nav className="border-b bg-card/60 backdrop-blur-2xl sticky top-0 z-50 no-print border-white/5">
@@ -105,7 +103,6 @@ export function Navbar() {
                 fill
                 className="object-contain"
                 unoptimized
-                data-ai-hint="acai brand"
               />
             </div>
           </Link>

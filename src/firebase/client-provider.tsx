@@ -65,10 +65,15 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
         if (!user) {
           if (isMenuPath) {
             // Clientes entram anonimamente
-            signInAnonymously(instance.auth).then(() => setIsAuthReady(true));
+            signInAnonymously(instance.auth)
+              .then(() => setIsAuthReady(true))
+              .catch((err) => {
+                console.error("Erro no login anônimo:", err);
+                setAuthError(err.message);
+                setIsAuthReady(true); // Libera para mostrar erro
+              });
           } else if (!isLoginPath) {
-            // Outras rotas exigem login, mas permitimos carregar para o router redirecionar se necessário
-            // Ou apenas sinalizamos que está pronto para o componente de Login ou Proteção agir
+            // Outras rotas exigem login
             setIsAuthReady(true);
             router.push('/login');
           } else {
@@ -94,7 +99,15 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     return <div className="min-h-screen bg-background" />;
   }
 
-  if (authError && (authError.includes('api-key-not-valid') || authError.includes('operation-not-allowed') || authError.includes('invalid-api-key'))) {
+  // Erros críticos de configuração do Firebase
+  const isCriticalError = authError && (
+    authError.includes('api-key-not-valid') || 
+    authError.includes('operation-not-allowed') || 
+    authError.includes('invalid-api-key') ||
+    authError.includes('auth/admin-restricted-operation')
+  );
+
+  if (isCriticalError) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-4 font-body">
         <div className="max-w-md w-full bg-card border-2 border-destructive/20 p-8 rounded-[2.5rem] shadow-2xl space-y-8 relative overflow-hidden">
@@ -115,9 +128,8 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
               <Settings className="w-3 h-3" /> Soluções possíveis:
             </p>
             <ol className="text-xs text-muted-foreground space-y-3 list-decimal ml-4">
-              <li className="pl-2">Verifique se o <b>Login Anônimo</b> está ATIVADO no Console do Firebase.</li>
-              <li className="pl-2">Confirme se a <b>API Key</b> no arquivo <code>config.ts</code> está correta.</li>
-              <li className="pl-2">Verifique se você criou o banco <b>Firestore Database</b> no console.</li>
+              <li className="pl-2">Ative o <b>Login Anônimo</b> no Console do Firebase (Authentication &gt; Sign-in Method).</li>
+              <li className="pl-2">Verifique se as <b>Security Rules</b> do Firestore permitem acesso autenticado.</li>
             </ol>
           </div>
 
