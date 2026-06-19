@@ -27,6 +27,49 @@
         "name": { "type": "string" },
         "logoUrl": { "type": "string" }
       }
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Produto disponível no cardápio digital.",
+      "type": "object",
+      "properties": {
+        "nome": { "type": "string" },
+        "preco": { "type": "number" },
+        "imagem": { "type": "string" },
+        "descricao": { "type": "string" },
+        "ativo": { "type": "boolean" },
+        "categoria": { "type": "string" }
+      },
+      "required": ["nome", "preco", "ativo"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Pedido realizado pelo cliente.",
+      "type": "object",
+      "properties": {
+        "clienteNome": { "type": "string" },
+        "clienteTelefone": { "type": "string" },
+        "itens": { 
+          "type": "array", 
+          "items": { 
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "nome": { "type": "string" },
+              "preco": { "type": "number" },
+              "qtd": { "type": "number" }
+            }
+          } 
+        },
+        "total": { "type": "number" },
+        "status": { 
+          "type": "string",
+          "enum": ["novo", "preparando", "saiu_entrega", "entregue", "cancelado"]
+        },
+        "pagamento": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["clienteNome", "itens", "total", "status", "createdAt"]
     }
   },
   "auth": {
@@ -40,6 +83,14 @@
     "/settings/brand": {
       "schema": "BrandSettings",
       "description": "Documento único que armazena o nome e logo da empresa."
+    },
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Produtos do cardápio."
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Pedidos realizados via delivery."
     }
   }
 }

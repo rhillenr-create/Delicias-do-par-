@@ -3,14 +3,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ReceiptText, Zap, Wifi, WifiOff } from 'lucide-react';
+import { LayoutDashboard, ReceiptText, Zap, Wifi, WifiOff, ShoppingBag, UtensilsCrossed, PackageSearch, Settings as SettingsIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { useMemo, useState, useEffect } from 'react';
 import { useDoc, useFirestore } from '@/firebase';
 import { doc } from 'firebase/firestore';
 
-const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
+const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/6a0cd7fe4b63fecad5f17a1eca98207bff5faa39/delicias_do_para.png";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -25,13 +25,10 @@ export function Navbar() {
     setMounted(true);
     if (typeof window !== 'undefined') {
       setIsOnline(navigator.onLine);
-
       const handleOnline = () => setIsOnline(true);
       const handleOffline = () => setIsOnline(false);
-
       window.addEventListener('online', handleOnline);
       window.addEventListener('offline', handleOffline);
-
       return () => {
         window.removeEventListener('online', handleOnline);
         window.removeEventListener('offline', handleOffline);
@@ -41,8 +38,12 @@ export function Navbar() {
 
   const navItems = [
     { href: '/', label: 'Caixa', icon: Zap },
-    { href: '/movements', label: 'Movimentação', icon: ReceiptText },
+    { href: '/menu', label: 'Cardápio', icon: ShoppingBag },
+    { href: '/kitchen', label: 'Cozinha', icon: UtensilsCrossed },
+    { href: '/admin/orders', label: 'Pedidos', icon: PackageSearch },
+    { href: '/movements', label: 'Histórico', icon: ReceiptText },
     { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/settings', label: 'Ajustes', icon: SettingsIcon },
   ];
 
   if (!mounted) return null;
@@ -52,9 +53,9 @@ export function Navbar() {
   return (
     <nav className="border-b bg-card/60 backdrop-blur-2xl sticky top-0 z-50 no-print border-white/5">
       <div className="container mx-auto px-4 h-24 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-4 group shrink-0">
-            <div className="relative w-16 h-14 md:w-20 md:h-16 overflow-hidden rounded-2xl bg-background p-1 border-2 border-accent shadow-[0_0_20px_rgba(104,255,54,0.15)] group-hover:scale-105 transition-all flex items-center justify-center">
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-3 group shrink-0">
+            <div className="relative w-14 h-12 overflow-hidden rounded-xl bg-background p-1 border border-accent/20 shadow-lg group-hover:scale-105 transition-all flex items-center justify-center">
               <Image
                 src={currentLogo}
                 alt="Logo"
@@ -65,12 +66,12 @@ export function Navbar() {
               />
             </div>
           </Link>
-          <span className="hidden md:inline-block text-xl font-headline font-black text-white uppercase tracking-tighter whitespace-nowrap neon-text">
-            AÇAITERIA <span className="text-accent">DELICIAS DO PARA</span>
+          <span className="hidden lg:inline-block text-lg font-headline font-black text-white uppercase tracking-tighter whitespace-nowrap neon-text">
+            AÇAITERIA <span className="text-accent">DELICIAS</span>
           </span>
         </div>
 
-        <div className="flex items-center gap-1 md:gap-3">
+        <div className="flex items-center gap-1 md:gap-2">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -79,38 +80,17 @@ export function Navbar() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'flex items-center gap-2 px-3 md:px-5 py-2.5 rounded-full text-[10px] md:text-xs font-bold transition-all',
+                  'flex items-center gap-2 px-3 py-2 rounded-full text-[10px] font-bold transition-all',
                   isActive
                     ? 'text-accent bg-accent/10 border border-accent/30 shadow-[0_0_15px_rgba(104,255,54,0.1)]'
                     : 'text-muted-foreground hover:text-white hover:bg-white/5'
                 )}
               >
                 <Icon className={cn('w-4 h-4', isActive && 'animate-pulse')} />
-                <span className="hidden sm:inline uppercase tracking-widest">{item.label}</span>
+                <span className="hidden xl:inline uppercase tracking-widest">{item.label}</span>
               </Link>
             );
           })}
-          
-          <div className={cn(
-            "flex items-center gap-2 px-4 py-2.5 rounded-full text-[9px] md:text-[10px] font-black tracking-widest border transition-all",
-            isOnline 
-              ? "text-accent bg-accent/5 border-accent/20" 
-              : "text-destructive bg-destructive/5 border-destructive/20"
-          )}>
-            {isOnline ? (
-              <>
-                <Wifi className="w-3.5 h-3.5" />
-                <span className="hidden xs:inline">SISTEMA ONLINE</span>
-                <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-              </>
-            ) : (
-              <>
-                <WifiOff className="w-3.5 h-3.5" />
-                <span className="hidden xs:inline">OFFLINE</span>
-                <div className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />
-              </>
-            )}
-          </div>
         </div>
       </div>
     </nav>

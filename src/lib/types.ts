@@ -1,3 +1,4 @@
+
 export type MovementType = 'PIX' | 'CREDITO' | 'DEBITO' | 'DELIVERY' | 'DINHEIRO' | 'WITHDRAWAL' | 'DESPESAS';
 
 export interface Movement {
@@ -16,12 +17,32 @@ export interface BrandSettings {
   logoUrl: string;
 }
 
-export interface DailyStats {
-  totalPix: number;
-  totalCredito: number;
-  totalDebito: number;
-  totalDelivery: number;
-  totalDinheiro: number;
-  totalDespesas: number;
-  netProfit: number;
+export type OrderStatus = 'novo' | 'preparando' | 'saiu_entrega' | 'entregue' | 'cancelado';
+
+export interface Product {
+  id: string;
+  nome: string;
+  preco: number;
+  imagem: string;
+  descricao: string;
+  ativo: boolean;
+  categoria?: string;
+}
+
+export interface OrderItem {
+  id: string;
+  nome: string;
+  preco: number;
+  qtd: number;
+}
+
+export interface Order {
+  id: string;
+  clienteNome: string;
+  clienteTelefone: string;
+  itens: OrderItem[];
+  total: number;
+  status: OrderStatus;
+  pagamento: string;
+  createdAt: number;
 }
