@@ -13,12 +13,57 @@ import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, Drawer
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { createOrder } from '@/lib/db';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png";
+
+const BAIRROS = [
+  { nome: "Residencial Meruoca", taxa: 4 },
+  { nome: "Recanto 1", taxa: 4 },
+  { nome: "Recanto 2", taxa: 4 },
+  { nome: "Paraiso das flores", taxa: 5 },
+  { nome: "Betânia", taxa: 5 },
+  { nome: "Alto da expectativa", taxa: 5 },
+  { nome: "Alto da Brasília", taxa: 5 },
+  { nome: "Parque Silvana 1", taxa: 5 },
+  { nome: "Parque Silvana 2", taxa: 5 },
+  { nome: "Coração de jesus", taxa: 5 },
+  { nome: "Centro", taxa: 6 },
+  { nome: "Colinas", taxa: 6 },
+  { nome: "Moradas dos ventos", taxa: 6 },
+  { nome: "Campo dos velhos", taxa: 6 },
+  { nome: "Parque Alvorada", taxa: 6 },
+  { nome: "Derby", taxa: 6 },
+  { nome: "Pedrinhas", taxa: 6 },
+  { nome: "Dom expedito", taxa: 6 },
+  { nome: "Alto do Cristo", taxa: 6 },
+  { nome: "Junco", taxa: 6 },
+  { nome: "Domingos Olímpio", taxa: 6 },
+  { nome: "Padre Ibiapina", taxa: 6 },
+  { nome: "Boa vizinhança 1", taxa: 7 },
+  { nome: "Boa vizinhança 2", taxa: 7 },
+  { nome: "Loteamento conviver", taxa: 7 },
+  { nome: "Renato Parente", taxa: 7 },
+  { nome: "COHAB 1", taxa: 7 },
+  { nome: "COHAB 2", taxa: 7 },
+  { nome: "COHAB 3", taxa: 7 },
+  { nome: "Sinha Saboia", taxa: 7 },
+  { nome: "Parque Santo Antônio", taxa: 7 },
+  { nome: "Gerardo Cristino", taxa: 7 },
+  { nome: "Vila União", taxa: 7 },
+  { nome: "Terrenos novos", taxa: 7 },
+  { nome: "Dom José 1", taxa: 7 },
+  { nome: "Dom José 2", taxa: 7 },
+  { nome: "Alto da rolinha", taxa: 7 },
+  { nome: "DAS NACOES", taxa: 7 },
+  { nome: "Sumaré", taxa: 8 },
+  { nome: "Padre Palhano", taxa: 8 },
+  { nome: "Parque Boa Vista", taxa: 8 },
+].sort((a, b) => a.nome.localeCompare(b.nome));
 
 const CATEGORY_ORDER = [
   "Açaí no Tamanho Certo!",
@@ -122,6 +167,8 @@ export default function MenuPage() {
   const [clienteNome, setClienteNome] = useState('');
   const [clienteTelefone, setClienteTelefone] = useState('');
   const [tipoEntrega, setTipoEntrega] = useState<'entrega' | 'retirada'>('entrega');
+  const [bairro, setBairro] = useState('');
+  const [taxaEntrega, setTaxaEntrega] = useState(0);
   const [endereco, setEndereco] = useState('');
   const [formaPagamento, setFormaPagamento] = useState<'pix' | 'cartao' | 'dinheiro'>('pix');
   const [valorTroco, setValorTroco] = useState('');
@@ -218,7 +265,16 @@ export default function MenuPage() {
     }).filter(item => item.qtd > 0));
   };
 
-  const total = cart.reduce((acc, item) => acc + (item.preco * item.qtd), 0);
+  const itemsTotal = cart.reduce((acc, item) => acc + (item.preco * item.qtd), 0);
+  const finalTotal = itemsTotal + (tipoEntrega === 'entrega' ? taxaEntrega : 0);
+
+  const handleBairroChange = (bairroNome: string) => {
+    const bairroSelected = BAIRROS.find(b => b.nome === bairroNome);
+    if (bairroSelected) {
+      setBairro(bairroNome);
+      setTaxaEntrega(bairroSelected.taxa);
+    }
+  };
 
   const handleFinishOrder = async () => {
     if (!db || cart.length === 0 || !clienteNome || !clienteTelefone) {
@@ -226,8 +282,8 @@ export default function MenuPage() {
       return;
     }
     
-    if (tipoEntrega === 'entrega' && !endereco) {
-      toast({ title: "Endereço incompleto", description: "Por favor, informe seu endereço para entrega.", variant: "destructive" });
+    if (tipoEntrega === 'entrega' && (!endereco || !bairro)) {
+      toast({ title: "Endereço incompleto", description: "Por favor, informe seu bairro e endereço para entrega.", variant: "destructive" });
       return;
     }
 
@@ -236,11 +292,12 @@ export default function MenuPage() {
       clienteNome,
       clienteTelefone,
       itens: cart,
-      total,
+      total: finalTotal,
       pagamento: formaPagamento,
       tipoEntrega,
-      endereco: tipoEntrega === 'entrega' ? endereco : 'Retirada no Balcão',
-      troco: formaPagamento === 'dinheiro' ? (parseFloat(valorTroco) || 0) : 0
+      endereco: tipoEntrega === 'entrega' ? `${endereco} - Bairro: ${bairro}` : 'Retirada no Balcão',
+      troco: formaPagamento === 'dinheiro' ? (parseFloat(valorTroco) || 0) : 0,
+      taxaEntrega: tipoEntrega === 'entrega' ? taxaEntrega : 0
     };
 
     createOrder(db, orderData);
@@ -257,9 +314,11 @@ export default function MenuPage() {
 
     const pgtoLabel = formaPagamento === 'pix' ? 'PIX' : formaPagamento === 'cartao' ? 'Cartão (Máquina)' : 'Dinheiro';
     const trocoMsg = (formaPagamento === 'dinheiro' && valorTroco) ? `\n*Troco para:* R$ ${valorTroco}` : '';
-    const entregaMsg = tipoEntrega === 'entrega' ? `*Entrega:* ${endereco}` : '*Retirada no Balcão*';
+    const entregaMsg = tipoEntrega === 'entrega' 
+      ? `*Entrega:* ${endereco}\n*Bairro:* ${bairro}\n*Taxa:* R$ ${taxaEntrega.toFixed(2)}` 
+      : '*Retirada no Balcão*';
 
-    const msg = `*NOVO PEDIDO - ${brand?.name || 'AÇAÍ DELICIAS DO PARA'}*\n\n*Cliente:* ${clienteNome}\n*Tel:* ${clienteTelefone}\n\n*Pedido:*\n${itensMsg}\n\n${entregaMsg}\n*Pagamento:* ${pgtoLabel}${trocoMsg}\n\n*Total: R$ ${total.toFixed(2).replace('.', ',')}*`;
+    const msg = `*NOVO PEDIDO - ${brand?.name || 'AÇAÍ DELICIAS DO PARA'}*\n\n*Cliente:* ${clienteNome}\n*Tel:* ${clienteTelefone}\n\n*Pedido:*\n${itensMsg}\n\n${entregaMsg}\n*Pagamento:* ${pgtoLabel}${trocoMsg}\n\n*Itens: R$ ${itemsTotal.toFixed(2).replace('.', ',')}*\n*Total: R$ ${finalTotal.toFixed(2).replace('.', ',')}*`;
     
     const storeWhatsapp = brand?.whatsapp || '5591999999999';
     const zapLink = `https://wa.me/${storeWhatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
@@ -270,6 +329,8 @@ export default function MenuPage() {
     setClienteNome('');
     setClienteTelefone('');
     setEndereco('');
+    setBairro('');
+    setTaxaEntrega(0);
     setValorTroco('');
     toast({ title: "Pedido Enviado!", description: "Seu pedido foi registrado com sucesso." });
   };
@@ -374,7 +435,7 @@ export default function MenuPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-px h-8 bg-accent-foreground/20" />
-                  <span className="text-xl">R$ {total.toFixed(2).replace('.', ',')}</span>
+                  <span className="text-xl">R$ {finalTotal.toFixed(2).replace('.', ',')}</span>
                 </div>
               </Button>
             </DrawerTrigger>
@@ -418,7 +479,13 @@ export default function MenuPage() {
 
                     <div className="space-y-4">
                       <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">Onde quer receber?</Label>
-                      <RadioGroup value={tipoEntrega} onValueChange={(v) => setTipoEntrega(v as any)} className="grid grid-cols-2 gap-4">
+                      <RadioGroup value={tipoEntrega} onValueChange={(v) => {
+                        setTipoEntrega(v as any);
+                        if (v === 'retirada') {
+                          setBairro('');
+                          setTaxaEntrega(0);
+                        }
+                      }} className="grid grid-cols-2 gap-4">
                         <div className={cn("flex items-center gap-3 p-4 rounded-2xl border transition-all cursor-pointer", tipoEntrega === 'entrega' ? "bg-accent/10 border-accent text-accent" : "bg-white/5 border-white/5 text-white/50")} onClick={() => setTipoEntrega('entrega')}>
                           <MapPin className="w-5 h-5" />
                           <span className="text-xs font-black uppercase">Entrega</span>
@@ -433,9 +500,26 @@ export default function MenuPage() {
                     </div>
 
                     {tipoEntrega === 'entrega' && (
-                      <div className="space-y-4">
-                        <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">Endereço Completo</Label>
-                        <Input value={endereco} onChange={e => setEndereco(e.target.value)} className="h-14 rounded-2xl bg-white/5 border-white/5 text-white" placeholder="Rua, Número, Bairro, Referência" />
+                      <div className="space-y-6">
+                        <div className="space-y-4">
+                          <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">Bairro</Label>
+                          <Select value={bairro} onValueChange={handleBairroChange}>
+                            <SelectTrigger className="h-14 rounded-2xl bg-white/5 border-white/5 text-white font-bold">
+                              <SelectValue placeholder="Selecione seu bairro" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-card border-white/5">
+                              {BAIRROS.map(b => (
+                                <SelectItem key={b.nome} value={b.nome} className="text-white font-medium">
+                                  {b.nome} - R$ {b.taxa.toFixed(2)}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="space-y-4">
+                          <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-[0.2em]">Endereço Completo</Label>
+                          <Input value={endereco} onChange={e => setEndereco(e.target.value)} className="h-14 rounded-2xl bg-white/5 border-white/5 text-white" placeholder="Rua, Número, Referência" />
+                        </div>
                       </div>
                     )}
 
@@ -467,12 +551,24 @@ export default function MenuPage() {
                 </div>
               </ScrollArea>
               <DrawerFooter className="p-8 border-t border-white/5 bg-card/40 backdrop-blur-2xl shrink-0">
+                <div className="flex flex-col gap-4 mb-4">
+                   <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                      <span>Subtotal Itens</span>
+                      <span>R$ {itemsTotal.toFixed(2).replace('.', ',')}</span>
+                   </div>
+                   {tipoEntrega === 'entrega' && bairro && (
+                     <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest text-accent">
+                        <span>Taxa de Entrega ({bairro})</span>
+                        <span>R$ {taxaEntrega.toFixed(2).replace('.', ',')}</span>
+                     </div>
+                   )}
+                </div>
                 <Button 
                   onClick={handleFinishOrder} 
-                  disabled={!clienteNome || !clienteTelefone || (tipoEntrega === 'entrega' && !endereco) || cart.length === 0} 
+                  disabled={!clienteNome || !clienteTelefone || (tipoEntrega === 'entrega' && (!endereco || !bairro)) || cart.length === 0} 
                   className="h-20 w-full rounded-[2.5rem] bg-accent text-accent-foreground font-black text-xl shadow-2xl uppercase tracking-tighter disabled:opacity-20 transition-all hover:scale-[1.02] active:scale-95"
                 >
-                  Finalizar Pedido • R$ {total.toFixed(2).replace('.', ',')}
+                  Finalizar Pedido • R$ {finalTotal.toFixed(2).replace('.', ',')}
                 </Button>
                 <DrawerClose asChild><Button variant="ghost" className="text-muted-foreground font-black uppercase tracking-[0.2em] text-[9px] mt-2">Continuar Comprando</Button></DrawerClose>
               </DrawerFooter>

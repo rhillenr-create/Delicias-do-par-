@@ -53,5 +53,6 @@ export interface Order {
   tipoEntrega: 'entrega' | 'retirada';
   endereco?: string;
   troco?: number;
+  taxaEntrega?: number;
   createdAt: number;
 }
