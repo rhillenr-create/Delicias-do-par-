@@ -10,9 +10,9 @@
     --card-foreground: 0 0% 98%;
     --popover: 280 25% 7%;
     --popover-foreground: 0 0% 98%;
-    --primary: 272 100% 60%;
+    --primary: 280 100% 35%; /* Roxo Açaí Profundo */
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 100% 75%;
+    --secondary: 104 100% 54%; /* Verde Limão / Acompanhamentos */
     --secondary-foreground: 280 30% 3%;
     --muted: 280 15% 15%;
     --muted-foreground: 280 10% 65%;
@@ -22,9 +22,9 @@
     --destructive-foreground: 0 0% 98%;
     --border: 280 20% 15%;
     --input: 280 20% 15%;
-    --ring: 272 100% 60%;
+    --ring: 280 100% 35%;
     --radius: 1.25rem;
-    --chart-1: 272 100% 60%;
+    --chart-1: 280 100% 35%;
     --chart-2: 104 100% 54%;
     --chart-3: 240 100% 75%;
     --chart-4: 300 100% 70%;
@@ -38,9 +38,9 @@
     --card-foreground: 0 0% 98%;
     --popover: 280 25% 7%;
     --popover-foreground: 0 0% 98%;
-    --primary: 272 100% 60%;
+    --primary: 280 100% 35%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 100% 75%;
+    --secondary: 104 100% 54%;
     --secondary-foreground: 280 30% 3%;
     --muted: 280 15% 15%;
     --muted-foreground: 280 10% 65%;
@@ -50,7 +50,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 280 20% 15%;
     --input: 280 20% 15%;
-    --ring: 272 100% 60%;
+    --ring: 280 100% 35%;
   }
 }
 
@@ -69,7 +69,7 @@
 }
 
 .neon-glow {
-  box-shadow: 0 0 20px hsla(272, 100%, 60%, 0.3);
+  box-shadow: 0 0 20px hsla(280, 100%, 35%, 0.3);
 }
 
 .neon-text {

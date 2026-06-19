@@ -1,4 +1,3 @@
-
 {
   "placeholderImages": [
     {
@@ -6,6 +5,24 @@
       "description": "Logotipo Oficial ACAITERIA DELICIAS DO PARÁ",
       "imageUrl": "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/main/delicias_do_para.png",
       "imageHint": "acai brand logo"
+    },
+    {
+      "id": "acai-puro",
+      "description": "Açaí Médio 500ml",
+      "imageUrl": "https://picsum.photos/seed/acai1/600/400",
+      "imageHint": "acai bowl"
+    },
+    {
+      "id": "acai-completo",
+      "description": "Açaí Turbinado com Frutas",
+      "imageUrl": "https://picsum.photos/seed/acai2/600/400",
+      "imageHint": "acai fruit"
+    },
+    {
+      "id": "cupuacu",
+      "description": "Creme de Cupuaçu Gelaaado",
+      "imageUrl": "https://picsum.photos/seed/cupuacu/600/400",
+      "imageHint": "white fruit cream"
     }
   ]
 }
