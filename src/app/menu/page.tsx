@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -18,6 +17,14 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/6a0cd7fe4b63fecad5f17a1eca98207bff5faa39/delicias_do_para.png";
+
+const CATEGORY_ORDER = [
+  "Açaí no Tamanho Certo!",
+  "Açaí Para Quem Ama Muito!",
+  "Açaí Puro & Poderoso!",
+  "Cremes dos Deuses",
+  "Açaí A Moda Paraense"
+];
 
 const COMPLEMENT_CATEGORIES = [
   {
@@ -100,6 +107,14 @@ export default function MenuPage() {
     });
     return groups;
   }, [mainProducts]);
+
+  const orderedCategories = useMemo(() => {
+    const categories = Object.keys(groupedProducts);
+    const ordered = CATEGORY_ORDER.filter(cat => categories.includes(cat));
+    // Add any categories not in the pre-defined order at the end
+    const others = categories.filter(cat => !CATEGORY_ORDER.includes(cat));
+    return [...ordered, ...others];
+  }, [groupedProducts]);
 
   const handleProductClick = (product: Product) => {
     if (product.categoria === 'Complementos') {
@@ -242,15 +257,15 @@ export default function MenuPage() {
         </div>
       </div>
 
-      {/* Listagem */}
+      {/* Listagem Ordenada */}
       <div className="max-w-4xl mx-auto p-4 space-y-12">
-        {Object.entries(groupedProducts).map(([category, products]) => (
+        {orderedCategories.map((category) => (
           <section key={category} className="space-y-6">
             <h2 className="text-xl font-black text-[#4a148c] pl-4 border-l-8 border-[#68ff36] leading-none uppercase tracking-tighter">
               {category}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {products.map(product => (
+              {groupedProducts[category].map(product => (
                 <MenuCard key={product.id} product={product} onAdd={() => handleProductClick(product)} />
               ))}
             </div>
