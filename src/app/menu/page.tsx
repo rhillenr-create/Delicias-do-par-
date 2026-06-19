@@ -351,7 +351,7 @@ export default function MenuPage() {
                       {tempComplements[cat.id]?.length || 0}/{cat.max}
                     </Badge>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 gap-2">
                     {cat.items.map((item) => {
                       const isSelected = tempComplements[cat.id]?.includes(item);
                       return (
@@ -359,32 +359,25 @@ export default function MenuPage() {
                           key={item}
                           onClick={() => toggleComplement(cat.id, item, cat.max)}
                           className={cn(
-                            "flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all relative overflow-hidden",
+                            "flex items-center justify-between p-4 rounded-2xl border transition-all relative overflow-hidden text-left",
                             isSelected 
                               ? "border-[#68ff36] bg-[#68ff36]/5 shadow-sm" 
                               : "border-gray-100 bg-gray-50 hover:bg-white"
                           )}
                         >
-                          {isSelected && (
-                            <div className="absolute top-2 right-2 bg-[#68ff36] text-[#4a148c] rounded-full p-0.5">
-                              <Check className="w-3 h-3" />
-                            </div>
-                          )}
-                          <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center border-2 border-white shadow-sm overflow-hidden relative">
-                            <Image 
-                              src={`https://picsum.photos/seed/${item}/100/100`} 
-                              alt={item} 
-                              fill 
-                              className="object-cover" 
-                              unoptimized 
-                            />
-                          </div>
                           <span className={cn(
-                            "text-[9px] font-black uppercase text-center leading-tight h-6 flex items-center",
+                            "text-[10px] font-black uppercase leading-tight flex-1",
                             isSelected ? "text-[#4a148c]" : "text-gray-600"
                           )}>
                             {item}
                           </span>
+                          {isSelected ? (
+                            <div className="bg-[#68ff36] text-[#4a148c] rounded-full p-1 ml-2">
+                              <Check className="w-4 h-4" />
+                            </div>
+                          ) : (
+                            <div className="w-5 h-5 rounded-full border-2 border-gray-100 ml-2" />
+                          )}
                         </button>
                       );
                     })}
