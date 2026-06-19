@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
@@ -5,7 +6,7 @@ import { useCollection, useDoc, useFirestore } from '@/firebase';
 import { collection, query, where, doc } from 'firebase/firestore';
 import { Product, OrderItem } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Plus, Minus, Search, Share2, Home, Receipt } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Search, Share2, Home, Receipt, Utensils } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerFooter, DrawerClose } from '@/components/ui/drawer';
@@ -45,15 +46,18 @@ export default function MenuPage() {
     if (mounted) localStorage.setItem('acai-cart', JSON.stringify(cart));
   }, [cart, mounted]);
 
+  const mainProducts = useMemo(() => products.filter(p => p.categoria !== 'Complementos'), [products]);
+  const complementProducts = useMemo(() => products.filter(p => p.categoria === 'Complementos'), [products]);
+
   const groupedProducts = useMemo(() => {
     const groups: { [key: string]: Product[] } = {};
-    products.forEach(p => {
-      const cat = p.categoria || 'Destaques';
+    mainProducts.forEach(p => {
+      const cat = p.categoria || 'Geral';
       if (!groups[cat]) groups[cat] = [];
       groups[cat].push(p);
     });
     return groups;
-  }, [products]);
+  }, [mainProducts]);
 
   const addToCart = (product: Product) => {
     setCart(prev => {
@@ -139,60 +143,47 @@ export default function MenuPage() {
         </div>
       </div>
 
-      {/* Listagem de Produtos */}
+      {/* Listagem de Produtos Principais */}
       <div className="max-w-4xl mx-auto p-4 space-y-12">
-        {Object.entries(groupedProducts).length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 opacity-30">
-            <ShoppingCart className="w-20 h-20 mb-4" />
-            <p className="font-black uppercase tracking-[0.3em] text-xs">Adicione produtos no Admin</p>
-          </div>
-        ) : (
-          Object.entries(groupedProducts).map(([category, products]) => (
-            <section key={category} className="space-y-6">
-              <h2 className="text-xl font-black text-[#4a148c] pl-4 border-l-8 border-[#68ff36] leading-none uppercase tracking-tighter">
-                {category}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {products.map(product => (
-                  <div 
-                    key={product.id} 
-                    onClick={() => addToCart(product)}
-                    className="bg-white rounded-3xl border border-gray-100 p-5 flex gap-5 cursor-pointer hover:shadow-2xl transition-all active:scale-95 group relative overflow-hidden"
-                  >
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-[#68ff36]/5 rounded-full -mr-12 -mt-12 transition-all group-hover:scale-150" />
-                    
-                    <div className="flex-1 flex flex-col justify-between relative z-10">
-                      <div>
-                        <h3 className="font-black text-gray-800 text-base md:text-lg leading-tight uppercase tracking-tight">{product.nome}</h3>
-                        <p className="text-xs text-gray-400 mt-2 line-clamp-2 leading-relaxed font-medium italic">
-                          {product.descricao || 'Sabor autêntico do Pará, preparado com carinho.'}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 mt-4">
-                        <span className="bg-[#4a148c] text-white px-3 py-1 rounded-full text-[10px] font-black tracking-widest">
-                          R$ {product.preco.toFixed(2).replace('.', ',')}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="relative w-28 h-28 rounded-[2rem] overflow-hidden bg-gray-50 flex-shrink-0 shadow-lg border-2 border-white transition-transform group-hover:scale-105">
-                      <Image 
-                        src={product.imagem || `https://picsum.photos/seed/${product.id}/300/300`} 
-                        alt={product.nome} 
-                        fill 
-                        className="object-cover"
-                        unoptimized
-                        data-ai-hint="acai bowl"
-                      />
-                    </div>
+        {Object.entries(groupedProducts).map(([category, products]) => (
+          <section key={category} className="space-y-6">
+            <h2 className="text-xl font-black text-[#4a148c] pl-4 border-l-8 border-[#68ff36] leading-none uppercase tracking-tighter">
+              {category}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {products.map(product => (
+                <MenuCard key={product.id} product={product} onAdd={() => addToCart(product)} />
+              ))}
+            </div>
+          </section>
+        ))}
+
+        {/* Seção Especial de Complementos */}
+        {complementProducts.length > 0 && (
+          <section className="space-y-6">
+            <h2 className="text-xl font-black text-[#4a148c] pl-4 border-l-8 border-[#68ff36] leading-none uppercase tracking-tighter flex items-center gap-2">
+              <Utensils className="w-5 h-5 text-[#68ff36]" /> COMPLEMENTOS & ADICIONAIS
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {complementProducts.map(complement => (
+                <div 
+                  key={complement.id}
+                  onClick={() => addToCart(complement)}
+                  className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm text-center flex flex-col items-center gap-2 hover:scale-105 transition-transform cursor-pointer active:scale-95"
+                >
+                  <div className="w-16 h-16 rounded-full overflow-hidden relative border-2 border-gray-50 shadow-inner">
+                    <Image src={complement.imagem || `https://picsum.photos/seed/${complement.id}/200/200`} alt={complement.nome} fill className="object-cover" unoptimized />
                   </div>
-                ))}
-              </div>
-            </section>
-          ))
+                  <h3 className="text-[10px] font-black uppercase text-gray-700 leading-tight">{complement.nome}</h3>
+                  <Badge className="bg-[#4a148c] text-white text-[9px] font-black">+ R$ {complement.preco.toFixed(2)}</Badge>
+                </div>
+              ))}
+            </div>
+          </section>
         )}
       </div>
 
-      {/* Carrinho Flutuante */}
+      {/* Carrinho Flutuante e Bottom Nav */}
       {cart.length > 0 && (
         <div className="fixed bottom-24 left-0 right-0 px-6 z-50 flex justify-center">
           <Drawer>
@@ -256,7 +247,7 @@ export default function MenuPage() {
         </div>
       )}
 
-      {/* Bottom Nav Bar com cores originais */}
+      {/* Bottom Nav Bar */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-50 h-20 flex items-center justify-around px-8 z-40 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
         <div className="flex flex-col items-center text-[#4a148c]">
           <div className="bg-[#4a148c]/10 p-2 rounded-xl">
@@ -269,6 +260,40 @@ export default function MenuPage() {
           <span className="text-[9px] font-black mt-1 uppercase tracking-widest">Pedidos</span>
         </div>
       </nav>
+    </div>
+  );
+}
+
+function MenuCard({ product, onAdd }: { product: Product, onAdd: () => void }) {
+  return (
+    <div 
+      onClick={onAdd}
+      className="bg-white rounded-3xl border border-gray-100 p-5 flex gap-5 cursor-pointer hover:shadow-2xl transition-all active:scale-95 group relative overflow-hidden"
+    >
+      <div className="absolute top-0 right-0 w-24 h-24 bg-[#68ff36]/5 rounded-full -mr-12 -mt-12 transition-all group-hover:scale-150" />
+      
+      <div className="flex-1 flex flex-col justify-between relative z-10">
+        <div>
+          <h3 className="font-black text-gray-800 text-base md:text-lg leading-tight uppercase tracking-tight">{product.nome}</h3>
+          <p className="text-xs text-gray-400 mt-2 line-clamp-2 leading-relaxed font-medium italic">
+            {product.descricao || 'Sabor autêntico do Pará, preparado com carinho.'}
+          </p>
+        </div>
+        <div className="flex items-center gap-2 mt-4">
+          <span className="bg-[#4a148c] text-white px-3 py-1 rounded-full text-[10px] font-black tracking-widest">
+            R$ {product.preco.toFixed(2).replace('.', ',')}
+          </span>
+        </div>
+      </div>
+      <div className="relative w-28 h-28 rounded-[2rem] overflow-hidden bg-gray-50 flex-shrink-0 shadow-lg border-2 border-white transition-transform group-hover:scale-105">
+        <Image 
+          src={product.imagem || `https://picsum.photos/seed/${product.id}/300/300`} 
+          alt={product.nome} 
+          fill 
+          className="object-cover"
+          unoptimized
+        />
+      </div>
     </div>
   );
 }
