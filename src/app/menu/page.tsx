@@ -282,7 +282,7 @@ export default function MenuPage() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-background pb-32 font-body">
+    <div className="min-h-screen bg-background pb-32 font-body overflow-y-auto">
       <header className="bg-card/60 backdrop-blur-2xl px-6 h-24 flex items-center justify-between sticky top-0 z-40 border-b border-white/5 shadow-2xl">
         <div className="flex items-center gap-4">
           <div className="w-16 h-14 bg-background rounded-2xl overflow-hidden relative border border-accent/20">
@@ -326,8 +326,8 @@ export default function MenuPage() {
                </DrawerClose>
             </div>
           </DrawerHeader>
-          <ScrollArea className="flex-1 p-8">
-            <div className="space-y-12 pb-10">
+          <ScrollArea className="flex-1 w-full h-full">
+            <div className="p-8 space-y-12 pb-32">
               {currentComplementCategories.map((cat) => (
                 <div key={cat.id} className="space-y-6">
                   <div className="flex justify-between items-end border-b border-white/5 pb-3">
@@ -378,21 +378,26 @@ export default function MenuPage() {
                 </div>
               </Button>
             </DrawerTrigger>
-            <DrawerContent className="bg-card border-t border-accent/20 rounded-t-[3.5rem] max-h-[92vh] flex flex-col">
+            <DrawerContent className="bg-card border-t border-accent/20 rounded-t-[3.5rem] h-[92vh] flex flex-col">
               <DrawerHeader className="border-b border-white/5 pb-8 px-8 shrink-0">
                 <DrawerTitle className="text-3xl font-headline font-black text-white text-center tracking-tighter uppercase">Minha <span className="text-accent">Sacola</span></DrawerTitle>
               </DrawerHeader>
-              <ScrollArea className="flex-1 p-8">
-                <div className="space-y-10 pb-10">
+              <ScrollArea className="flex-1 w-full h-full">
+                <div className="p-8 space-y-10 pb-32">
                   <div className="space-y-6">
                     {cart.map(item => (
                       <div key={item.id} className="flex flex-col py-6 border-b border-white/5 gap-4">
                         <div className="flex items-center justify-between">
-                          <div>
+                          <div className="flex-1">
                             <p className="font-headline font-black text-white text-lg uppercase">{item.nome}</p>
                             <p className="text-sm text-accent font-black">R$ {(item.preco * item.qtd).toFixed(2).replace('.', ',')}</p>
+                            {item.complements && item.complements.map((c, i) => (
+                              <p key={i} className="text-[10px] text-muted-foreground uppercase font-bold mt-1">
+                                {c.category}: <span className="text-white/60">{c.items.join(', ')}</span>
+                              </p>
+                            ))}
                           </div>
-                          <div className="flex items-center gap-5 bg-white/5 p-2 rounded-2xl">
+                          <div className="flex items-center gap-5 bg-white/5 p-2 rounded-2xl ml-4">
                             <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl" onClick={() => updateQtd(item.id, -1)}><Minus className="w-4 h-4" /></Button>
                             <span className="font-black text-white">{item.qtd}</span>
                             <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl" onClick={() => updateQtd(item.id, 1)}><Plus className="w-4 h-4" /></Button>
