@@ -2,12 +2,11 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { useCollection, useFirestore } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
+import { useCollection, useDoc, useFirestore } from '@/firebase';
+import { collection, query, where, doc } from 'firebase/firestore';
 import { Product, OrderItem } from '@/lib/types';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Plus, Minus, CheckCircle2 } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, Search, Share2, Home, Receipt } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerFooter, DrawerClose } from '@/components/ui/drawer';
@@ -15,6 +14,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { createOrder } from '@/lib/db';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
+
+const DEFAULT_LOGO = "https://gitlab.com/rhillenr-create/teste-iptv/-/raw/6a0cd7fe4b63fecad5f17a1eca98207bff5faa39/delicias_do_para.png";
 
 export default function MenuPage() {
   const db = useFirestore();
@@ -23,6 +25,9 @@ export default function MenuPage() {
   const [mounted, setMounted] = useState(false);
   const [clienteNome, setClienteNome] = useState('');
   const [clienteTelefone, setClienteTelefone] = useState('');
+
+  const brandRef = useMemo(() => (db ? doc(db, 'settings', 'brand') : null), [db]);
+  const { data: brand } = useDoc<any>(brandRef);
 
   const productsQuery = useMemo(() => {
     if (!db) return null;
@@ -40,6 +45,17 @@ export default function MenuPage() {
   useEffect(() => {
     if (mounted) localStorage.setItem('acai-cart', JSON.stringify(cart));
   }, [cart, mounted]);
+
+  // Agrupamento por categoria
+  const groupedProducts = useMemo(() => {
+    const groups: { [key: string]: Product[] } = {};
+    products.forEach(p => {
+      const cat = p.categoria || 'Destaques';
+      if (!groups[cat]) groups[cat] = [];
+      groups[cat].push(p);
+    });
+    return groups;
+  }, [products]);
 
   const addToCart = (product: Product) => {
     setCart(prev => {
@@ -77,8 +93,7 @@ export default function MenuPage() {
 
     await createOrder(db, orderData);
     
-    // Zap Integration
-    const msg = `*NOVO PEDIDO - DELÍCIAS DO PARÁ*\n\n*Cliente:* ${clienteNome}\n*Tel:* ${clienteTelefone}\n\n*Itens:*\n${cart.map(i => `- ${i.qtd}x ${i.nome} (R$ ${i.preco.toFixed(2)})`).join('\n')}\n\n*Total: R$ ${total.toFixed(2)}*`;
+    const msg = `*NOVO PEDIDO - ${brand?.name || 'AÇAÍ DELICIAS DO PARA'}*\n\n*Cliente:* ${clienteNome}\n*Tel:* ${clienteTelefone}\n\n*Itens:*\n${cart.map(i => `- ${i.qtd}x ${i.nome} (R$ ${i.preco.toFixed(2)})`).join('\n')}\n\n*Total: R$ ${total.toFixed(2)}*`;
     const zapLink = `https://wa.me/55${clienteTelefone.replace(/\D/g, '')}?text=${encodeURIComponent(msg)}`;
     
     window.open(zapLink, '_blank');
@@ -91,105 +106,146 @@ export default function MenuPage() {
   if (!mounted) return null;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 pb-32">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-headline font-black text-white uppercase tracking-tighter">CARDÁPIO <span className="text-accent">ONLINE</span></h1>
-          <p className="text-muted-foreground text-sm uppercase tracking-widest font-bold">Faça seu pedido agora</p>
+    <div className="min-h-screen bg-[#f8f9fa] pb-32">
+      {/* Header Estilo Anota AI */}
+      <header className="bg-[#0095ff] text-white px-4 h-16 flex items-center justify-between sticky top-0 z-40 shadow-md">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white rounded-full overflow-hidden relative border-2 border-white/20">
+            <Image src={brand?.logoUrl || DEFAULT_LOGO} alt="Logo" fill className="object-cover" unoptimized />
+          </div>
+          <h1 className="font-bold text-lg truncate max-w-[180px]">{brand?.name || 'Açaí Delicias do Para'}</h1>
         </div>
+        <div className="flex items-center gap-4">
+          <Search className="w-6 h-6" />
+          <Share2 className="w-6 h-6" />
+        </div>
+      </header>
+
+      {/* Status Bar */}
+      <div className="bg-black text-white text-[11px] font-bold py-3 px-4 flex items-center justify-center">
+        Loja aberta • Fecha às 23h
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {products.map(product => (
-          <Card key={product.id} className="glass-card overflow-hidden rounded-[2rem] border-white/5 transition-all hover:scale-[1.02]">
-            <div className="relative h-48 w-full bg-black/20">
-              <Image 
-                src={product.imagem || "https://picsum.photos/seed/acai/400/300"} 
-                alt={product.nome} 
-                fill 
-                className="object-cover opacity-80"
-                unoptimized
-              />
-              <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground font-black">R$ {product.preco.toFixed(2)}</Badge>
+      {/* Info Bar */}
+      <div className="bg-white border-b px-6 py-3 flex justify-between items-center text-[10px] font-medium text-gray-500 uppercase tracking-wider">
+        <span>Sem pedido mínimo</span>
+        <span className="text-blue-500 font-bold">Perfil da loja</span>
+      </div>
+
+      {/* Listagem de Produtos Agrupados */}
+      <div className="max-w-4xl mx-auto p-4 space-y-10">
+        {Object.entries(groupedProducts).map(([category, products]) => (
+          <section key={category} className="space-y-4">
+            <h2 className="text-lg font-extrabold text-[#333] pl-2 border-l-4 border-blue-500 leading-none">
+              {category}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {products.map(product => (
+                <div 
+                  key={product.id} 
+                  onClick={() => addToCart(product)}
+                  className="bg-white rounded-xl border border-gray-100 p-4 flex gap-4 cursor-pointer hover:shadow-md transition-shadow"
+                >
+                  <div className="flex-1 flex flex-col justify-between">
+                    <div>
+                      <h3 className="font-bold text-[#444] text-sm md:text-base leading-tight">{product.nome}</h3>
+                      <p className="text-xs text-gray-400 mt-1 line-clamp-2 leading-relaxed">
+                        {product.descricao || 'Experimente nossa deliciosa combinação exclusiva.'}
+                      </p>
+                    </div>
+                    <p className="font-black text-[#333] text-sm mt-3">
+                      R$ {product.preco.toFixed(2).replace('.', ',')}
+                    </p>
+                  </div>
+                  <div className="relative w-24 h-24 rounded-lg overflow-hidden bg-gray-50 flex-shrink-0">
+                    <Image 
+                      src={product.imagem || "https://picsum.photos/seed/acai/200/200"} 
+                      alt={product.nome} 
+                      fill 
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
-            <CardContent className="p-6">
-              <h3 className="text-xl font-bold text-white mb-2">{product.nome}</h3>
-              <p className="text-sm text-muted-foreground line-clamp-2">{product.descricao}</p>
-            </CardContent>
-            <CardFooter className="px-6 pb-6">
-              <Button 
-                onClick={() => addToCart(product)}
-                className="w-full h-12 rounded-2xl bg-primary hover:bg-primary/90 font-black uppercase tracking-widest text-xs"
-              >
-                <Plus className="w-4 h-4 mr-2" /> ADICIONAR AO CARRINHO
-              </Button>
-            </CardFooter>
-          </Card>
+          </section>
         ))}
       </div>
 
+      {/* Carrinho Flutuante (Drawer) */}
       {cart.length > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-50">
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-50">
           <Drawer>
             <DrawerTrigger asChild>
-              <Button className="w-full h-16 rounded-[2rem] bg-accent text-accent-foreground font-black shadow-2xl shadow-accent/20 flex justify-between px-8 text-lg hover:bg-accent/90">
+              <Button className="w-full h-14 rounded-2xl bg-blue-500 hover:bg-blue-600 text-white font-bold shadow-xl flex justify-between px-6 text-sm">
                 <div className="flex items-center gap-3">
-                  <div className="bg-black/10 p-2 rounded-xl">
-                    <ShoppingCart className="w-6 h-6" />
-                  </div>
-                  <span>{cart.length} ITENS</span>
+                  <ShoppingCart className="w-5 h-5" />
+                  <span>VER CARRINHO ({cart.length})</span>
                 </div>
-                <span>R$ {total.toFixed(2)}</span>
+                <span>R$ {total.toFixed(2).replace('.', ',')}</span>
               </Button>
             </DrawerTrigger>
-            <DrawerContent className="bg-card border-t-2 border-accent/20 rounded-t-[3rem] max-h-[85vh]">
-              <DrawerHeader className="px-8 pt-8">
-                <DrawerTitle className="text-2xl font-black uppercase text-white tracking-tighter">MEU <span className="text-accent">CARRINHO</span></DrawerTitle>
+            <DrawerContent className="bg-white rounded-t-[2.5rem] max-h-[90vh]">
+              <DrawerHeader className="border-b pb-4">
+                <DrawerTitle className="text-xl font-black text-gray-800 text-center">MEU CARRINHO</DrawerTitle>
               </DrawerHeader>
-              <div className="p-8 space-y-8 overflow-y-auto">
+              <div className="p-6 space-y-6 overflow-y-auto">
                 <div className="space-y-4">
                   {cart.map(item => (
-                    <div key={item.id} className="flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/5">
+                    <div key={item.id} className="flex items-center justify-between py-2 border-b border-gray-50">
                       <div>
-                        <p className="font-bold text-white">{item.nome}</p>
-                        <p className="text-xs text-accent">R$ {(item.preco * item.qtd).toFixed(2)}</p>
+                        <p className="font-bold text-gray-800 text-sm">{item.nome}</p>
+                        <p className="text-xs text-blue-500 font-bold">R$ {(item.preco * item.qtd).toFixed(2).replace('.', ',')}</p>
                       </div>
-                      <div className="flex items-center gap-3 bg-black/20 p-1 rounded-xl">
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-white" onClick={() => updateQtd(item.id, -1)}><Minus className="w-4 h-4" /></Button>
-                        <span className="font-black text-white w-4 text-center">{item.qtd}</span>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 text-white" onClick={() => updateQtd(item.id, 1)}><Plus className="w-4 h-4" /></Button>
+                      <div className="flex items-center gap-3 bg-gray-100 p-1 rounded-full">
+                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full bg-white shadow-sm" onClick={() => updateQtd(item.id, -1)}><Minus className="w-3 h-3 text-blue-500" /></Button>
+                        <span className="font-black text-gray-800 text-xs w-4 text-center">{item.qtd}</span>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full bg-white shadow-sm" onClick={() => updateQtd(item.id, 1)}><Plus className="w-3 h-3 text-blue-500" /></Button>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                <div className="space-y-4 pt-4 border-t border-white/10">
+                <div className="space-y-4 pt-4">
                   <div className="space-y-2">
-                    <Label className="text-muted-foreground uppercase text-[10px] font-black tracking-widest">Nome do Cliente</Label>
-                    <Input value={clienteNome} onChange={e => setClienteNome(e.target.value)} className="h-12 rounded-xl bg-background border-white/10" placeholder="Ex: João Silva" />
+                    <Label className="text-[10px] font-black uppercase text-gray-400">Seu Nome</Label>
+                    <Input value={clienteNome} onChange={e => setClienteNome(e.target.value)} className="h-12 rounded-xl border-gray-100 bg-gray-50" placeholder="Como podemos te chamar?" />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-muted-foreground uppercase text-[10px] font-black tracking-widest">WhatsApp</Label>
-                    <Input value={clienteTelefone} onChange={e => setClienteTelefone(e.target.value)} className="h-12 rounded-xl bg-background border-white/10" placeholder="Ex: 91988887777" />
+                    <Label className="text-[10px] font-black uppercase text-gray-400">WhatsApp</Label>
+                    <Input value={clienteTelefone} onChange={e => setClienteTelefone(e.target.value)} className="h-12 rounded-xl border-gray-100 bg-gray-50" placeholder="Ex: 91988887777" />
                   </div>
                 </div>
               </div>
-              <DrawerFooter className="p-8">
+              <DrawerFooter className="p-6">
                 <Button 
                   onClick={handleFinishOrder}
                   disabled={!clienteNome || !clienteTelefone}
-                  className="h-16 rounded-2xl bg-accent text-accent-foreground font-black text-lg uppercase tracking-widest"
+                  className="h-14 rounded-2xl bg-blue-500 hover:bg-blue-600 text-white font-black text-base"
                 >
-                  FINALIZAR PEDIDO (R$ {total.toFixed(2)})
+                  FINALIZAR PEDIDO • R$ {total.toFixed(2).replace('.', ',')}
                 </Button>
                 <DrawerClose asChild>
-                  <Button variant="ghost" className="text-muted-foreground">Continuar Comprando</Button>
+                  <Button variant="ghost" className="text-gray-400 text-xs">Continuar Comprando</Button>
                 </DrawerClose>
               </DrawerFooter>
             </DrawerContent>
           </Drawer>
         </div>
       )}
+
+      {/* Bottom Nav Bar */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t h-16 flex items-center justify-around px-6 z-40">
+        <div className="flex flex-col items-center text-blue-500">
+          <Home className="w-6 h-6" />
+          <span className="text-[10px] font-bold mt-1 uppercase">Início</span>
+        </div>
+        <div className="flex flex-col items-center text-gray-300">
+          <Receipt className="w-6 h-6" />
+          <span className="text-[10px] font-bold mt-1 uppercase">Pedidos</span>
+        </div>
+      </nav>
     </div>
   );
 }
