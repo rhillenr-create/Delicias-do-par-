@@ -232,7 +232,7 @@ export default function MenuPage() {
 
   const total = cart.reduce((acc, item) => acc + (item.preco * item.qtd), 0);
 
-  const handleFinishOrder = async () => {
+  const handleFinishOrder = () => {
     if (!db || cart.length === 0 || !clienteNome || !clienteTelefone) return;
 
     const orderData = {
@@ -243,7 +243,8 @@ export default function MenuPage() {
       pagamento: 'Pendente'
     };
 
-    await createOrder(db, orderData);
+    // Chamada não bloqueante
+    createOrder(db, orderData);
     
     let itensMsg = cart.map(i => {
       let msg = `*${i.qtd}x ${i.nome}* (R$ ${i.preco.toFixed(2)})`;
