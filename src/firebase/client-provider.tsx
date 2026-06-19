@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { initializeFirebase } from './index';
 import { FirebaseProvider } from './provider';
 import { FirebaseApp } from 'firebase/app';
@@ -50,37 +50,37 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
   const [authError, setAuthError] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
+  const authInitialized = useRef(false);
 
   useEffect(() => {
     setMounted(true);
     
+    if (authInitialized.current) return;
+
     try {
       const instance = initializeFirebase();
       setFirebaseInstance(instance);
 
       const unsubscribe = onAuthStateChanged(instance.auth, (user) => {
+        authInitialized.current = true;
         const isMenuPath = pathname === '/menu';
         const isLoginPath = pathname === '/login';
 
         if (!user) {
           if (isMenuPath) {
-            // Clientes entram anonimamente
             signInAnonymously(instance.auth)
-              .then(() => setIsAuthReady(true))
               .catch((err) => {
                 console.error("Erro no login anônimo:", err);
                 setAuthError(err.message);
-                setIsAuthReady(true); // Libera para mostrar erro
-              });
+              })
+              .finally(() => setIsAuthReady(true));
           } else if (!isLoginPath) {
-            // Outras rotas exigem login
             setIsAuthReady(true);
             router.push('/login');
           } else {
             setIsAuthReady(true);
           }
         } else {
-          // Se for anônimo tentando acessar admin, manda pro login
           if (user.isAnonymous && !isMenuPath && !isLoginPath) {
             router.push('/login');
           }
@@ -92,6 +92,7 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     } catch (error: any) {
       console.error("Erro ao inicializar Firebase:", error);
       setAuthError(error.message);
+      setIsAuthReady(true);
     }
   }, [pathname, router]);
 
@@ -99,7 +100,6 @@ export const FirebaseClientProvider: React.FC<{ children: React.ReactNode }> = (
     return <div className="min-h-screen bg-background" />;
   }
 
-  // Erros críticos de configuração do Firebase
   const isCriticalError = authError && (
     authError.includes('api-key-not-valid') || 
     authError.includes('operation-not-allowed') || 
